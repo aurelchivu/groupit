@@ -1,9 +1,60 @@
+import { Checkbox, Label, TextInput, Button } from "flowbite-react";
 import { type NextPage } from "next";
 
 const Register: NextPage = () => {
   return (
-    <div className="p-4">
-      <h1 className="text-white">Register </h1>
+    <div className="mx-1 flex items-center justify-center py-40">
+      <form className="flex flex-col gap-5">
+        <div>
+          <div className="mb-2 block">
+            <Label htmlFor="email2" value="Your email" />
+          </div>
+          <TextInput
+            id="email2"
+            type="email"
+            placeholder="name@flowbite.com"
+            required={true}
+            shadow={true}
+          />
+        </div>
+        <div>
+          <div className="mb-2 block">
+            <Label htmlFor="password2" value="Your password" />
+          </div>
+          <TextInput
+            id="password2"
+            type="password"
+            required={true}
+            shadow={true}
+          />
+        </div>
+        <div>
+          <div className="mb-2 block">
+            <Label htmlFor="repeat-password" value="Repeat password" />
+          </div>
+          <TextInput
+            id="repeat-password"
+            type="password"
+            required={true}
+            shadow={true}
+          />
+        </div>
+        <div className="flex items-center justify-center gap-2">
+          <Checkbox id="agree" />
+          <Label htmlFor="agree">
+            I agree with the{" "}
+            <a
+              href="/forms"
+              className="text-red-600 hover:underline dark:text-blue-500"
+            >
+              terms and conditions
+            </a>
+          </Label>
+        </div>
+        <Button className="mx-20" type="submit">
+          Register new account
+        </Button>
+      </form>
     </div>
   );
 };
