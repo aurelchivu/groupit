@@ -1,9 +1,33 @@
+import { Checkbox, Label, TextInput, Button } from "flowbite-react";
 import { type NextPage } from "next";
 
 const Login: NextPage = () => {
   return (
-    <div className="p-4">
-      <h1 className="text-white">Login </h1>
+    <div className="my-40 mx-1 flex justify-center">
+      <form className="flex flex-col gap-4 ">
+        <div>
+          <div className="mb-2 block">
+            <Label htmlFor="email1" value="Your email" />
+          </div>
+          <TextInput
+            id="email1"
+            type="email"
+            placeholder="name@flowbite.com"
+            required={true}
+          />
+        </div>
+        <div>
+          <div className="mb-2 block">
+            <Label htmlFor="password1" value="Your password" />
+          </div>
+          <TextInput id="password1" type="password" required={true} />
+        </div>
+        <div className="flex items-center justify-center gap-2">
+          <Checkbox id="remember" />
+          <Label htmlFor="remember">Remember me</Label>
+        </div>
+        <Button type="submit">Submit</Button>
+      </form>
     </div>
   );
 };

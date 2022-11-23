@@ -1,9 +1,10 @@
 import { Checkbox, Label, TextInput, Button } from "flowbite-react";
 import { type NextPage } from "next";
+import Link from "next/link";
 
 const Register: NextPage = () => {
   return (
-    <div className="mx-1 flex items-center justify-center py-40">
+    <div className="my-40 mx-1 flex items-center justify-center">
       <form className="flex flex-col gap-5">
         <div>
           <div className="mb-2 block">
@@ -43,12 +44,12 @@ const Register: NextPage = () => {
           <Checkbox id="agree" />
           <Label htmlFor="agree">
             I agree with the{" "}
-            <a
-              href="/forms"
+            <Link
+              href="/groups"
               className="text-red-600 hover:underline dark:text-blue-500"
             >
               terms and conditions
-            </a>
+            </Link>
           </Label>
         </div>
         <Button className="mx-20" type="submit">
