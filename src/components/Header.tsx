@@ -1,10 +1,22 @@
 import Image from "next/image";
 import Link from "next/link";
 import { type FC } from "react";
+import CustomLink from "./CustomLink";
 import { Navbar, type NavbarComponentProps } from "flowbite-react";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 const Header: FC<NavbarComponentProps> = () => {
-  const loggedIn = false;
+  const { data: session } = useSession();
+  console.log(session);
+
+  const handleSignOut = async () => {
+    await signOut({ redirect: false, callbackUrl: "/" });
+  };
+
+  const handleSignIn = async () => {
+    await signIn(undefined, { callbackUrl: "/" });
+  };
+
   return (
     <Navbar fluid rounded className="mx-1 bg-red-300">
       <Link href="/">
@@ -20,16 +32,19 @@ const Header: FC<NavbarComponentProps> = () => {
         </div>
       </Link>
       <Navbar.Toggle />
-      {loggedIn ? (
+      {session ? (
         <Navbar.Collapse>
           <Link href="/groups">Groups</Link>
           <Link href="/people">People</Link>
-          <Link href="/">Logout</Link>
+          <Link href="/api/auth/signout" onClick={() => handleSignOut}>
+            Logout, {session?.user?.name}
+          </Link>
         </Navbar.Collapse>
       ) : (
         <Navbar.Collapse>
-          <Link href="/login">Login</Link>
-          <Link href="/register">Register</Link>
+          <Link href="/api/auth/signin" onClick={() => handleSignIn}>
+            Login/Register
+          </Link>
           <Link href="/about">About</Link>
         </Navbar.Collapse>
       )}

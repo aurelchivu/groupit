@@ -7,10 +7,11 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
+  const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
   return (
     <>
       <div className="p-4">
-        <h1 className="text-white">Home </h1>
+        <h1 className="text-white">{hello.data?.greeting}</h1>
       </div>
     </>
   );
