@@ -18,7 +18,11 @@ const Header: FC<NavbarComponentProps> = () => {
   };
 
   return (
-    <Navbar fluid rounded className="mx-1 bg-red-300">
+    <Navbar
+      fluid
+      rounded
+      className="bg-gradient-to-r from-[#857995] to-[#d0d2f5] opacity-70"
+    >
       <Link href="/">
         <div className="flex items-center">
           <img
