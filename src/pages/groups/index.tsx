@@ -2,10 +2,12 @@ import { type NextPage } from "next";
 import { Table, Checkbox, Button } from "flowbite-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { trpc } from "../../utils/trpc";
 
 const Groups: NextPage = () => {
   const router = useRouter();
-
+  const groups = trpc.groups.getAll.useQuery();
+  console.log(groups);
   return (
     <div className="p-4">
       <div className="flex items-center justify-between">
@@ -16,39 +18,60 @@ const Groups: NextPage = () => {
           </Button>
         </div>
       </div>
+      {groups.data ? (
+        <Table hoverable>
+          <Table.Head>
+            <Table.HeadCell className="!p-4"></Table.HeadCell>
+            <Table.HeadCell>Name</Table.HeadCell>
+            <Table.HeadCell>Reports to</Table.HeadCell>
+            <Table.HeadCell>Created at</Table.HeadCell>
+            <Table.HeadCell>Updated at</Table.HeadCell>
+            <Table.HeadCell>
+              <span className="sr-only">Show Members</span>
+            </Table.HeadCell>
+            <Table.HeadCell>
+              <span className="sr-only">Edit</span>
+            </Table.HeadCell>
+          </Table.Head>
+          <Table.Body className="divide-y">
+            {groups.data?.map((group) => (
+              <Table.Row
+                className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                key={group.id}
+              >
+                <Table.Cell className="!p-4">
+                  <Checkbox />
+                </Table.Cell>
+                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                  <Link href={`/groups/${group.id}`}>{group.name}</Link>
+                </Table.Cell>
 
-      <Table hoverable>
-        <Table.Head>
-          <Table.HeadCell className="!p-4"></Table.HeadCell>
-          <Table.HeadCell>Name</Table.HeadCell>
-          <Table.HeadCell>Reports TO</Table.HeadCell>
-          <Table.HeadCell>Created at</Table.HeadCell>
-          <Table.HeadCell>Updated at</Table.HeadCell>
-          <Table.HeadCell>
-            <span className="sr-only">Edit</span>
-          </Table.HeadCell>
-        </Table.Head>
-        <Table.Body className="divide-y">
-          <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-            <Table.Cell className="!p-4">
-              <Checkbox />
-            </Table.Cell>
-            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-              Management
-            </Table.Cell>
-
-            <Table.Cell>CEO</Table.Cell>
-            <Table.Cell>{Date.now().toString()}</Table.Cell>
-            <Table.Cell>{Date.now().toString()}</Table.Cell>
-            <Link
-              href="/groups"
-              className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-            >
-              <Table.Cell>Edit</Table.Cell>
-            </Link>
-          </Table.Row>
-        </Table.Body>
-      </Table>
+                <Table.Cell>{group.reportsToId || "CEO"}</Table.Cell>
+                <Table.Cell>{group.createdAt.toDateString()}</Table.Cell>
+                <Table.Cell>{group.updatedAt.toDateString()}</Table.Cell>
+                <Table.Cell>
+                  <Link
+                    href={`/groups/${group.id}`}
+                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                  >
+                    Show Members
+                  </Link>
+                </Table.Cell>
+                <Table.Cell>
+                  <Link
+                    href={`/groups/edit/${group.id}`}
+                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                  >
+                    Edit
+                  </Link>
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+      ) : (
+        <div>Loading...</div>
+      )}
     </div>
   );
 };

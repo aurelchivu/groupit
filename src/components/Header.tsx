@@ -7,8 +7,6 @@ import { signIn, signOut, useSession } from "next-auth/react";
 
 const Header: FC<NavbarComponentProps> = () => {
   const { data: session } = useSession();
-  console.log(session);
-
   const handleSignOut = async () => {
     await signOut({ redirect: false, callbackUrl: "/" });
   };
