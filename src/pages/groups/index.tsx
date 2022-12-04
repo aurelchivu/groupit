@@ -43,12 +43,17 @@ const Groups: NextPage = () => {
                   <Checkbox />
                 </Table.Cell>
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  <Link href={`/groups/${group.id}`}>{group.name}</Link>
+                  <Link
+                    href={`/groups/${group.id}`}
+                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                  >
+                    {group.name}{" "}
+                  </Link>
                 </Table.Cell>
 
                 <Table.Cell>{group.reportsToId || "CEO"}</Table.Cell>
-                <Table.Cell>{group.createdAt.toDateString()}</Table.Cell>
-                <Table.Cell>{group.updatedAt.toDateString()}</Table.Cell>
+                <Table.Cell>{group.createdAt.toLocaleString()}</Table.Cell>
+                <Table.Cell>{group.updatedAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>
                   <Link
                     href={`/groups/${group.id}`}
