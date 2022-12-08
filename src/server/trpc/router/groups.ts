@@ -5,7 +5,7 @@ export const groupRouter = router({
   create: protectedProcedure
     .input(z.object({ name: z.string() }))
     .mutation(async ({ input }) => {
-      return await prisma?.group.create({
+      return await prisma?.groupp.create({
         data: {
           name: input.name,
         },
@@ -13,12 +13,12 @@ export const groupRouter = router({
     }),
 
   getAll: protectedProcedure.query(async () => {
-    const groups = await prisma?.group.findMany();
+    const groups = await prisma?.groupp.findMany();
     return groups;
   }),
 
   getById: protectedProcedure.input(z.string()).query(async ({ input }) => {
-    return await prisma?.group.findFirst({
+    return await prisma?.groupp.findFirst({
       where: {
         id: input,
       },
@@ -26,7 +26,7 @@ export const groupRouter = router({
   }),
 
   delete: protectedProcedure.input(z.string()).mutation(async ({ input }) => {
-    return await prisma?.group.delete({
+    return await prisma?.groupp.delete({
       where: {
         id: input,
       },
@@ -36,7 +36,7 @@ export const groupRouter = router({
   update: protectedProcedure
     .input(z.object({ id: z.string(), name: z.string() }))
     .mutation(async ({ input }) => {
-      return await prisma?.group.update({
+      return await prisma?.groupp.update({
         where: {
           id: input.id,
         },
