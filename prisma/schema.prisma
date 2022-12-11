@@ -26,19 +26,23 @@ model Groupp {
   members     GrouppMembers[]
   leader      Member?         @relation(name: "leaderOf", fields: [leaderId], references: [id])
   leaderId    String?
+  createdBy   User            @relation(name: "groupCreatedBy", fields: [createdById], references: [id])
+  createdById String
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
 }
 
 model Member {
-  id        String          @id @default(cuid())
-  firstName String
-  lastName  String
-  details   String?
-  groups    GrouppMembers[]
-  leaderOf  Groupp[]        @relation(name: "leaderOf")
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
+  id          String          @id @default(cuid())
+  firstName   String
+  lastName    String
+  details     String?
+  groups      GrouppMembers[]
+  leaderOf    Groupp[]        @relation(name: "leaderOf")
+  createdBy   User            @relation(name: "memberCreatedBy", fields: [createdById], references: [id])
+  createdById String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 }
 
 model GrouppMembers {
@@ -88,6 +92,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
   role          Role      @default(USER)
+  groups        Groupp[]  @relation(name: "groupCreatedBy")
+  members       Member[]  @relation(name: "memberCreatedBy")
 }
 
 model VerificationToken {

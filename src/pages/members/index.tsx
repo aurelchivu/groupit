@@ -24,6 +24,7 @@ const Members: NextPage = () => {
             <Table.HeadCell className="!p-4"></Table.HeadCell>
             <Table.HeadCell>First Name</Table.HeadCell>
             <Table.HeadCell>Last Name</Table.HeadCell>
+            <Table.HeadCell>Created by</Table.HeadCell>
             <Table.HeadCell>Created at</Table.HeadCell>
             <Table.HeadCell>Updated at</Table.HeadCell>
             <Table.HeadCell>
@@ -51,7 +52,8 @@ const Members: NextPage = () => {
                   </Link>
                 </Table.Cell>
 
-                <Table.Cell>{member.lastName || "CEO"}</Table.Cell>
+                <Table.Cell>{member.lastName}</Table.Cell>
+                <Table.Cell>{member.createdBy.name}</Table.Cell>
                 <Table.Cell>{member.createdAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>{member.updatedAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>
@@ -59,7 +61,7 @@ const Members: NextPage = () => {
                     href={`/members/${member.id}`}
                     className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                   >
-                    Show Members
+                    Details
                   </Link>
                 </Table.Cell>
                 <Table.Cell>

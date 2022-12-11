@@ -4,16 +4,22 @@ import { z } from "zod";
 export const groupRouter = router({
   create: protectedProcedure
     .input(z.object({ name: z.string() }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       return await prisma?.groupp.create({
         data: {
           name: input.name,
+          createdById: ctx.session.user.id,
         },
       });
     }),
 
   getAll: protectedProcedure.query(async () => {
-    const groups = await prisma?.groupp.findMany();
+    const groups = await prisma?.groupp.findMany({
+      include: {
+        members: true,
+        createdBy: true,
+      },
+    });
     return groups;
   }),
 

@@ -5,14 +5,15 @@ import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 
 const CreateGroup: NextPage = () => {
-  const [formData, setFormData] = useState({ name: "", reportsTo: "" });
   const router = useRouter();
-  const groups = trpc.groups.getAll.useQuery();
+
+  const [groupName, setGroupName] = useState<string>("");
+
   const createGroup = trpc.groups.create.useMutation();
 
   const submitCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    await createGroup.mutateAsync(formData);
+    await createGroup.mutateAsync({ name: groupName });
     router.push("/groups");
   };
 
@@ -35,31 +36,11 @@ const CreateGroup: NextPage = () => {
             type="text"
             placeholder="Group Name"
             required={true}
-            value={formData.name}
+            value={groupName}
             onChange={(e) => {
-              setFormData({ ...formData, name: e.target.value });
+              setGroupName(e.target.value);
             }}
           />
-        </div>
-        <div>
-          <div className="mb-2 block">
-            <Label htmlFor="base" value="Reports to" />
-          </div>
-          <select
-            className="rounded-md"
-            value={formData.reportsTo}
-            color="light"
-            onChange={(e) => {
-              setFormData({ ...formData, reportsTo: e.currentTarget.value });
-            }}
-          >
-            <option className="text-red-100" value="CEO">
-              CEO
-            </option>
-            {groups.data?.map((group) => (
-              <option key={group.id}>{group.name}</option>
-            ))}
-          </select>
         </div>
         <Button type="submit" size="lg" color="success">
           Create Group

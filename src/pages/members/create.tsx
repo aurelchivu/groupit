@@ -4,9 +4,19 @@ import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 
-const CreateGroup: NextPage = () => {
-  const [formData, setFormData] = useState({ firstName: "", lastName: "" });
+const CreateMember: NextPage = () => {
+  interface MemberState {
+    firstName: string;
+    lastName: string;
+  }
+
   const router = useRouter();
+
+  const [formData, setFormData] = useState<MemberState>({
+    firstName: "",
+    lastName: "",
+  });
+
   const createGroup = trpc.members.create.useMutation();
 
   const submitCreate = async (e: React.SyntheticEvent) => {
@@ -55,26 +65,6 @@ const CreateGroup: NextPage = () => {
             }}
           />
         </div>
-        {/* <div>
-          <div className="mb-2 block">
-            <Label htmlFor="base" value="Reports to" />
-          </div>
-          <select
-            className="rounded-md"
-            value={formData.reportsTo}
-            color="light"
-            onChange={(e) => {
-              setFormData({ ...formData, reportsTo: e.currentTarget.value });
-            }}
-          >
-            <option className="text-red-100" value="CEO">
-              CEO
-            </option>
-            {members.data?.map((group) => (
-              <option key={group.id}>{group.name}</option>
-            ))}
-          </select>
-        </div> */}
         <Button type="submit" size="lg" color="success">
           Create Member
         </Button>
@@ -83,4 +73,4 @@ const CreateGroup: NextPage = () => {
   );
 };
 
-export default CreateGroup;
+export default CreateMember;

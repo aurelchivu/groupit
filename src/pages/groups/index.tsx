@@ -24,6 +24,7 @@ const Groups: NextPage = () => {
             <Table.HeadCell className="!p-4"></Table.HeadCell>
             <Table.HeadCell>Name</Table.HeadCell>
             <Table.HeadCell>Leader</Table.HeadCell>
+            <Table.HeadCell>Created by</Table.HeadCell>
             <Table.HeadCell>Created at</Table.HeadCell>
             <Table.HeadCell>Updated at</Table.HeadCell>
             <Table.HeadCell>
@@ -52,6 +53,7 @@ const Groups: NextPage = () => {
                 </Table.Cell>
 
                 <Table.Cell>{group.leaderId || ""}</Table.Cell>
+                <Table.Cell>{group.createdBy.name}</Table.Cell>
                 <Table.Cell>{group.createdAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>{group.updatedAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>
@@ -59,7 +61,7 @@ const Groups: NextPage = () => {
                     href={`/groups/${group.id}`}
                     className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                   >
-                    Show Members
+                    Details
                   </Link>
                 </Table.Cell>
                 <Table.Cell>

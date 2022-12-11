@@ -1,4 +1,4 @@
-import { t, router, protectedProcedure } from "../trpc";
+import { router, protectedProcedure } from "../trpc";
 import { z } from "zod";
 
 export const userRouter = router({
@@ -18,4 +18,3 @@ export const userRouter = router({
     });
   }),
 });
-

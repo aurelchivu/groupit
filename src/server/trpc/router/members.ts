@@ -3,18 +3,28 @@ import { z } from "zod";
 
 export const memberRouter = router({
   create: protectedProcedure
-    .input(z.object({ firstName: z.string(), lastName: z.string() }))
-    .mutation(async ({ input }) => {
+    .input(
+      z.object({
+        firstName: z.string(),
+        lastName: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
       return await prisma?.member.create({
         data: {
           firstName: input.firstName,
           lastName: input.lastName,
+          createdById: ctx.session.user.id,
         },
       });
     }),
 
   getAll: protectedProcedure.query(async () => {
-    const members = await prisma?.member.findMany();
+    const members = await prisma?.member.findMany({
+      include: {
+        createdBy: true,
+      },
+    });
     return members;
   }),
 
