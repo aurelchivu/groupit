@@ -37,7 +37,7 @@ const Header: FC<NavbarComponentProps> = () => {
       {session ? (
         <Navbar.Collapse>
           <Link href="/groups">Groups</Link>
-          <Link href="/people">People</Link>
+          <Link href="/members">Members</Link>
           <Link href="/api/auth/signout" onClick={() => handleSignOut}>
             Logout, {session?.user?.name}
           </Link>

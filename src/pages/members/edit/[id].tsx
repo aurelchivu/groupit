@@ -2,57 +2,63 @@ import { type NextPage } from "next";
 import { useEffect, useState } from "react";
 import { Button, Label, Modal, TextInput, Toast } from "flowbite-react";
 import { useRouter } from "next/router";
-import { HiCheck, HiOutlineExclamationCircle } from "react-icons/hi";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { trpc } from "../../../utils/trpc";
 
-const EditGroup: NextPage = () => {
+const EditMember: NextPage = () => {
   const router = useRouter();
 
-  const [groupId, setGroupId] = useState("");
+  interface MemberState {
+    firstName: string;
+    lastName: string;
+  }
 
-  const { id } = router.query;
-  const group = trpc.groups.getById.useQuery(groupId as string);
-
-  const groupName = group?.data?.name as string;
-  const [formData, setFormData] = useState({
-    name: "",
-    reportsTo: "",
-    newBoss: "",
+  const [formData, setFormData] = useState<MemberState>({
+    firstName: "",
+    lastName: "",
   });
 
-  const deleteGroup = trpc.groups.delete.useMutation();
-  const updateGroup = trpc.groups.update.useMutation();
-  // const reportsTo = group?.data?.name;
+  const [memberId, setMemberId] = useState("");
+
+  const { id } = router.query;
+  const member = trpc.members.getById.useQuery(memberId as string);
+
+  const memberFirstName = member?.data?.firstName as string;
+  const memberLastName = member?.data?.lastName as string;
+
+  const deleteMember = trpc.members.delete.useMutation();
+  const updateMember = trpc.members.update.useMutation();
 
   const [openModal, setOpenModal] = useState<string | undefined>();
 
   useEffect(() => {
     if (id) {
-      setGroupId(id as string);
+      setMemberId(id as string);
+      setFormData({ firstName: memberFirstName, lastName: memberLastName });
     }
-  }, [id]);
+  }, [id, memberFirstName, memberLastName]);
 
   const submitCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    await updateGroup.mutateAsync({ id: groupId as string, ...formData });
-    router.push("/groups");
+    await updateMember.mutateAsync({ id: memberId as string, ...formData });
+    router.push("/members");
   };
 
   const handleDelete = async () => {
-    await deleteGroup.mutateAsync(id as string);
+    await deleteMember.mutateAsync(id as string);
     setOpenModal(undefined);
-    router.push("/groups");
+    router.push("/members");
   };
 
   return (
     <div className="px-40 py-4">
       <div className="align-center flex justify-between">
-        <Button size="lg" onClick={() => router.push("/groups")}>
+        <Button size="lg" onClick={() => router.push("/members")}>
           Go Back
         </Button>
         <>
           <Button color="warning" onClick={() => setOpenModal("default")}>
-            Delete Group
+            Delete Member
           </Button>
           <Modal
             show={openModal === "default"}
@@ -63,7 +69,7 @@ const EditGroup: NextPage = () => {
               <div className="text-center">
                 <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
                 <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                  Are you sure you want to delete this group?
+                  Are you sure you want to delete this member?
                 </h3>
                 <div className="flex justify-center gap-4">
                   <Button color="success" onClick={handleDelete}>
@@ -82,36 +88,39 @@ const EditGroup: NextPage = () => {
         </>
       </div>
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
-        <h1 className="text-xl">Edit Group: {groupName}</h1>
+        <h1 className="text-xl">
+          Edit Member: {memberFirstName} {memberLastName}
+        </h1>
         <div>
           <div className="mb-2 block">
-            <Label htmlFor="name" value="Group name" />
+            <Label htmlFor="firstName" value="Member First Name" />
           </div>
           <TextInput
-            id="groupName"
+            id="memberFirstName"
             type="text"
-            placeholder="New Group Name"
+            placeholder="Member First name"
             required={true}
-            value={formData.name}
+            value={formData.firstName}
             onChange={(e) => {
-              setFormData({ ...formData, name: e.target.value });
+              setFormData({ ...formData, firstName: e.target.value });
             }}
           />
         </div>
-        {/* <div>
+        <div>
           <div className="mb-2 block">
-            <Label htmlFor="reports" value="Reports to" />
+            <Label htmlFor="lastName" value="Member Last Name" />
           </div>
           <TextInput
-            id="reports"
+            id="memberLastName"
             type="text"
-            placeholder="Reports to"
-            value={formData.reportsTo}
-            onChange={(e) =>
-              setFormData({ ...formData, reportsTo: e.target.value })
-            }
+            placeholder="Member Last name"
+            required={true}
+            value={formData.lastName}
+            onChange={(e) => {
+              setFormData({ ...formData, lastName: e.target.value });
+            }}
           />
-        </div> */}
+        </div>
         {/* <div>
           <div className="mb-2 block">
             <Label htmlFor="boss" value="New Bo$$" />
@@ -127,21 +136,21 @@ const EditGroup: NextPage = () => {
             <option className="text-red-100" value="CEO">
               CEO
             </option>
-            {groups.data?.map((group) => (
-              <option key={group.id}>{group.name}</option>
+            {members.data?.map((member) => (
+              <option key={member.id}>{member.firstName}</option>
             ))}
           </select>
         </div> */}
 
         <Button type="submit" size="lg">
-          Edit Group
+          Edit Member
         </Button>
         {/* <Toast>
           <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
             <HiCheck className="h-5 w-5" />
           </div>
           <div className="ml-3 text-sm font-normal">
-            Group edited successfully.
+            Member edited successfully.
           </div>
           <Toast.Toggle />
         </Toast> */}
@@ -150,4 +159,4 @@ const EditGroup: NextPage = () => {
   );
 };
 
-export default EditGroup;
+export default EditMember;

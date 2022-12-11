@@ -2,11 +2,21 @@ import { type NextPage } from "next";
 import { useEffect, useState } from "react";
 import { Button, Label, Modal, TextInput, Toast } from "flowbite-react";
 import { useRouter } from "next/router";
-import { HiCheck, HiOutlineExclamationCircle } from "react-icons/hi";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { trpc } from "../../../utils/trpc";
 
 const EditGroup: NextPage = () => {
   const router = useRouter();
+
+  interface GroupState {
+    name: string;
+    leaderId: string;
+  }
+
+  const [formData, setFormData] = useState<GroupState>({
+    name: "",
+    leaderId: "",
+  });
 
   const [groupId, setGroupId] = useState("");
 
@@ -14,23 +24,19 @@ const EditGroup: NextPage = () => {
   const group = trpc.groups.getById.useQuery(groupId as string);
 
   const groupName = group?.data?.name as string;
-  const [formData, setFormData] = useState({
-    name: "",
-    reportsTo: "",
-    newBoss: "",
-  });
+  const groupLeaderId = group?.data?.leaderId as string;
 
   const deleteGroup = trpc.groups.delete.useMutation();
   const updateGroup = trpc.groups.update.useMutation();
-  // const reportsTo = group?.data?.name;
 
   const [openModal, setOpenModal] = useState<string | undefined>();
 
   useEffect(() => {
     if (id) {
       setGroupId(id as string);
+      setFormData({ name: groupName, leaderId: groupLeaderId });
     }
-  }, [id]);
+  }, [id, groupName, groupLeaderId]);
 
   const submitCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -98,53 +104,9 @@ const EditGroup: NextPage = () => {
             }}
           />
         </div>
-        {/* <div>
-          <div className="mb-2 block">
-            <Label htmlFor="reports" value="Reports to" />
-          </div>
-          <TextInput
-            id="reports"
-            type="text"
-            placeholder="Reports to"
-            value={formData.reportsTo}
-            onChange={(e) =>
-              setFormData({ ...formData, reportsTo: e.target.value })
-            }
-          />
-        </div> */}
-        {/* <div>
-          <div className="mb-2 block">
-            <Label htmlFor="boss" value="New Bo$$" />
-          </div>
-          <select
-            className="rounded-md"
-            value={formData.newBoss}
-            color="light"
-            onChange={(e) => {
-              setFormData({ ...formData, newBoss: e.currentTarget.value });
-            }}
-          >
-            <option className="text-red-100" value="CEO">
-              CEO
-            </option>
-            {groups.data?.map((group) => (
-              <option key={group.id}>{group.name}</option>
-            ))}
-          </select>
-        </div> */}
-
         <Button type="submit" size="lg">
           Edit Group
         </Button>
-        {/* <Toast>
-          <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
-            <HiCheck className="h-5 w-5" />
-          </div>
-          <div className="ml-3 text-sm font-normal">
-            Group edited successfully.
-          </div>
-          <Toast.Toggle />
-        </Toast> */}
       </form>
     </div>
   );

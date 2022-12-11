@@ -4,17 +4,17 @@ import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 
-const GroupContent: NextPage = () => {
+const MemberContent: NextPage = () => {
   const router = useRouter();
-  const [groupId, setGroupId] = useState("");
+  const [memberId, setMemberId] = useState("");
 
   const { id } = router.query;
-  const group = trpc.groups.getById.useQuery(groupId as string);
-  // console.log(group);
+  const member = trpc.members.getById.useQuery(memberId as string);
+  // console.log(member);
 
   useEffect(() => {
     if (id) {
-      setGroupId(id as string);
+      setMemberId(id as string);
     }
   }, [id]);
 
@@ -25,10 +25,11 @@ const GroupContent: NextPage = () => {
           Go Back
         </Button>
       </div>
-      <h1>Group groupId: {id}</h1>
-      <h1>Group name: {group.data?.name}</h1>
+      <h1>Member memberId: {id}</h1>
+      <h1>Member First Name: {member.data?.firstName}</h1>
+      <h1>Member Last Name: {member.data?.lastName}</h1>
     </div>
   );
 };
 
-export default GroupContent;
+export default MemberContent;

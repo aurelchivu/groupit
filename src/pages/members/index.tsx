@@ -4,26 +4,26 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 
-const Groups: NextPage = () => {
+const Members: NextPage = () => {
   const router = useRouter();
-  const groups = trpc.groups.getAll.useQuery();
-  console.log(groups);
+  const members = trpc.members.getAll.useQuery();
+  console.log(members);
   return (
     <div className="p-4">
       <div className="flex items-center justify-between">
-        <h1 className="p-2 text-xl">Groups</h1>
+        <h1 className="p-2 text-xl">Members</h1>
         <div className="py-4">
-          <Button size="lg" onClick={() => router.push("/groups/create")}>
-            Create New Group
+          <Button size="lg" onClick={() => router.push("/members/create")}>
+            Create New Member
           </Button>
         </div>
       </div>
-      {groups.data ? (
+      {members.data ? (
         <Table hoverable>
           <Table.Head>
             <Table.HeadCell className="!p-4"></Table.HeadCell>
-            <Table.HeadCell>Name</Table.HeadCell>
-            <Table.HeadCell>Reports to</Table.HeadCell>
+            <Table.HeadCell>First Name</Table.HeadCell>
+            <Table.HeadCell>Last Name</Table.HeadCell>
             <Table.HeadCell>Created at</Table.HeadCell>
             <Table.HeadCell>Updated at</Table.HeadCell>
             <Table.HeadCell>
@@ -34,29 +34,29 @@ const Groups: NextPage = () => {
             </Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {groups.data?.map((group) => (
+            {members.data?.map((member) => (
               <Table.Row
                 className="bg-white dark:border-gray-700 dark:bg-gray-800"
-                key={group.id}
+                key={member.id}
               >
                 <Table.Cell className="!p-4">
                   <Checkbox />
                 </Table.Cell>
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                   <Link
-                    href={`/groups/${group.id}`}
+                    href={`/members/${member.id}`}
                     className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                   >
-                    {group.name}{" "}
+                    {member.firstName}{" "}
                   </Link>
                 </Table.Cell>
 
-                <Table.Cell>{group.reportsToId || "CEO"}</Table.Cell>
-                <Table.Cell>{group.createdAt.toLocaleString()}</Table.Cell>
-                <Table.Cell>{group.updatedAt.toLocaleString()}</Table.Cell>
+                <Table.Cell>{member.lastName || "CEO"}</Table.Cell>
+                <Table.Cell>{member.createdAt.toLocaleString()}</Table.Cell>
+                <Table.Cell>{member.updatedAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>
                   <Link
-                    href={`/groups/${group.id}`}
+                    href={`/members/${member.id}`}
                     className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                   >
                     Show Members
@@ -64,7 +64,7 @@ const Groups: NextPage = () => {
                 </Table.Cell>
                 <Table.Cell>
                   <Link
-                    href={`/groups/edit/${group.id}`}
+                    href={`/members/edit/${member.id}`}
                     className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                   >
                     Edit
@@ -81,4 +81,4 @@ const Groups: NextPage = () => {
   );
 };
 
-export default Groups;
+export default Members;

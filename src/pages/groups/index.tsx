@@ -23,7 +23,7 @@ const Groups: NextPage = () => {
           <Table.Head>
             <Table.HeadCell className="!p-4"></Table.HeadCell>
             <Table.HeadCell>Name</Table.HeadCell>
-            <Table.HeadCell>Reports to</Table.HeadCell>
+            <Table.HeadCell>Leader</Table.HeadCell>
             <Table.HeadCell>Created at</Table.HeadCell>
             <Table.HeadCell>Updated at</Table.HeadCell>
             <Table.HeadCell>
@@ -51,7 +51,7 @@ const Groups: NextPage = () => {
                   </Link>
                 </Table.Cell>
 
-                <Table.Cell>{group.reportsToId || "CEO"}</Table.Cell>
+                <Table.Cell>{group.leaderId || ""}</Table.Cell>
                 <Table.Cell>{group.createdAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>{group.updatedAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>

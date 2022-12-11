@@ -5,15 +5,14 @@ import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 
 const CreateGroup: NextPage = () => {
-  const [formData, setFormData] = useState({ name: "", reportsTo: "" });
+  const [formData, setFormData] = useState({ firstName: "", lastName: "" });
   const router = useRouter();
-  const groups = trpc.groups.getAll.useQuery();
-  const createGroup = trpc.groups.create.useMutation();
+  const createGroup = trpc.members.create.useMutation();
 
   const submitCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     await createGroup.mutateAsync(formData);
-    router.push("/groups");
+    router.push("/members");
   };
 
   return (
@@ -25,23 +24,38 @@ const CreateGroup: NextPage = () => {
       </div>
 
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
-        <h1 className="text-xl">Create New Group</h1>
+        <h1 className="text-xl">Create New Member</h1>
         <div>
           <div className="mb-2 block">
-            <Label htmlFor="base" value="Group name" />
+            <Label htmlFor="base" value="Member First Name" />
           </div>
           <TextInput
             id="base"
             type="text"
-            placeholder="Group Name"
+            placeholder="Members First Name"
             required={true}
-            value={formData.name}
+            value={formData.firstName}
             onChange={(e) => {
-              setFormData({ ...formData, name: e.target.value });
+              setFormData({ ...formData, firstName: e.target.value });
             }}
           />
         </div>
         <div>
+          <div className="mb-2 block">
+            <Label htmlFor="base" value="Member Last Name" />
+          </div>
+          <TextInput
+            id="base"
+            type="text"
+            placeholder="Members Last Name"
+            required={true}
+            value={formData.lastName}
+            onChange={(e) => {
+              setFormData({ ...formData, lastName: e.target.value });
+            }}
+          />
+        </div>
+        {/* <div>
           <div className="mb-2 block">
             <Label htmlFor="base" value="Reports to" />
           </div>
@@ -56,13 +70,13 @@ const CreateGroup: NextPage = () => {
             <option className="text-red-100" value="CEO">
               CEO
             </option>
-            {groups.data?.map((group) => (
+            {members.data?.map((group) => (
               <option key={group.id}>{group.name}</option>
             ))}
           </select>
-        </div>
+        </div> */}
         <Button type="submit" size="lg" color="success">
-          Create Group
+          Create Member
         </Button>
       </form>
     </div>
