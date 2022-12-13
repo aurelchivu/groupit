@@ -27,23 +27,23 @@ const Groups: NextPage = () => {
             <Table.HeadCell>Created by</Table.HeadCell>
             <Table.HeadCell>Created at</Table.HeadCell>
             <Table.HeadCell>Updated at</Table.HeadCell>
-            <Table.HeadCell>
+            {/* <Table.HeadCell>
               <span className="sr-only">Show Members</span>
             </Table.HeadCell>
             <Table.HeadCell>
               <span className="sr-only">Edit</span>
-            </Table.HeadCell>
+            </Table.HeadCell> */}
           </Table.Head>
           <Table.Body className="divide-y">
             {groups.data?.map((group) => (
               <Table.Row
-                className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                className="delay-10 bg-white transition duration-300 ease-in-out hover:-translate-y-0.5 hover:bg-violet-300 dark:border-gray-700 dark:bg-gray-800"
                 key={group.id}
               >
                 <Table.Cell className="!p-4">
                   <Checkbox />
                 </Table.Cell>
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 hover:scale-105 dark:text-white">
                   <Link
                     href={`/groups/${group.id}`}
                     className="font-medium text-blue-600 hover:underline dark:text-blue-500"
@@ -52,11 +52,11 @@ const Groups: NextPage = () => {
                   </Link>
                 </Table.Cell>
 
-                <Table.Cell>{group.leaderId || ""}</Table.Cell>
+                <Table.Cell>{group.leaderId || "NOT SET YET"}</Table.Cell>
                 <Table.Cell>{group.createdBy.name}</Table.Cell>
                 <Table.Cell>{group.createdAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>{group.updatedAt.toLocaleString()}</Table.Cell>
-                <Table.Cell>
+                {/* <Table.Cell>
                   <Link
                     href={`/groups/${group.id}`}
                     className="font-medium text-blue-600 hover:underline dark:text-blue-500"
@@ -71,7 +71,7 @@ const Groups: NextPage = () => {
                   >
                     Edit
                   </Link>
-                </Table.Cell>
+                </Table.Cell> */}
               </Table.Row>
             ))}
           </Table.Body>

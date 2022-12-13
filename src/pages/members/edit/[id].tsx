@@ -9,22 +9,19 @@ const EditMember: NextPage = () => {
   const router = useRouter();
 
   interface MemberState {
-    firstName: string;
-    lastName: string;
+    fullName: string;
   }
 
   const [formData, setFormData] = useState<MemberState>({
-    firstName: "",
-    lastName: "",
+    fullName: "",
   });
 
-  const [memberId, setMemberId] = useState("");
+  const [memberId, setMemberId] = useState<string>("");
 
   const { id } = router.query;
   const member = trpc.members.getById.useQuery(memberId as string);
 
-  const memberFirstName = member?.data?.firstName as string;
-  const memberLastName = member?.data?.lastName as string;
+  const memberFullName = member?.data?.fullName as string;
 
   const deleteMember = trpc.members.delete.useMutation();
   const updateMember = trpc.members.update.useMutation();
@@ -34,9 +31,9 @@ const EditMember: NextPage = () => {
   useEffect(() => {
     if (id) {
       setMemberId(id as string);
-      setFormData({ firstName: memberFirstName, lastName: memberLastName });
+      setFormData({ fullName: memberFullName });
     }
-  }, [id, memberFirstName, memberLastName]);
+  }, [id, memberFullName]);
 
   const submitCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -69,7 +66,7 @@ const EditMember: NextPage = () => {
               <div className="text-center">
                 <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
                 <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                  Are you sure you want to delete this member?
+                  Are you sure you want to delete member {memberFullName}?
                 </h3>
                 <div className="flex justify-center gap-4">
                   <Button color="success" onClick={handleDelete}>
@@ -88,9 +85,7 @@ const EditMember: NextPage = () => {
         </>
       </div>
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
-        <h1 className="text-xl">
-          Edit Member: {memberFirstName} {memberLastName}
-        </h1>
+        <h1 className="text-xl">Edit Member: {memberFullName}</h1>
         <div>
           <div className="mb-2 block">
             <Label htmlFor="firstName" value="Member First Name" />
@@ -98,50 +93,13 @@ const EditMember: NextPage = () => {
           <TextInput
             id="memberFirstName"
             type="text"
-            placeholder="Member First name"
             required={true}
-            value={formData.firstName}
+            value={formData.fullName}
             onChange={(e) => {
-              setFormData({ ...formData, firstName: e.target.value });
+              setFormData({ ...formData, fullName: e.target.value });
             }}
           />
         </div>
-        <div>
-          <div className="mb-2 block">
-            <Label htmlFor="lastName" value="Member Last Name" />
-          </div>
-          <TextInput
-            id="memberLastName"
-            type="text"
-            placeholder="Member Last name"
-            required={true}
-            value={formData.lastName}
-            onChange={(e) => {
-              setFormData({ ...formData, lastName: e.target.value });
-            }}
-          />
-        </div>
-        {/* <div>
-          <div className="mb-2 block">
-            <Label htmlFor="boss" value="New Bo$$" />
-          </div>
-          <select
-            className="rounded-md"
-            value={formData.newBoss}
-            color="light"
-            onChange={(e) => {
-              setFormData({ ...formData, newBoss: e.currentTarget.value });
-            }}
-          >
-            <option className="text-red-100" value="CEO">
-              CEO
-            </option>
-            {members.data?.map((member) => (
-              <option key={member.id}>{member.firstName}</option>
-            ))}
-          </select>
-        </div> */}
-
         <Button type="submit" size="lg">
           Edit Member
         </Button>

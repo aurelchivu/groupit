@@ -22,6 +22,7 @@ const EditGroup: NextPage = () => {
 
   const { id } = router.query;
   const group = trpc.groups.getById.useQuery(groupId as string);
+  console.log(group);
 
   const groupName = group?.data?.name as string;
   const groupLeaderId = group?.data?.leaderId as string;
@@ -53,7 +54,7 @@ const EditGroup: NextPage = () => {
   return (
     <div className="px-40 py-4">
       <div className="align-center flex justify-between">
-        <Button size="lg" onClick={() => router.push("/groups")}>
+        <Button size="lg" onClick={() => router.back()}>
           Go Back
         </Button>
         <>
@@ -69,7 +70,7 @@ const EditGroup: NextPage = () => {
               <div className="text-center">
                 <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
                 <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                  Are you sure you want to delete this group?
+                  Are you sure you want to delete this group {groupName}?
                 </h3>
                 <div className="flex justify-center gap-4">
                   <Button color="success" onClick={handleDelete}>
@@ -96,7 +97,6 @@ const EditGroup: NextPage = () => {
           <TextInput
             id="groupName"
             type="text"
-            placeholder="New Group Name"
             required={true}
             value={formData.name}
             onChange={(e) => {
@@ -104,6 +104,7 @@ const EditGroup: NextPage = () => {
             }}
           />
         </div>
+
         <Button type="submit" size="lg">
           Edit Group
         </Button>

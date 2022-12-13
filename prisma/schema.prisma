@@ -34,8 +34,7 @@ model Groupp {
 
 model Member {
   id          String          @id @default(cuid())
-  firstName   String
-  lastName    String
+  fullName    String
   details     String?
   groups      GrouppMembers[]
   leaderOf    Groupp[]        @relation(name: "leaderOf")

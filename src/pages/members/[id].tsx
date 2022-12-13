@@ -4,7 +4,7 @@ import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 
-const MemberContent: NextPage = () => {
+const MemberDetails: NextPage = () => {
   const router = useRouter();
   const [memberId, setMemberId] = useState("");
 
@@ -26,10 +26,9 @@ const MemberContent: NextPage = () => {
         </Button>
       </div>
       <h1>Member memberId: {id}</h1>
-      <h1>Member First Name: {member.data?.firstName}</h1>
-      <h1>Member Last Name: {member.data?.lastName}</h1>
+      <h1>Member First Name: {member.data?.fullName}</h1>
     </div>
   );
 };
 
-export default MemberContent;
+export default MemberDetails;

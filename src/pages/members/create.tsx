@@ -1,27 +1,33 @@
 import { type NextPage } from "next";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 
 const CreateMember: NextPage = () => {
   interface MemberState {
-    firstName: string;
-    lastName: string;
+    fullName: string;
   }
 
   const router = useRouter();
 
   const [formData, setFormData] = useState<MemberState>({
-    firstName: "",
-    lastName: "",
+    fullName: "",
   });
 
-  const createGroup = trpc.members.create.useMutation();
+  const createMember = trpc.members.create.useMutation();
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   const submitCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    await createGroup.mutateAsync(formData);
+    await createMember.mutateAsync(formData);
     router.push("/members");
   };
 
@@ -37,34 +43,21 @@ const CreateMember: NextPage = () => {
         <h1 className="text-xl">Create New Member</h1>
         <div>
           <div className="mb-2 block">
-            <Label htmlFor="base" value="Member First Name" />
+            <Label htmlFor="base" value="Member Full Name" />
           </div>
           <TextInput
+            ref={inputRef}
             id="base"
             type="text"
-            placeholder="Members First Name"
+            placeholder="Members Full Name"
             required={true}
-            value={formData.firstName}
+            value={formData.fullName}
             onChange={(e) => {
-              setFormData({ ...formData, firstName: e.target.value });
+              setFormData({ ...formData, fullName: e.target.value });
             }}
           />
         </div>
-        <div>
-          <div className="mb-2 block">
-            <Label htmlFor="base" value="Member Last Name" />
-          </div>
-          <TextInput
-            id="base"
-            type="text"
-            placeholder="Members Last Name"
-            required={true}
-            value={formData.lastName}
-            onChange={(e) => {
-              setFormData({ ...formData, lastName: e.target.value });
-            }}
-          />
-        </div>
+
         <Button type="submit" size="lg" color="success">
           Create Member
         </Button>

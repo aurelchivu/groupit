@@ -16,7 +16,7 @@ export const groupRouter = router({
   getAll: protectedProcedure.query(async () => {
     const groups = await prisma?.groupp.findMany({
       include: {
-        members: true,
+        leader: true,
         createdBy: true,
       },
     });
@@ -27,6 +27,11 @@ export const groupRouter = router({
     return await prisma?.groupp.findFirst({
       where: {
         id: input,
+      },
+      include: {
+        members: { include: { member: true } },
+        leader: true,
+        createdBy: true,
       },
     });
   }),

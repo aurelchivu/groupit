@@ -22,8 +22,7 @@ const Members: NextPage = () => {
         <Table hoverable>
           <Table.Head>
             <Table.HeadCell className="!p-4"></Table.HeadCell>
-            <Table.HeadCell>First Name</Table.HeadCell>
-            <Table.HeadCell>Last Name</Table.HeadCell>
+            <Table.HeadCell>Full Name</Table.HeadCell>
             <Table.HeadCell>Created by</Table.HeadCell>
             <Table.HeadCell>Created at</Table.HeadCell>
             <Table.HeadCell>Updated at</Table.HeadCell>
@@ -37,7 +36,7 @@ const Members: NextPage = () => {
           <Table.Body className="divide-y">
             {members.data?.map((member) => (
               <Table.Row
-                className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                className="delay-10 bg-white transition duration-300 ease-in-out hover:-translate-y-0.5 hover:bg-violet-300 dark:border-gray-700 dark:bg-gray-800"
                 key={member.id}
               >
                 <Table.Cell className="!p-4">
@@ -48,11 +47,9 @@ const Members: NextPage = () => {
                     href={`/members/${member.id}`}
                     className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                   >
-                    {member.firstName}{" "}
+                    {member.fullName}{" "}
                   </Link>
                 </Table.Cell>
-
-                <Table.Cell>{member.lastName}</Table.Cell>
                 <Table.Cell>{member.createdBy.name}</Table.Cell>
                 <Table.Cell>{member.createdAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>{member.updatedAt.toLocaleString()}</Table.Cell>

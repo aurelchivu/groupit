@@ -5,9 +5,16 @@ import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 
 const CreateGroup: NextPage = () => {
+  interface GroupState {
+    name: string;
+    leader: string;
+  }
+
   const router = useRouter();
+  const members = trpc.members.getAll.useQuery();
 
   const [groupName, setGroupName] = useState<string>("");
+  const [leader, setLeader] = useState<string>("");
 
   const createGroup = trpc.groups.create.useMutation();
 
@@ -41,6 +48,25 @@ const CreateGroup: NextPage = () => {
               setGroupName(e.target.value);
             }}
           />
+        </div>
+        <div>
+          <div className="mb-2 block">
+            <Label htmlFor="leader" value="Leader" />
+          </div>
+          <select
+            className="rounded-md"
+            value="leader"
+            color="light"
+            onChange={(e) => {
+              setLeader(e.currentTarget.value);
+            }}
+          >
+            {members.data?.map((member) => (
+              <option key={member.id}>
+                {member.fullName}
+              </option>
+            ))}
+          </select>
         </div>
         <Button type="submit" size="lg" color="success">
           Create Group
