@@ -4,23 +4,27 @@ import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 
+
 const CreateGroup: NextPage = () => {
-  interface GroupState {
-    name: string;
-    leader: string;
+  interface IGroup {
+    groupName: string;
+    description?: string;
   }
 
+  const [formData, setFormData] = useState<IGroup>({
+    groupName: "",
+    description: "",
+  });
+
   const router = useRouter();
-  const members = trpc.members.getAll.useQuery();
-
-  const [groupName, setGroupName] = useState<string>("");
-  const [leader, setLeader] = useState<string>("");
-
   const createGroup = trpc.groups.create.useMutation();
 
   const submitCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    await createGroup.mutateAsync({ name: groupName });
+    await createGroup.mutateAsync({
+      name: formData.groupName,
+      description: formData.description,
+    });
     router.push("/groups");
   };
 
@@ -43,30 +47,29 @@ const CreateGroup: NextPage = () => {
             type="text"
             placeholder="Group Name"
             required={true}
-            value={groupName}
+            value={formData.groupName}
             onChange={(e) => {
-              setGroupName(e.target.value);
+              setFormData({ ...formData, groupName: e.target.value });
             }}
           />
         </div>
         <div>
           <div className="mb-2 block">
-            <Label htmlFor="leader" value="Leader" />
+            <Label htmlFor="base" value="Group Description" />
           </div>
-          <select
-            className="rounded-md"
-            value="leader"
-            color="light"
+          <textarea
+            id="message"
+            rows={3}
+            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+            placeholder="Description..."
+            value={formData.description}
             onChange={(e) => {
-              setLeader(e.currentTarget.value);
+              setFormData({
+                ...formData,
+                description: e.target.value,
+              });
             }}
-          >
-            {members.data?.map((member) => (
-              <option key={member.id}>
-                {member.fullName}
-              </option>
-            ))}
-          </select>
+          ></textarea>
         </div>
         <Button type="submit" size="lg" color="success">
           Create Group

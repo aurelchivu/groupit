@@ -39,7 +39,13 @@ export const memberRouter = router({
   }),
 
   update: protectedProcedure
-    .input(z.object({ id: z.string(), fullName: z.string() }))
+    .input(
+      z.object({
+        id: z.string(),
+        fullName: z.string(),
+        groupId: z.string().optional(),
+      })
+    )
     .mutation(async ({ input }) => {
       return await prisma?.member.update({
         where: {

@@ -3,11 +3,17 @@ import { z } from "zod";
 
 export const groupRouter = router({
   create: protectedProcedure
-    .input(z.object({ name: z.string() }))
+    .input(
+      z.object({
+        name: z.string(),
+        leaderId: z.string().optional(),
+        description: z.string().optional(),
+      })
+    )
     .mutation(async ({ input, ctx }) => {
       return await prisma?.groupp.create({
         data: {
-          name: input.name,
+          ...input,
           createdById: ctx.session.user.id,
         },
       });
@@ -32,6 +38,14 @@ export const groupRouter = router({
         members: { include: { member: true } },
         leader: true,
         createdBy: true,
+      },
+    });
+  }),
+
+  getByName: protectedProcedure.input(z.string()).query(async ({ input }) => {
+    return await prisma?.groupp.findFirst({
+      where: {
+        name: input,
       },
     });
   }),

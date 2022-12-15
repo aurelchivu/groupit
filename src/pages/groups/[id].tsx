@@ -14,6 +14,7 @@ const GroupDetails: NextPage = () => {
 
   const { id } = router.query;
   const group = trpc.groups.getById.useQuery(groupId as string);
+  console.log(group);
 
   const deleteGroup = trpc.groups.delete.useMutation();
 
