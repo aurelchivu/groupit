@@ -4,7 +4,6 @@ import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 
-
 const CreateGroup: NextPage = () => {
   interface IGroup {
     groupName: string;
@@ -17,7 +16,11 @@ const CreateGroup: NextPage = () => {
   });
 
   const router = useRouter();
-  const createGroup = trpc.groups.create.useMutation();
+  const createGroup = trpc.groups.create.useMutation({
+    onSuccess: (data) => {
+      router.push(`/groups/${data?.id}`);
+    },
+  });
 
   const submitCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -25,7 +28,6 @@ const CreateGroup: NextPage = () => {
       name: formData.groupName,
       description: formData.description,
     });
-    router.push("/groups");
   };
 
   return (
