@@ -5,17 +5,22 @@ import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 
 const CreateGroup: NextPage = () => {
+  const router = useRouter();
+  const members = trpc.members.getAll.useQuery();
+
   interface IGroup {
     groupName: string;
     description?: string;
+    leader?: string | undefined;
+    leaderId?: string | undefined;
   }
 
   const [formData, setFormData] = useState<IGroup>({
     groupName: "",
     description: "",
+    leader: "",
   });
 
-  const router = useRouter();
   const createGroup = trpc.groups.create.useMutation({
     onSuccess: (data) => {
       router.push(`/groups/${data?.id}`);
@@ -27,6 +32,7 @@ const CreateGroup: NextPage = () => {
     await createGroup.mutateAsync({
       name: formData.groupName,
       description: formData.description,
+      leaderId: formData.leaderId,
     });
   };
 
@@ -72,6 +78,30 @@ const CreateGroup: NextPage = () => {
               });
             }}
           ></textarea>
+        </div>
+        <div>
+          <div className="mb-2 block">
+            <Label htmlFor="base" value="Reports to" />
+          </div>
+          <select
+            className="rounded-md"
+            value={formData.leader}
+            color="light"
+            onChange={(e) => {
+              setFormData({
+                ...formData,
+                leader: e.currentTarget.value,
+                leaderId: members.data?.find(
+                  (member) => member.fullName === e.currentTarget.value
+                )?.id,
+              });
+              console.log(formData.leaderId);
+            }}
+          >
+            {members.data?.map((member) => (
+              <option key={member.id}>{member.fullName}</option>
+            ))}
+          </select>
         </div>
         <Button type="submit" size="lg" color="success">
           Create Group
