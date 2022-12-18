@@ -85,16 +85,19 @@ const GroupDetails: NextPage = () => {
           </li>
           <li>
             <span className="group ml-3 flex  flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Members:{" "}
-              {group.data?.members.map((member) => (
-                <Link
-                  key={member.id}
-                  href={`/members/${member.id}`}
-                  className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                >
-                  {member.member?.fullName}
-                </Link>
-              ))}
+              Members:
+              {group.data?.members.map((member) => {
+                console.log(member);
+                return (
+                  <Link
+                    key={member.id}
+                    href={`/members/${member.id}`}
+                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                  >
+                    {member.member?.fullName}
+                  </Link>
+                );
+              })}
             </span>
           </li>
           <li>

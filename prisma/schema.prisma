@@ -23,7 +23,7 @@ model Groupp {
   id          String          @id @default(cuid())
   name        String          @unique
   description String?
-  members     GrouppMembers[]
+  members     GrouppMembers[] @relation(name: "groupMembers")
   leader      Member?         @relation(name: "leaderOf", fields: [leaderId], references: [id])
   leaderId    String?
   createdBy   User            @relation(name: "groupCreatedBy", fields: [createdById], references: [id])
@@ -36,21 +36,21 @@ model Member {
   id          String          @id @default(cuid())
   fullName    String
   details     String?
-  groups      GrouppMembers[]
+  groups      GrouppMembers[] @relation(name: "groupMembers")
   leaderOf    Groupp[]        @relation(name: "leaderOf")
   createdBy   User            @relation(name: "memberCreatedBy", fields: [createdById], references: [id])
   createdById String
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
+  isLeader    Boolean?        @default(false)
 }
 
 model GrouppMembers {
   id        String   @id @default(cuid())
-  group     Groupp?  @relation(fields: [groupId], references: [id])
+  group     Groupp?  @relation(name: "groupMembers", fields: [groupId], references: [id], onDelete: Cascade)
   groupId   String?
-  member    Member?  @relation(fields: [memberId], references: [id])
+  member    Member?  @relation(name: "groupMembers", fields: [memberId], references: [id], onDelete: Cascade)
   memberId  String?
-  isLeader  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

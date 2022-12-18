@@ -13,12 +13,14 @@ const CreateGroup: NextPage = () => {
     description?: string;
     leader?: string | undefined;
     leaderId?: string | undefined;
+    groupMembers?: string[] | undefined;
   }
 
   const [formData, setFormData] = useState<IGroup>({
     groupName: "",
     description: "",
     leader: "",
+    groupMembers: [],
   });
 
   const createGroup = trpc.groups.create.useMutation({
@@ -33,6 +35,7 @@ const CreateGroup: NextPage = () => {
       name: formData.groupName,
       description: formData.description,
       leaderId: formData.leaderId,
+      members: ["formData.leaderId"],
     });
   };
 
@@ -48,12 +51,12 @@ const CreateGroup: NextPage = () => {
         <h1 className="text-xl">Create New Group</h1>
         <div>
           <div className="mb-2 block">
-            <Label htmlFor="base" value="Group name" />
+            <Label htmlFor="base" value="Name" />
           </div>
           <TextInput
             id="base"
             type="text"
-            placeholder="Group Name"
+            placeholder="Name"
             required={true}
             value={formData.groupName}
             onChange={(e) => {
@@ -63,7 +66,7 @@ const CreateGroup: NextPage = () => {
         </div>
         <div>
           <div className="mb-2 block">
-            <Label htmlFor="base" value="Group Description" />
+            <Label htmlFor="base" value="Description" />
           </div>
           <textarea
             id="message"
@@ -81,7 +84,7 @@ const CreateGroup: NextPage = () => {
         </div>
         <div>
           <div className="mb-2 block">
-            <Label htmlFor="base" value="Reports to" />
+            <Label htmlFor="base" value="Leader" />
           </div>
           <select
             className="rounded-md"
@@ -94,8 +97,12 @@ const CreateGroup: NextPage = () => {
                 leaderId: members.data?.find(
                   (member) => member.fullName === e.currentTarget.value
                 )?.id,
+                groupMembers: [
+                  members.data?.find(
+                    (member) => member.fullName === e.currentTarget.value
+                  )?.id as string,
+                ],
               });
-              console.log(formData.leaderId);
             }}
           >
             {members.data?.map((member) => (

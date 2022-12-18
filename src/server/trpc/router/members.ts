@@ -27,6 +27,14 @@ export const memberRouter = router({
       where: {
         id: input,
       },
+      include: {
+        createdBy: true,
+        leaderOf: {
+          include: {
+            leader: true,
+          },
+        },
+      },
     });
   }),
 
@@ -44,6 +52,7 @@ export const memberRouter = router({
         id: z.string(),
         fullName: z.string(),
         groupId: z.string().optional(),
+        isLeader: z.boolean().optional(),
       })
     )
     .mutation(async ({ input }) => {

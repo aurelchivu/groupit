@@ -27,12 +27,6 @@ const Groups: NextPage = () => {
             <Table.HeadCell>Created by</Table.HeadCell>
             <Table.HeadCell>Created at</Table.HeadCell>
             <Table.HeadCell>Updated at</Table.HeadCell>
-            {/* <Table.HeadCell>
-              <span className="sr-only">Show Members</span>
-            </Table.HeadCell>
-            <Table.HeadCell>
-              <span className="sr-only">Edit</span>
-            </Table.HeadCell> */}
           </Table.Head>
           <Table.Body className="divide-y">
             {groups.data?.map((group) => (
@@ -48,30 +42,26 @@ const Groups: NextPage = () => {
                     href={`/groups/${group.id}`}
                     className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                   >
-                    {group.name}{" "}
+                    {group.name}
                   </Link>
                 </Table.Cell>
 
-                <Table.Cell>{group.leaderId || "NOT SET YET"}</Table.Cell>
+                <Table.Cell>
+                  {/* {group.leader?.fullName || "NOT SET YET"} */}
+                  {group.leader ? (
+                    <Link
+                      href={`/members/${group.leaderId}`}
+                      className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                    >
+                      {group.leader?.fullName}
+                    </Link>
+                  ) : (
+                    "NOT SET YET"
+                  )}
+                </Table.Cell>
                 <Table.Cell>{group.createdBy.name}</Table.Cell>
                 <Table.Cell>{group.createdAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>{group.updatedAt.toLocaleString()}</Table.Cell>
-                {/* <Table.Cell>
-                  <Link
-                    href={`/groups/${group.id}`}
-                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                  >
-                    Details
-                  </Link>
-                </Table.Cell>
-                <Table.Cell>
-                  <Link
-                    href={`/groups/edit/${group.id}`}
-                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                  >
-                    Edit
-                  </Link>
-                </Table.Cell> */}
               </Table.Row>
             ))}
           </Table.Body>

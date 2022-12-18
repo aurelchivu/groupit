@@ -1,20 +1,27 @@
 import { router, protectedProcedure } from "../trpc";
 import { z } from "zod";
+import { Member } from "@prisma/client";
 
 export const groupRouter = router({
   create: protectedProcedure
     .input(
       z.object({
         name: z.string(),
-        leaderId: z.string().optional(),
         description: z.string().optional(),
+        leaderId: z.string().optional(),
+        members: z.array(z.string()).optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
+      const leaderId = input.leaderId;
       return await prisma?.groupp.create({
         data: {
           ...input,
           createdById: ctx.session.user.id,
+          leaderId: input.leaderId,
+          members: {
+            create: [{ member: { connect: { id: leaderId } } }],
+          },
         },
       });
     }),
@@ -59,7 +66,13 @@ export const groupRouter = router({
   }),
 
   update: protectedProcedure
-    .input(z.object({ id: z.string(), name: z.string() }))
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        description: z.string().optional(),
+      })
+    )
     .mutation(async ({ input }) => {
       return await prisma?.groupp.update({
         where: {
