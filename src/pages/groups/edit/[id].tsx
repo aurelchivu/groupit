@@ -49,10 +49,15 @@ const EditGroup: NextPage = () => {
   };
 
   return (
-    <div className="px-40 py-4">
-      <Button size="lg" onClick={() => router.back()}>
-        Go Back
-      </Button>
+    <div className="px-40 py-4 ">
+      <div className="align-center flex justify-between">
+        <Button size="lg" onClick={() => router.back()}>
+          Go Back
+        </Button>
+        <Button color="success" onClick={() => router.push("/members")}>
+          Add Members
+        </Button>
+      </div>
 
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
         <h1 className="text-xl">Edit Group: {groupName}</h1>

@@ -14,7 +14,7 @@ const GroupDetails: NextPage = () => {
 
   const { id } = router.query;
   const group = trpc.groups.getById.useQuery(groupId as string);
-  console.log(group);
+  console.log("Group", group);
 
   const deleteGroup = trpc.groups.delete.useMutation();
 
@@ -39,7 +39,7 @@ const GroupDetails: NextPage = () => {
         >
           Edit Group
         </Button>
-        <Button color="warning" onClick={() => setOpenModal("default")}>
+        <Button color="failure" onClick={() => setOpenModal("default")}>
           Delete Group
         </Button>
       </div>
@@ -91,7 +91,7 @@ const GroupDetails: NextPage = () => {
                 return (
                   <Link
                     key={member.id}
-                    href={`/members/${member.id}`}
+                    href={`/members/${member?.member?.id}`}
                     className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                   >
                     {member.member?.fullName}
