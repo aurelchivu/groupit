@@ -2,16 +2,17 @@ import { type NextPage } from "next";
 import { Table, Checkbox, Button } from "flowbite-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { trpc } from "../../utils/trpc";
+import { trpc } from "../../../../utils/trpc";
 
-const Members: NextPage = () => {
+const GroupMembers: NextPage = () => {
   const router = useRouter();
   const members = trpc.members.getAll.useQuery();
   console.log(members);
   return (
     <div className="p-4">
-      <div className="flex items-center justify-between">
-        <h1 className="p-2 text-xl">Members</h1>
+      <h1>Group Members</h1>
+      {/* <div className="flex items-center justify-between">
+        <h1 className="p-2 text-xl">GroupMembers</h1>
         <div className="py-4">
           <Button size="lg" onClick={() => router.push("/members/create")}>
             Create New Member
@@ -27,7 +28,7 @@ const Members: NextPage = () => {
             <Table.HeadCell>Created at</Table.HeadCell>
             <Table.HeadCell>Updated at</Table.HeadCell>
             <Table.HeadCell>
-              <span className="sr-only">Show Members</span>
+              <span className="sr-only">Show GroupMembers</span>
             </Table.HeadCell>
             <Table.HeadCell>
               <span className="sr-only">Edit</span>
@@ -63,7 +64,7 @@ const Members: NextPage = () => {
                 </Table.Cell>
                 <Table.Cell>
                   <Link
-                    href={`/members/${member.id}/edit`}
+                    href={`/members/edit/${member.id}`}
                     className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                   >
                     Edit
@@ -75,9 +76,9 @@ const Members: NextPage = () => {
         </Table>
       ) : (
         <div>Loading...</div>
-      )}
+      )} */}
     </div>
   );
 };
 
-export default Members;
+export default GroupMembers;

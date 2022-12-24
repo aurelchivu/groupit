@@ -4,25 +4,26 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Button, Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { trpc } from "../../utils/trpc";
+import { trpc } from "../../../utils/trpc";
 
 const GroupDetails: NextPage = () => {
   const [openModal, setOpenModal] = useState<string | undefined>();
 
   const router = useRouter();
-  const [groupId, setGroupId] = useState<string>("");
 
-  const { id } = router.query;
-  const group = trpc.groups.getById.useQuery(groupId as string);
+  const { groupId } = router.query;
+  const [id, setId] = useState<string>("");
+
+  const group = trpc.groups.getById.useQuery(id as string);
   console.log("Group", group);
 
   const deleteGroup = trpc.groups.delete.useMutation();
 
   useEffect(() => {
-    if (id) {
-      setGroupId(id as string);
+    if (groupId) {
+      setId(groupId as string);
     }
-  }, [id]);
+  }, [groupId]);
 
   const handleDelete = async () => {
     await deleteGroup.mutateAsync(id as string);
@@ -35,7 +36,7 @@ const GroupDetails: NextPage = () => {
       <div className="align-center flex justify-between">
         <Button
           size="lg"
-          onClick={() => router.push(`/groups/edit/${group.data?.id}`)}
+          onClick={() => router.push(`/groups/${group.data?.id}/edit`)}
         >
           Edit Group
         </Button>
@@ -85,7 +86,13 @@ const GroupDetails: NextPage = () => {
           </li>
           <li>
             <span className="group ml-3 flex  flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Members:
+              <Link
+                href={`/groups/${group.data?.id}/members`}
+                className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+              >
+                {group.data?.members.length} Members:
+              </Link>
+
               {group.data?.members.map((member) => {
                 console.log(member);
                 return (

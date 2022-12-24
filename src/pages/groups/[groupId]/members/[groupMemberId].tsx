@@ -2,9 +2,9 @@ import { type NextPage } from "next";
 import { useEffect, useState } from "react";
 import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
-import { trpc } from "../../utils/trpc";
+import { trpc } from "../../../../utils/trpc";
 
-const MemberDetails: NextPage = () => {
+const GroupMemberDetails: NextPage = () => {
   const router = useRouter();
   const [memberId, setMemberId] = useState("");
 
@@ -25,10 +25,10 @@ const MemberDetails: NextPage = () => {
           Go Back
         </Button>
       </div>
-      <h1>Member memberId: {member.data?.id}</h1>
+      <h1>Member Id: {member.data?.id}</h1>
       <h1>Member First Name: {member.data?.fullName}</h1>
     </div>
   );
 };
 
-export default MemberDetails;
+export default GroupMemberDetails;

@@ -16,9 +16,9 @@ const EditMember: NextPage = () => {
     fullName: "",
   });
 
-  const [memberId, setMemberId] = useState<string>("");
+  const [id, setMemberId] = useState<string>("");
 
-  const { id } = router.query;
+  const { memberId } = router.query;
   const member = trpc.members.getById.useQuery(memberId as string);
 
   const memberFullName = member?.data?.fullName as string;
@@ -29,11 +29,11 @@ const EditMember: NextPage = () => {
   const [openModal, setOpenModal] = useState<string | undefined>();
 
   useEffect(() => {
-    if (id) {
-      setMemberId(id as string);
+    if (memberId) {
+      setMemberId(memberId as string);
       setFormData({ fullName: memberFullName });
     }
-  }, [id, memberFullName]);
+  }, [memberId, memberFullName]);
 
   const submitCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();

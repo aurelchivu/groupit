@@ -13,7 +13,7 @@ const EditGroup: NextPage = () => {
     leaderId: string;
   }
 
-  const [groupId, setGroupId] = useState("");
+  const [id, setId] = useState("");
 
   const [formData, setFormData] = useState<IGroup>({
     name: "",
@@ -21,9 +21,9 @@ const EditGroup: NextPage = () => {
     leaderId: "",
   });
 
-  const { id } = router.query;
+  const { groupId } = router.query;
 
-  const group = trpc.groups.getById.useQuery(groupId as string);
+  const group = trpc.groups.getById.useQuery(id as string);
   const groupName = group?.data?.name;
   const groupDescription = group?.data?.description;
   const groupLeaderId = group?.data?.leaderId;
@@ -32,15 +32,15 @@ const EditGroup: NextPage = () => {
   const updateGroup = trpc.groups.update.useMutation();
 
   useEffect(() => {
-    if (id) {
-      setGroupId(id as string);
+    if (groupId) {
+      setId(groupId as string);
       setFormData({
         name: groupName as string,
         description: groupDescription as string,
         leaderId: groupLeaderId as string,
       });
     }
-  }, [id, groupName, groupDescription, groupLeaderId]);
+  }, [groupId, groupName, groupDescription, groupLeaderId]);
 
   const submitCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
