@@ -84,7 +84,7 @@ const CreateGroup: NextPage = () => {
         </div>
         <div>
           <div className="mb-2 block">
-            <Label htmlFor="base" value="Leader" />
+            <Label htmlFor="base" value="Please Select a Leader" />
           </div>
           <select
             className="rounded-md"
@@ -105,6 +105,7 @@ const CreateGroup: NextPage = () => {
               });
             }}
           >
+            <option>Select Leader</option>
             {members.data?.map((member) => (
               <option key={member.id}>{member.fullName}</option>
             ))}

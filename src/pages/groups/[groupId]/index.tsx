@@ -87,12 +87,14 @@ const GroupDetails: NextPage = () => {
           <li>
             <span className="group ml-3 flex  flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
               <Link
-                href={`/groups/${group.data?.id}/members`}
+                href={`/groups/${group.data?.id}/group-members`}
                 className="font-medium text-blue-600 hover:underline dark:text-blue-500"
               >
-                {group.data?.members.length} Members:
+                {group.data?.members.length && group.data?.members.length > 1
+                  ? "Members"
+                  : "Member"}
               </Link>
-
+              {":"}
               {group.data?.members.map((member) => {
                 console.log(member);
                 return (
@@ -119,6 +121,17 @@ const GroupDetails: NextPage = () => {
           </li>
         </ul>
       </div>
+
+      <Button
+        size="lg"
+        color="success"
+        onClick={() => router.push(`/groups/${group.data?.id}/group-members`)}
+      >
+        {group.data?.members.length && group.data?.members.length > 1
+          ? `Show ${group.data?.members.length} Members`
+          : "Show 1 Member"}
+      </Button>
+
       <Modal
         show={openModal === "default"}
         onClose={() => setOpenModal(undefined)}

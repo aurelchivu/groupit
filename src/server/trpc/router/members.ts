@@ -65,4 +65,25 @@ export const memberRouter = router({
         },
       });
     }),
+
+  addMemberToGroup: protectedProcedure
+    .input(
+      z.object({
+        memberId: z.string(),
+        groupId: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { groupId } = input;
+      return await prisma?.member.update({
+        where: {
+          id: input.memberId,
+        },
+        data: {
+          groups: {
+            connect: { id: groupId },
+          },
+        },
+      });
+    }),
 });

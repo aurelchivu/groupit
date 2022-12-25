@@ -54,8 +54,11 @@ const EditGroup: NextPage = () => {
         <Button size="lg" onClick={() => router.back()}>
           Go Back
         </Button>
-        <Button color="success" onClick={() => router.push("/members")}>
-          Add Members
+        <Button
+          color="success"
+          onClick={() => router.push(`/groups/${group.data?.id}/group-members`)}
+        >
+          Add/Remove Members
         </Button>
       </div>
 

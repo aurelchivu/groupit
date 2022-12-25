@@ -26,12 +26,8 @@ const Members: NextPage = () => {
             <Table.HeadCell>Created by</Table.HeadCell>
             <Table.HeadCell>Created at</Table.HeadCell>
             <Table.HeadCell>Updated at</Table.HeadCell>
-            <Table.HeadCell>
-              <span className="sr-only">Show Members</span>
-            </Table.HeadCell>
-            <Table.HeadCell>
-              <span className="sr-only">Edit</span>
-            </Table.HeadCell>
+            <Table.HeadCell></Table.HeadCell>
+            <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
             {members.data?.map((member) => (

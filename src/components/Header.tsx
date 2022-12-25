@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { type FC } from "react";
-import CustomLink from "./CustomLink";
 import { Navbar, type NavbarComponentProps } from "flowbite-react";
 import { signIn, signOut, useSession } from "next-auth/react";
 
@@ -23,9 +22,11 @@ const Header: FC<NavbarComponentProps> = () => {
     >
       <Link href="/">
         <div className="flex items-center">
-          <img
-            src="https://flowbite.com/docs/images/logo.svg"
+          <Image
+            src="/logo.svg"
             className="mr-3 h-6 sm:h-9"
+            width={30}
+            height={30}
             alt="Flowbite Logo"
           />
           <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
