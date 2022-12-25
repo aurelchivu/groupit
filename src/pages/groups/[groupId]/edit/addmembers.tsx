@@ -5,22 +5,28 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { trpc } from "../../../../utils/trpc";
 
-const GroupMembers: NextPage = () => {
+const AddMembers: NextPage = () => {
   const [id, setId] = useState<string>("");
 
   const router = useRouter();
   const { groupId } = router.query;
 
   const group = trpc.groups.getById.useQuery(id as string);
-  console.log("Group", group.data);
-  const groupName = group?.data?.name;
-  const removeMembers = trpc.groups.removeMember.useMutation();
-  const members = group.data?.members;
-  // const members = trpc.members.getAll.useQuery();
+  const groupMembers = group.data?.members;
+  // console.log("Group Members", groupMembers);
 
-  // console.log("Members", members);
+  const allMembers = trpc.members.getAll.useQuery();
+  const addMembers = trpc.groups.addMember.useMutation();
+  // console.log("All Members", allMembers.data);
+
+  const filteredMembers = allMembers.data?.filter(
+    (member) =>
+      !groupMembers?.some((groupMember) => groupMember.member?.id === member.id)
+  );
+  // console.log("Filtered Members", filteredMembers);
+
   const [checked, setChecked] = useState<boolean[]>(
-    new Array(members?.length).fill(false)
+    new Array(filteredMembers?.length).fill(false)
   );
   console.log("Checked", checked);
 
@@ -35,22 +41,21 @@ const GroupMembers: NextPage = () => {
       index === position ? !item : item
     );
     setChecked(updatedChecked);
-    // console.log("Updated Checked", updatedChecked);
+    console.log("Updated Checked", updatedChecked);
   };
 
-  const removeSelectedMembers = async () => {
+  const addSelectedMembers = async () => {
     const selectedMembers = checked
       .map((item, index) => {
         if (item) {
-          return members?.[index];
+          return filteredMembers?.[index];
         }
       })
       .filter((item) => item);
-    console.log("Selected Members", selectedMembers);
 
-    await removeMembers.mutateAsync({
+    await addMembers.mutateAsync({
       groupId: groupId as string,
-      membersToRemove: selectedMembers.map((item) => item?.id) as string[],
+      membersToAdd: selectedMembers.map((item) => item?.id) as string[],
     });
     router.push(`/groups/${groupId}`);
   };
@@ -58,24 +63,27 @@ const GroupMembers: NextPage = () => {
   return (
     <div className="p-4">
       <div className="flex items-center justify-between">
-        <h1 className="p-2 text-xl">{groupName} Members</h1>
+        <h1 className="p-2 text-xl">Add Members</h1>
         <div className="py-4">
-          <Button size="lg" color="failure" onClick={removeSelectedMembers}>
-            Remove Selected Members
+          <Button size="lg" onClick={addSelectedMembers}>
+            Add Selected Members
           </Button>
         </div>
       </div>
-      {members ? (
+
+      {filteredMembers ? (
         <Table hoverable>
           <Table.Head>
             <Table.HeadCell className="!p-4"></Table.HeadCell>
             <Table.HeadCell>Full Name</Table.HeadCell>
-            <Table.HeadCell>Added To Group</Table.HeadCell>
+            <Table.HeadCell>Created by</Table.HeadCell>
             <Table.HeadCell>Created at</Table.HeadCell>
             <Table.HeadCell>Updated at</Table.HeadCell>
+            <Table.HeadCell></Table.HeadCell>
+            <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {members?.map((member, index) => (
+            {filteredMembers?.map((member, index) => (
               <Table.Row
                 className="delay-10 bg-white transition duration-300 ease-in-out hover:-translate-y-0.5 hover:bg-violet-300 dark:border-gray-700 dark:bg-gray-800"
                 key={member.id}
@@ -88,18 +96,30 @@ const GroupMembers: NextPage = () => {
                 </Table.Cell>
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                   <Link
-                    href={`/members/${member.memberId}`}
+                    href={`/members/${member.id}`}
                     className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                   >
-                    {member.member?.fullName}{" "}
+                    {member.fullName}{" "}
                   </Link>
                 </Table.Cell>
+                <Table.Cell>{member.createdBy.name}</Table.Cell>
                 <Table.Cell>{member.createdAt.toLocaleString()}</Table.Cell>
+                <Table.Cell>{member.updatedAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>
-                  {member.member?.createdAt.toLocaleString()}
+                  <Link
+                    href={`/members/${member.id}`}
+                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                  >
+                    Details
+                  </Link>
                 </Table.Cell>
                 <Table.Cell>
-                  {member.member?.updatedAt.toLocaleString()}
+                  <Link
+                    href={`/members/${member.id}/edit`}
+                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                  >
+                    Edit
+                  </Link>
                 </Table.Cell>
               </Table.Row>
             ))}
@@ -112,4 +132,4 @@ const GroupMembers: NextPage = () => {
   );
 };
 
-export default GroupMembers;
+export default AddMembers;

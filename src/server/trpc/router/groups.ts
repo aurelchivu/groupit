@@ -109,4 +109,27 @@ export const groupRouter = router({
         },
       });
     }),
+  removeMember: protectedProcedure
+    .input(
+      z.object({
+        groupId: z.string(),
+        membersToRemove: z.string().array(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return await prisma?.groupp.update({
+        where: {
+          id: input.groupId,
+        },
+        data: {
+          members: {
+            disconnect: [
+              ...input.membersToRemove.map((id) => ({
+                id,
+              })),
+            ],
+          },
+        },
+      });
+    }),
 });

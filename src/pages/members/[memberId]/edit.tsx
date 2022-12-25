@@ -19,7 +19,7 @@ const EditMember: NextPage = () => {
   const [id, setMemberId] = useState<string>("");
 
   const { memberId } = router.query;
-  const member = trpc.members.getById.useQuery(memberId as string);
+  const member = trpc.members.getById.useQuery(id as string);
 
   const memberFullName = member?.data?.fullName as string;
 

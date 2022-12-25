@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import { useEffect, useState } from "react";
 import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
-import { trpc } from "../../../utils/trpc";
+import { trpc } from "../../../../utils/trpc";
 
 const EditGroup: NextPage = () => {
   const router = useRouter();
@@ -13,7 +13,7 @@ const EditGroup: NextPage = () => {
     leaderId: string;
   }
 
-  const [id, setId] = useState("");
+  const [id, setId] = useState<string>("");
 
   const [formData, setFormData] = useState<IGroup>({
     name: "",
@@ -56,9 +56,9 @@ const EditGroup: NextPage = () => {
         </Button>
         <Button
           color="success"
-          onClick={() => router.push(`/groups/${group.data?.id}/group-members`)}
+          onClick={() => router.push(`/groups/${groupId}/edit/addmembers`)}
         >
-          Add/Remove Members
+          Add Members
         </Button>
       </div>
 
