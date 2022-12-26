@@ -7,7 +7,7 @@ import { trpc } from "../../utils/trpc";
 const Members: NextPage = () => {
   const router = useRouter();
   const members = trpc.members.getAll.useQuery();
-  console.log(members);
+  console.log("Members:", members);
   return (
     <div className="p-4">
       <div className="flex items-center justify-between">
@@ -23,10 +23,11 @@ const Members: NextPage = () => {
           <Table.Head>
             <Table.HeadCell className="!p-4"></Table.HeadCell>
             <Table.HeadCell>Full Name</Table.HeadCell>
+            <Table.HeadCell>Id</Table.HeadCell>
             <Table.HeadCell>Created by</Table.HeadCell>
             <Table.HeadCell>Created at</Table.HeadCell>
             <Table.HeadCell>Updated at</Table.HeadCell>
-            <Table.HeadCell></Table.HeadCell>
+            <Table.HeadCell>Leader</Table.HeadCell>
             <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
@@ -46,16 +47,12 @@ const Members: NextPage = () => {
                     {member.fullName}{" "}
                   </Link>
                 </Table.Cell>
+                <Table.Cell>{member.id}</Table.Cell>
                 <Table.Cell>{member.createdBy.name}</Table.Cell>
                 <Table.Cell>{member.createdAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>{member.updatedAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>
-                  <Link
-                    href={`/members/${member.id}`}
-                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                  >
-                    Details
-                  </Link>
+                  {member.leaderOf.length > 0 ? "Yes" : "No"}
                 </Table.Cell>
                 <Table.Cell>
                   <Link

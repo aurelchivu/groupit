@@ -23,6 +23,7 @@ const Groups: NextPage = () => {
           <Table.Head>
             <Table.HeadCell className="!p-4"></Table.HeadCell>
             <Table.HeadCell>Name</Table.HeadCell>
+            <Table.HeadCell>Id</Table.HeadCell>
             <Table.HeadCell>Leader</Table.HeadCell>
             <Table.HeadCell>Created by</Table.HeadCell>
             <Table.HeadCell>Created at</Table.HeadCell>
@@ -44,6 +45,9 @@ const Groups: NextPage = () => {
                   >
                     {group.name}
                   </Link>
+                </Table.Cell>
+                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 hover:scale-105 dark:text-white">
+                  {group.id}
                 </Table.Cell>
 
                 <Table.Cell>

@@ -13,16 +13,60 @@ export const groupRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       const { leaderId } = input;
-      return await prisma?.groupp.create({
+
+      // return await prisma?.groupp.create({
+      //   data: {
+      //     ...input,
+      //     createdById: ctx.session.user.id,
+      //     members: {
+      //       create: [
+      //         {
+      //           member: {
+      //             connect: {
+      //               id: leaderId,
+      //             },
+      //           },
+      //         },
+      //       ],
+      //     },
+      //   },
+      // });
+
+      // Create a new group
+      const group = await prisma?.groupp.create({
         data: {
           ...input,
           createdById: ctx.session.user.id,
-          leaderId: input.leaderId,
-          members: {
-            create: [{ member: { connect: { id: leaderId } } }],
+          members: {},
+          // leader: {
+          //   connect: {
+          //     id: leaderId,
+          //   },
+          // },
+        },
+        // include: {
+        //   leader: true,
+        // },
+      });
+
+      // Add the leader as a member of the group
+      await prisma?.grouppMembers.create({
+        data: {
+          group: {
+            connect: {
+              id: group?.id,
+            },
           },
+          member: {
+            connect: {
+              id: leaderId,
+            },
+          },
+          isLeader: true,
         },
       });
+
+      return group;
     }),
 
   getAll: protectedProcedure.query(async () => {
@@ -41,7 +85,11 @@ export const groupRouter = router({
         id: input,
       },
       include: {
-        members: { include: { member: true } },
+        members: {
+          include: {
+            member: true,
+          },
+        },
         leader: true,
         createdBy: true,
       },
@@ -82,6 +130,7 @@ export const groupRouter = router({
         },
       });
     }),
+
   addMember: protectedProcedure
     .input(
       z.object({
@@ -109,6 +158,7 @@ export const groupRouter = router({
         },
       });
     }),
+
   removeMember: protectedProcedure
     .input(
       z.object({

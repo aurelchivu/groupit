@@ -17,6 +17,11 @@ export const memberRouter = router({
     const members = await prisma?.member.findMany({
       include: {
         createdBy: true,
+        leaderOf: {
+          include: {
+            leader: true,
+          },
+        },
       },
     });
     return members;

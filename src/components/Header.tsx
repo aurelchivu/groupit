@@ -18,7 +18,7 @@ const Header: FC<NavbarComponentProps> = () => {
     <Navbar
       fluid
       rounded
-      className="bg-gradient-to-r from-[#857995] to-[#d0d2f5] opacity-70"
+      className="bg-gradient-to-r from-[#857995] to-[#d0d2f5] opacity-90"
     >
       <Link href="/">
         <div className="flex items-center">

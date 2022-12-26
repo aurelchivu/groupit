@@ -8,10 +8,16 @@ const CreateGroup: NextPage = () => {
   const router = useRouter();
   const members = trpc.members.getAll.useQuery();
 
+  type Member = {
+    id: string;
+    fullName: string;
+    details: string;
+  };
+
   interface IGroup {
     groupName: string;
     description?: string;
-    leader?: string | undefined;
+    leader?: Member | undefined;
     leaderId?: string | undefined;
     groupMembers?: string[] | undefined;
   }
@@ -19,7 +25,7 @@ const CreateGroup: NextPage = () => {
   const [formData, setFormData] = useState<IGroup>({
     groupName: "",
     description: "",
-    leader: "",
+    leader: { id: "", fullName: "", details: "" },
     groupMembers: [],
   });
 
@@ -35,7 +41,8 @@ const CreateGroup: NextPage = () => {
       name: formData.groupName,
       description: formData.description,
       leaderId: formData.leaderId,
-      members: ["formData.leaderId"],
+      // leader: formData.leader,
+      // members: ["formData.leaderId"],
     });
   };
 
@@ -88,20 +95,22 @@ const CreateGroup: NextPage = () => {
           </div>
           <select
             className="rounded-md"
-            value={formData.leader}
+            value={formData.leader?.fullName}
             color="light"
             onChange={(e) => {
               setFormData({
                 ...formData,
-                leader: e.currentTarget.value,
+                // leader: members.data?.find(
+                //   (member) => member.fullName === e.currentTarget.value
+                // ),
                 leaderId: members.data?.find(
                   (member) => member.fullName === e.currentTarget.value
                 )?.id,
-                groupMembers: [
-                  members.data?.find(
-                    (member) => member.fullName === e.currentTarget.value
-                  )?.id as string,
-                ],
+                // groupMembers: [
+                //   members.data?.find(
+                //     (member) => member.fullName === e.currentTarget.value
+                //   )?.id as string,
+                // ],
               });
             }}
           >

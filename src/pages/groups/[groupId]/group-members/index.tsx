@@ -18,11 +18,11 @@ const GroupMembers: NextPage = () => {
   }, [groupId]);
 
   const group = trpc.groups.getById.useQuery(id as string);
-  // console.log("Group", group.data);
+  console.log("Group", group.data);
   const groupName = group?.data?.name;
   const removeMembers = trpc.groups.removeMember.useMutation();
   const members = group.data?.members;
-  // console.log("Members", members);
+  console.log("Members", members);
 
   const [checked, setChecked] = useState<{ [key: string]: boolean }>({});
   console.log("Checked", checked);
@@ -67,9 +67,11 @@ const GroupMembers: NextPage = () => {
           <Table.Head>
             <Table.HeadCell className="!p-4"></Table.HeadCell>
             <Table.HeadCell>Full Name</Table.HeadCell>
+            <Table.HeadCell>Id</Table.HeadCell>
             <Table.HeadCell>Added To Group</Table.HeadCell>
             <Table.HeadCell>Created at</Table.HeadCell>
             <Table.HeadCell>Updated at</Table.HeadCell>
+            <Table.HeadCell>Leader</Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
             {members?.map((member) => (
@@ -88,9 +90,10 @@ const GroupMembers: NextPage = () => {
                     href={`/members/${member.memberId}`}
                     className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                   >
-                    {member.member?.fullName}{" "}
+                    {member.member?.fullName}
                   </Link>
                 </Table.Cell>
+                <Table.Cell>{member.id}</Table.Cell>
                 <Table.Cell>{member.createdAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>
                   {member.member?.createdAt.toLocaleString()}
@@ -98,6 +101,7 @@ const GroupMembers: NextPage = () => {
                 <Table.Cell>
                   {member.member?.updatedAt.toLocaleString()}
                 </Table.Cell>
+                <Table.Cell>{member.isLeader ? "Yes" : "No"}</Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>

@@ -5,8 +5,9 @@ import { SessionProvider } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 
 import "../styles/globals.css";
-import Header from "../components/Header";
 import Head from "next/head";
+import Header from "@/components/Header";
+import Footerr from "@/components/Footerr";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -19,8 +20,17 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <SessionProvider session={session}>
-        <Header />
-        <Component {...pageProps} />
+        <div className="flex h-screen flex-col items-stretch">
+          <header className="h-15 sticky top-0 z-50 w-full ">
+            <Header />
+          </header>
+          <main className="flex-grow">
+            <Component {...pageProps} />
+          </main>
+          <footer className="h-15 sticky bottom-0 z-50 w-full">
+            <Footerr />
+          </footer>
+        </div>
       </SessionProvider>
     </>
   );
