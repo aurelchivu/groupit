@@ -1,5 +1,5 @@
 import { type NextPage } from "next";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Table, Checkbox, Button } from "flowbite-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -11,41 +11,35 @@ const GroupMembers: NextPage = () => {
   const router = useRouter();
   const { groupId } = router.query;
 
-  const group = trpc.groups.getById.useQuery(id as string);
-  console.log("Group", group.data);
-  const groupName = group?.data?.name;
-  const removeMembers = trpc.groups.removeMember.useMutation();
-  const members = group.data?.members;
-  // const members = trpc.members.getAll.useQuery();
-
-  // console.log("Members", members);
-  const [checked, setChecked] = useState<boolean[]>(
-    new Array(members?.length).fill(false)
-  );
-  console.log("Checked", checked);
-
   useEffect(() => {
-    if (groupId) {
-      setId(groupId as string);
+    if (typeof groupId === "string") {
+      setId(groupId);
     }
   }, [groupId]);
 
-  const handleOnChange = (position: number) => {
-    const updatedChecked = checked.map((item, index) =>
-      index === position ? !item : item
-    );
-    setChecked(updatedChecked);
-    // console.log("Updated Checked", updatedChecked);
-  };
+  const group = trpc.groups.getById.useQuery(id as string);
+  // console.log("Group", group.data);
+  const groupName = group?.data?.name;
+  const removeMembers = trpc.groups.removeMember.useMutation();
+  const members = group.data?.members;
+  // console.log("Members", members);
+
+  const [checked, setChecked] = useState<{ [key: string]: boolean }>({});
+  console.log("Checked", checked);
+
+  const handleOnChange = useCallback((memberId: string) => {
+    setChecked((prevState) => ({
+      ...prevState,
+      [memberId]: !prevState[memberId],
+    }));
+  }, []);
 
   const removeSelectedMembers = async () => {
-    const selectedMembers = checked
-      .map((item, index) => {
-        if (item) {
-          return members?.[index];
-        }
-      })
-      .filter((item) => item);
+    const selectedMembers = Object.entries(checked)
+      .filter(([_, isChecked]) => isChecked)
+      .map(([memberId, _]) =>
+        members?.find((member) => member.id === memberId)
+      );
     console.log("Selected Members", selectedMembers);
 
     await removeMembers.mutateAsync({
@@ -57,8 +51,11 @@ const GroupMembers: NextPage = () => {
 
   return (
     <div className="p-4">
+      <h1 className="p-2 text-xl">{groupName} Members</h1>
       <div className="flex items-center justify-between">
-        <h1 className="p-2 text-xl">{groupName} Members</h1>
+        <Button size="lg" onClick={() => router.back()}>
+          Go Back
+        </Button>
         <div className="py-4">
           <Button size="lg" color="failure" onClick={removeSelectedMembers}>
             Remove Selected Members
@@ -75,15 +72,15 @@ const GroupMembers: NextPage = () => {
             <Table.HeadCell>Updated at</Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {members?.map((member, index) => (
+            {members?.map((member) => (
               <Table.Row
                 className="delay-10 bg-white transition duration-300 ease-in-out hover:-translate-y-0.5 hover:bg-violet-300 dark:border-gray-700 dark:bg-gray-800"
                 key={member.id}
               >
                 <Table.Cell className="!p-4">
                   <Checkbox
-                    checked={checked[index]}
-                    onChange={() => handleOnChange(index)}
+                    checked={checked[member.id]}
+                    onChange={() => handleOnChange(member.id)}
                   />
                 </Table.Cell>
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">

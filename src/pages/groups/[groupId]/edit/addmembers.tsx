@@ -1,5 +1,5 @@
 import { type NextPage } from "next";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Table, Checkbox, Button } from "flowbite-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -10,6 +10,12 @@ const AddMembers: NextPage = () => {
 
   const router = useRouter();
   const { groupId } = router.query;
+
+  useEffect(() => {
+    if (typeof groupId === "string") {
+      setId(groupId as string);
+    }
+  }, [groupId]);
 
   const group = trpc.groups.getById.useQuery(id as string);
   const groupMembers = group.data?.members;
@@ -25,47 +31,40 @@ const AddMembers: NextPage = () => {
   );
   // console.log("Filtered Members", filteredMembers);
 
-  const [checked, setChecked] = useState<boolean[]>(
-    new Array(filteredMembers?.length).fill(false)
-  );
+  const [checked, setChecked] = useState<{ [key: string]: boolean }>({});
   console.log("Checked", checked);
 
-  useEffect(() => {
-    if (groupId) {
-      setId(groupId as string);
-    }
-  }, [groupId]);
-
-  const handleOnChange = (position: number) => {
-    const updatedChecked = checked.map((item, index) =>
-      index === position ? !item : item
-    );
-    setChecked(updatedChecked);
-    console.log("Updated Checked", updatedChecked);
-  };
+  const handleOnChange = useCallback((memberId: string) => {
+    setChecked((prevState) => ({
+      ...prevState,
+      [memberId]: !prevState[memberId],
+    }));
+  }, []);
 
   const addSelectedMembers = async () => {
-    const selectedMembers = checked
-      .map((item, index) => {
-        if (item) {
-          return filteredMembers?.[index];
-        }
-      })
-      .filter((item) => item);
+    const selectedMembers = Object.entries(checked)
+      .filter(([_, isChecked]) => isChecked)
+      .map(([memberId, _]) =>
+        filteredMembers?.find((member) => member.id === memberId)
+      );
+    console.log("Selected Members", selectedMembers);
 
     await addMembers.mutateAsync({
       groupId: groupId as string,
       membersToAdd: selectedMembers.map((item) => item?.id) as string[],
     });
-    router.push(`/groups/${groupId}`);
+    router.push(`/groups/${groupId}/group-members`);
   };
 
   return (
     <div className="p-4">
+      <h1 className="p-2 text-xl">Add Members</h1>
       <div className="flex items-center justify-between">
-        <h1 className="p-2 text-xl">Add Members</h1>
+        <Button size="lg" onClick={() => router.back()}>
+          Go Back
+        </Button>
         <div className="py-4">
-          <Button size="lg" onClick={addSelectedMembers}>
+          <Button size="lg" color="success" onClick={addSelectedMembers}>
             Add Selected Members
           </Button>
         </div>
@@ -83,15 +82,15 @@ const AddMembers: NextPage = () => {
             <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {filteredMembers?.map((member, index) => (
+            {filteredMembers?.map((member) => (
               <Table.Row
                 className="delay-10 bg-white transition duration-300 ease-in-out hover:-translate-y-0.5 hover:bg-violet-300 dark:border-gray-700 dark:bg-gray-800"
                 key={member.id}
               >
                 <Table.Cell className="!p-4">
                   <Checkbox
-                    checked={checked[index]}
-                    onChange={() => handleOnChange(index)}
+                    checked={checked[member.id]}
+                    onChange={() => handleOnChange(member.id)}
                   />
                 </Table.Cell>
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">

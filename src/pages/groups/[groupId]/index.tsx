@@ -20,8 +20,8 @@ const GroupDetails: NextPage = () => {
   const deleteGroup = trpc.groups.delete.useMutation();
 
   useEffect(() => {
-    if (groupId) {
-      setId(groupId as string);
+    if (typeof groupId === "string") {
+      setId(groupId);
     }
   }, [groupId]);
 
@@ -49,27 +49,27 @@ const GroupDetails: NextPage = () => {
           Group Details
         </h5>
         <ul className="my-4 space-y-3">
-          <li>
+          <li key="Group name">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
               Group name: {group.data?.name}
             </span>
           </li>
-          <li>
+          <li key="Group id">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
               Group id: {group.data?.id}
             </span>
           </li>
-          <li>
+          <li key="Description">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
               Description: {group.data?.description}
             </span>
           </li>
-          <li>
+          <li key="Created by">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
               Created by: {group.data?.createdBy.name}
             </span>
           </li>
-          <li>
+          <li key="Leader">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
               Leader:
               {group.data?.leader?.id ? (
@@ -84,7 +84,7 @@ const GroupDetails: NextPage = () => {
               )}
             </span>
           </li>
-          <li>
+          <li key="Members">
             <span className="group ml-3 flex  flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
               <Link
                 href={`/groups/${group.data?.id}/group-members`}
@@ -95,26 +95,31 @@ const GroupDetails: NextPage = () => {
                   : "Member"}
               </Link>
               {":"}
-              {group.data?.members.map((member) => {
+              {group.data?.members.map((member, index) => {
                 console.log(member);
                 return (
-                  <Link
-                    key={member.id}
-                    href={`/members/${member?.member?.id}`}
-                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                  >
-                    {member.member?.fullName}
-                  </Link>
+                  <>
+                    <Link
+                      key={member.id}
+                      href={`/members/${member?.member?.id}`}
+                      className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                    >
+                      {member.member?.fullName}
+                    </Link>
+                    {index === Number(group.data?.members.length) - 1
+                      ? ". "
+                      : ","}
+                  </>
                 );
               })}
             </span>
           </li>
-          <li>
+          <li key="Created at">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
               Created at: {group.data?.createdAt.toLocaleString()}
             </span>
           </li>
-          <li>
+          <li key="Last update">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
               Last update : {group.data?.updatedAt.toLocaleString()}
             </span>

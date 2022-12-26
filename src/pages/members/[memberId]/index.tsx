@@ -13,8 +13,8 @@ const MemberDetails: NextPage = () => {
   console.log("Member", member);
 
   useEffect(() => {
-    if (memberId) {
-      setId(memberId as string);
+    if (typeof memberId === "string") {
+      setId(memberId);
     }
   }, [memberId]);
 

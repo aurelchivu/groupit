@@ -29,8 +29,8 @@ const EditMember: NextPage = () => {
   const [openModal, setOpenModal] = useState<string | undefined>();
 
   useEffect(() => {
-    if (memberId) {
-      setMemberId(memberId as string);
+    if (typeof memberId === "string") {
+      setMemberId(memberId);
       setFormData({ fullName: memberFullName });
     }
   }, [memberId, memberFullName]);

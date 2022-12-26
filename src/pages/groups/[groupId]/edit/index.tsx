@@ -6,6 +6,7 @@ import { trpc } from "../../../../utils/trpc";
 
 const EditGroup: NextPage = () => {
   const router = useRouter();
+  const { groupId } = router.query;
 
   interface IGroup {
     name: string;
@@ -21,19 +22,17 @@ const EditGroup: NextPage = () => {
     leaderId: "",
   });
 
-  const { groupId } = router.query;
-
   const group = trpc.groups.getById.useQuery(id as string);
   const groupName = group?.data?.name;
   const groupDescription = group?.data?.description;
   const groupLeaderId = group?.data?.leaderId;
-  console.log(group);
+  // console.log(group);
 
   const updateGroup = trpc.groups.update.useMutation();
 
   useEffect(() => {
-    if (groupId) {
-      setId(groupId as string);
+    if (typeof groupId === "string") {
+      setId(groupId);
       setFormData({
         name: groupName as string,
         description: groupDescription as string,

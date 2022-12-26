@@ -8,15 +8,15 @@ const GroupMemberDetails: NextPage = () => {
   const router = useRouter();
   const [memberId, setMemberId] = useState("");
 
-  const { id } = router.query;
+  const { groupMemberId } = router.query;
   const member = trpc.members.getById.useQuery(memberId as string);
   console.log(member);
 
   useEffect(() => {
-    if (id) {
-      setMemberId(id as string);
+    if (typeof groupMemberId === "string") {
+      setMemberId(groupMemberId);
     }
-  }, [id]);
+  }, [groupMemberId]);
 
   return (
     <div className="p-4">
