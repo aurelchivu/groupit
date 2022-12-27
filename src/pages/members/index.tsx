@@ -31,14 +31,12 @@ const Members: NextPage = () => {
             <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {members.data?.map((member) => (
+            {members.data?.map((member, index) => (
               <Table.Row
                 className="delay-10 bg-white transition duration-300 ease-in-out hover:-translate-y-0.5 hover:bg-violet-300 dark:border-gray-700 dark:bg-gray-800"
                 key={member.id}
               >
-                <Table.Cell className="!p-4">
-                  <Checkbox />
-                </Table.Cell>
+                <Table.Cell className="!p-4">{index + 1}</Table.Cell>
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                   <Link
                     href={`/members/${member.id}`}

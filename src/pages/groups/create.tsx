@@ -8,25 +8,18 @@ const CreateGroup: NextPage = () => {
   const router = useRouter();
   const members = trpc.members.getAll.useQuery();
 
-  type Member = {
-    id: string;
-    fullName: string;
-    details: string;
-  };
-
   interface IGroup {
     groupName: string;
     description?: string;
-    leader?: Member | undefined;
+    leader: string | undefined;
     leaderId?: string | undefined;
-    groupMembers?: string[] | undefined;
   }
 
   const [formData, setFormData] = useState<IGroup>({
     groupName: "",
     description: "",
-    leader: { id: "", fullName: "", details: "" },
-    groupMembers: [],
+    leader: "",
+    leaderId: "",
   });
 
   const createGroup = trpc.groups.create.useMutation({
@@ -41,10 +34,13 @@ const CreateGroup: NextPage = () => {
       name: formData.groupName,
       description: formData.description,
       leaderId: formData.leaderId,
-      // leader: formData.leader,
-      // members: ["formData.leaderId"],
     });
   };
+
+  // if (members.data?.length === 0) {
+  //   alert("No members found");
+  //   router.push("/members/create");
+  // }
 
   return (
     <div className="px-40">
@@ -95,22 +91,17 @@ const CreateGroup: NextPage = () => {
           </div>
           <select
             className="rounded-md"
-            value={formData.leader?.fullName}
+            value={formData.leader}
             color="light"
             onChange={(e) => {
               setFormData({
                 ...formData,
-                // leader: members.data?.find(
-                //   (member) => member.fullName === e.currentTarget.value
-                // ),
+                leader: members.data?.find(
+                  (member) => member.fullName === e.currentTarget.value
+                )?.fullName,
                 leaderId: members.data?.find(
                   (member) => member.fullName === e.currentTarget.value
                 )?.id,
-                // groupMembers: [
-                //   members.data?.find(
-                //     (member) => member.fullName === e.currentTarget.value
-                //   )?.id as string,
-                // ],
               });
             }}
           >

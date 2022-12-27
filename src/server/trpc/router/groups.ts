@@ -13,60 +13,22 @@ export const groupRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       const { leaderId } = input;
-
-      // return await prisma?.groupp.create({
-      //   data: {
-      //     ...input,
-      //     createdById: ctx.session.user.id,
-      //     members: {
-      //       create: [
-      //         {
-      //           member: {
-      //             connect: {
-      //               id: leaderId,
-      //             },
-      //           },
-      //         },
-      //       ],
-      //     },
-      //   },
-      // });
-
-      // Create a new group
-      const group = await prisma?.groupp.create({
+      return await prisma?.groupp.create({
         data: {
           ...input,
           createdById: ctx.session.user.id,
-          members: {},
-          // leader: {
-          //   connect: {
-          //     id: leaderId,
-          //   },
-          // },
-        },
-        // include: {
-        //   leader: true,
-        // },
-      });
-
-      // Add the leader as a member of the group
-      await prisma?.grouppMembers.create({
-        data: {
-          group: {
-            connect: {
-              id: group?.id,
+          members: {
+            create: {
+              member: {
+                connect: {
+                  id: leaderId,
+                },
+              },
+              isLeader: true,
             },
           },
-          member: {
-            connect: {
-              id: leaderId,
-            },
-          },
-          isLeader: true,
         },
       });
-
-      return group;
     }),
 
   getAll: protectedProcedure.query(async () => {
@@ -178,6 +140,58 @@ export const groupRouter = router({
                 id,
               })),
             ],
+          },
+          leader: {
+            disconnect: true,
+          },
+        },
+      });
+    }),
+
+  setLeader: protectedProcedure
+    .input(
+      z.object({
+        groupId: z.string(),
+        memberId: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      await prisma?.groupp.update({
+        where: { id: input.groupId },
+        data: {
+          leader: {
+            connect: { id: input.memberId },
+          },
+        },
+      });
+      await prisma?.grouppMembers.updateMany({
+        where: {
+          groupId: input.groupId,
+          memberId: input.memberId,
+        },
+        data: {
+          isLeader: true,
+        },
+      });
+    }),
+
+  changeLeader: protectedProcedure
+    .input(
+      z.object({
+        groupId: z.string(),
+        leaderId: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return await prisma?.groupp.update({
+        where: {
+          id: input.groupId,
+        },
+        data: {
+          leader: {
+            connect: {
+              id: input.leaderId,
+            },
           },
         },
       });

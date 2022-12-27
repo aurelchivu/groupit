@@ -50,9 +50,9 @@ model GrouppMembers {
   groupId   String?
   member    Member?  @relation(name: "groupMembers", fields: [memberId], references: [id], onDelete: Cascade)
   memberId  String?
+  isLeader  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  isLeader  Boolean? @default(false)
 }
 
 // Necessary for Next auth

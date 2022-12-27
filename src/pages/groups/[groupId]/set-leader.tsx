@@ -3,9 +3,9 @@ import { useCallback, useEffect, useState } from "react";
 import { Table, Checkbox, Button } from "flowbite-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { trpc } from "../../../../utils/trpc";
+import { trpc } from "../../../utils/trpc";
 
-const GroupMembers: NextPage = () => {
+const SetLeader: NextPage = () => {
   const [id, setId] = useState<string>("");
 
   const router = useRouter();
@@ -20,7 +20,7 @@ const GroupMembers: NextPage = () => {
   const group = trpc.groups.getById.useQuery(id as string);
   console.log("Group", group.data);
   const groupName = group?.data?.name;
-  const removeMembers = trpc.groups.removeMember.useMutation();
+  const setLeader = trpc.groups.setLeader.useMutation();
   const members = group.data?.members;
   console.log("Members", members);
 
@@ -28,8 +28,8 @@ const GroupMembers: NextPage = () => {
   console.log("Checked", checked);
 
   const handleOnChange = useCallback((memberId: string) => {
+    console.log("MemberId", memberId);
     setChecked((prevState) => ({
-      ...prevState,
       [memberId]: !prevState[memberId],
     }));
   }, []);
@@ -42,9 +42,9 @@ const GroupMembers: NextPage = () => {
       );
     console.log("Selected Members", selectedMembers);
 
-    await removeMembers.mutateAsync({
+    await setLeader.mutateAsync({
       groupId: groupId as string,
-      membersToRemove: selectedMembers.map((item) => item?.id) as string[],
+      memberId: selectedMembers[0]?.id as string,
     });
     router.push(`/groups/${groupId}`);
   };
@@ -57,8 +57,8 @@ const GroupMembers: NextPage = () => {
           Go Back To {groupName}
         </Button>
         <div className="py-4">
-          <Button size="lg" color="failure" onClick={removeSelectedMembers}>
-            Remove Selected Members
+          <Button size="lg" color="success" onClick={removeSelectedMembers}>
+            Set Selected Member as Leader
           </Button>
         </div>
       </div>
@@ -80,7 +80,9 @@ const GroupMembers: NextPage = () => {
                 className="delay-10 bg-white transition duration-300 ease-in-out hover:-translate-y-0.5 hover:bg-violet-300 dark:border-gray-700 dark:bg-gray-800"
                 key={member.id}
               >
-                <Table.Cell className="!p-4">{index + 1}</Table.Cell>
+                <Table.Cell className="!p-4">
+                  {index + 1}
+                </Table.Cell>
                 <Table.Cell className="!p-4">
                   <Checkbox
                     checked={checked[member.id]}
@@ -115,4 +117,4 @@ const GroupMembers: NextPage = () => {
   );
 };
 
-export default GroupMembers;
+export default SetLeader;

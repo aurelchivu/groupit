@@ -44,7 +44,7 @@ const EditGroup: NextPage = () => {
   const submitCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     await updateGroup.mutateAsync({ id: groupId as string, ...formData });
-    router.back();
+    // router.back();
   };
 
   return (

@@ -30,14 +30,12 @@ const Groups: NextPage = () => {
             <Table.HeadCell>Updated at</Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {groups.data?.map((group) => (
+            {groups.data?.map((group, index) => (
               <Table.Row
                 className="delay-10 bg-white transition duration-300 ease-in-out hover:-translate-y-0.5 hover:bg-violet-300 dark:border-gray-700 dark:bg-gray-800"
                 key={group.id}
               >
-                <Table.Cell className="!p-4">
-                  <Checkbox />
-                </Table.Cell>
+                <Table.Cell className="!p-4">{index + 1}</Table.Cell>
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 hover:scale-105 dark:text-white">
                   <Link
                     href={`/groups/${group.id}`}

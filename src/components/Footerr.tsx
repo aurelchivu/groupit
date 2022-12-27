@@ -11,7 +11,7 @@ const Footerr: FC = () => {
         className="text-black"
         href="/"
         by="Group IT™"
-        year={2022}
+        year={2023}
       />
     </Footer>
   );
