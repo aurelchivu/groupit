@@ -15,7 +15,7 @@ const GroupDetails: NextPage = () => {
   const [id, setId] = useState<string>("");
 
   const group = trpc.groups.getById.useQuery(id as string);
-  console.log("Group length", group.data?.members.length);
+  console.log("Group=", group.data);
 
   const deleteGroup = trpc.groups.delete.useMutation();
 
@@ -146,12 +146,23 @@ const GroupDetails: NextPage = () => {
             ? `Show ${group.data?.members.length} Members`
             : "Show 1 Member"}
         </Button>
-        <Button
-          color="warning"
-          onClick={() => router.push(`/groups/${group.data?.id}/set-leader`)}
-        >
-          {group.data?.leader?.id ? "Change Leader" : "Set leader"}
-        </Button>
+        {group.data?.leader ? (
+          <Button
+            color="warning"
+            onClick={() =>
+              router.push(`/groups/${group.data?.id}/change-leader`)
+            }
+          >
+            Change Leader
+          </Button>
+        ) : (
+          <Button
+            color="warning"
+            onClick={() => router.push(`/groups/${group.data?.id}/set-leader`)}
+          >
+            Set Leader
+          </Button>
+        )}
       </div>
 
       <Modal

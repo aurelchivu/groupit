@@ -180,19 +180,34 @@ export const groupRouter = router({
       z.object({
         groupId: z.string(),
         leaderId: z.string(),
+        newLeaderId: z.string(),
       })
     )
     .mutation(async ({ input }) => {
-      return await prisma?.groupp.update({
-        where: {
-          id: input.groupId,
-        },
+      await prisma?.groupp.update({
+        where: { id: input.groupId },
         data: {
           leader: {
-            connect: {
-              id: input.leaderId,
-            },
+            connect: { id: input.newLeaderId },
           },
+        },
+      });
+      await prisma?.grouppMembers.updateMany({
+        where: {
+          groupId: input.groupId,
+          memberId: input.leaderId,
+        },
+        data: {
+          isLeader: false,
+        },
+      });
+      await prisma?.grouppMembers.updateMany({
+        where: {
+          groupId: input.groupId,
+          memberId: input.newLeaderId,
+        },
+        data: {
+          isLeader: true,
         },
       });
     }),

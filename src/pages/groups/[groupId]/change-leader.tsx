@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { trpc } from "../../../utils/trpc";
 
-const SetLeader: NextPage = () => {
+const ChangeLeader: NextPage = () => {
   const [id, setId] = useState<string>("");
 
   const router = useRouter();
@@ -20,7 +20,7 @@ const SetLeader: NextPage = () => {
   const group = trpc.groups.getById.useQuery(id as string);
   console.log("Group", group.data);
   const groupName = group?.data?.name;
-  const setLeader = trpc.groups.setLeader.useMutation();
+  const changeLeader = trpc.groups.changeLeader.useMutation();
   const members = group.data?.members;
   console.log("Members", members);
 
@@ -34,17 +34,18 @@ const SetLeader: NextPage = () => {
     }));
   }, []);
 
-  const setSelectedLeader = async () => {
-    const selectedMembers = Object.entries(checked)
+  const changeSelectedLeader = async () => {
+    const selectedMember = Object.entries(checked)
       .filter(([_, isChecked]) => isChecked)
       .map(([memberId, _]) =>
         members?.find((member) => member.id === memberId)
       );
-    console.log("Selected Members", selectedMembers);
+    console.log("Selected Members", selectedMember);
 
-    await setLeader.mutateAsync({
+    await changeLeader.mutateAsync({
       groupId: groupId as string,
-      memberId: selectedMembers[0]?.id as string,
+      leaderId: group?.data?.leaderId as string,
+      newLeaderId: selectedMember[0]?.id as string,
     });
     router.push(`/groups/${groupId}`);
   };
@@ -57,8 +58,8 @@ const SetLeader: NextPage = () => {
           Go Back To {groupName}
         </Button>
         <div className="py-4">
-          <Button size="lg" color="success" onClick={setSelectedLeader}>
-            Set Selected Member as Leader
+          <Button size="lg" color="success" onClick={changeSelectedLeader}>
+            Set Selected Member as New Leader
           </Button>
         </div>
       </div>
@@ -115,4 +116,4 @@ const SetLeader: NextPage = () => {
   );
 };
 
-export default SetLeader;
+export default ChangeLeader;
