@@ -44,7 +44,7 @@ const EditGroup: NextPage = () => {
   const submitCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     await updateGroup.mutateAsync({ id: groupId as string, ...formData });
-    // router.back();
+    router.back();
   };
 
   return (
@@ -53,12 +53,23 @@ const EditGroup: NextPage = () => {
         <Button size="lg" onClick={() => router.back()}>
           Go Back
         </Button>
-        <Button
-          color="success"
-          onClick={() => router.push(`/groups/${groupId}/edit/addmembers`)}
-        >
-          Add Members
-        </Button>
+        {group.data?.leader ? (
+          <Button
+            color="success"
+            onClick={() =>
+              router.push(`/groups/${group.data?.id}/change-leader`)
+            }
+          >
+            Change Leader
+          </Button>
+        ) : (
+          <Button
+            color="success"
+            onClick={() => router.push(`/groups/${group.data?.id}/set-leader`)}
+          >
+            Set Leader
+          </Button>
+        )}
       </div>
 
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>

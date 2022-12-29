@@ -51,7 +51,7 @@ const SetLeader: NextPage = () => {
 
   return (
     <div className="p-4">
-      <h1 className="p-2 text-xl">{groupName} Members</h1>
+      <h1 className="p-2 text-xl">Set Leader</h1>
       <div className="flex items-center justify-between">
         <Button size="lg" onClick={() => router.push(`/groups/${groupId}`)}>
           Go Back To {groupName}

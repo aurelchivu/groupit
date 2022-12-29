@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Table, Checkbox, Button } from "flowbite-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { trpc } from "../../../../utils/trpc";
+import { trpc } from "../../../utils/trpc";
 
 const AddMembers: NextPage = () => {
   const [id, setId] = useState<string>("");

@@ -52,15 +52,10 @@ const GroupMembers: NextPage = () => {
   return (
     <div className="p-4">
       <h1 className="p-2 text-xl">{groupName} Members</h1>
-      <div className="flex items-center justify-between">
+      <div className="py-4">
         <Button size="lg" onClick={() => router.push(`/groups/${groupId}`)}>
           Go Back To {groupName}
         </Button>
-        <div className="py-4">
-          <Button size="lg" color="failure" onClick={removeSelectedMembers}>
-            Remove Selected Members
-          </Button>
-        </div>
       </div>
       {members ? (
         <Table hoverable>
@@ -111,6 +106,23 @@ const GroupMembers: NextPage = () => {
       ) : (
         <div>Loading...</div>
       )}
+
+      <div className="flex items-center justify-between">
+        <div className="py-4">
+          <Button size="lg" color="failure" onClick={removeSelectedMembers}>
+            Remove Selected Members
+          </Button>
+        </div>
+        <div className="py-4">
+          <Button
+            size="lg"
+            color="success"
+            onClick={() => router.push(`/groups/${groupId}/add-members`)}
+          >
+            Add New Members
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

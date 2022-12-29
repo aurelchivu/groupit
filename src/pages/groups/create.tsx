@@ -33,14 +33,9 @@ const CreateGroup: NextPage = () => {
     await createGroup.mutateAsync({
       name: formData.groupName,
       description: formData.description,
-      leaderId: formData.leaderId,
+      leaderId: formData.leaderId || undefined,
     });
   };
-
-  // if (members.data?.length === 0) {
-  //   alert("No members found");
-  //   router.push("/members/create");
-  // }
 
   return (
     <div className="px-40">

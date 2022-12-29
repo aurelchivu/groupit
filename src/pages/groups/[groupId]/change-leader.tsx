@@ -7,6 +7,7 @@ import { trpc } from "../../../utils/trpc";
 
 const ChangeLeader: NextPage = () => {
   const [id, setId] = useState<string>("");
+  const [checked, setChecked] = useState<{ [key: string]: boolean }>({});
 
   const router = useRouter();
   const { groupId } = router.query;
@@ -20,12 +21,13 @@ const ChangeLeader: NextPage = () => {
   const group = trpc.groups.getById.useQuery(id as string);
   console.log("Group", group.data);
   const groupName = group?.data?.name;
-  const changeLeader = trpc.groups.changeLeader.useMutation();
-  const members = group.data?.members;
+
+  const members = group.data?.members.filter(
+    (member) => member.isLeader === false
+  );
   console.log("Members", members);
 
-  const [checked, setChecked] = useState<{ [key: string]: boolean }>({});
-  console.log("Checked", checked);
+  const changeLeader = trpc.groups.changeLeader.useMutation();
 
   const handleOnChange = useCallback((memberId: string) => {
     console.log("MemberId", memberId);
@@ -52,7 +54,7 @@ const ChangeLeader: NextPage = () => {
 
   return (
     <div className="p-4">
-      <h1 className="p-2 text-xl">{groupName} Members</h1>
+      <h1 className="p-2 text-xl">Change Leader</h1>
       <div className="flex items-center justify-between">
         <Button size="lg" onClick={() => router.push(`/groups/${groupId}`)}>
           Go Back To {groupName}

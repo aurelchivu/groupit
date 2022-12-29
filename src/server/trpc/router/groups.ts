@@ -8,7 +8,6 @@ export const groupRouter = router({
         name: z.string(),
         description: z.string().optional(),
         leaderId: z.string().optional(),
-        members: z.array(z.string()).optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -17,16 +16,19 @@ export const groupRouter = router({
         data: {
           ...input,
           createdById: ctx.session.user.id,
-          members: {
-            create: {
-              member: {
-                connect: {
-                  id: leaderId,
+          ...(leaderId && {
+            // This is nice!!!! --> https://github.com/tc39/proposal-object-rest-spread/issues/45
+            members: {
+              create: {
+                member: {
+                  connect: {
+                    id: leaderId,
+                  },
                 },
+                isLeader: true,
               },
-              isLeader: true,
             },
-          },
+          }),
         },
       });
     }),
@@ -54,14 +56,6 @@ export const groupRouter = router({
         },
         leader: true,
         createdBy: true,
-      },
-    });
-  }),
-
-  getByName: protectedProcedure.input(z.string()).query(async ({ input }) => {
-    return await prisma?.groupp.findFirst({
-      where: {
-        name: input,
       },
     });
   }),
@@ -148,6 +142,7 @@ export const groupRouter = router({
       });
     }),
 
+  // How to handle this in a shorter way???
   setLeader: protectedProcedure
     .input(
       z.object({
@@ -175,6 +170,7 @@ export const groupRouter = router({
       });
     }),
 
+  // How to handle this in a shorter way???
   changeLeader: protectedProcedure
     .input(
       z.object({

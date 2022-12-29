@@ -136,35 +136,6 @@ const GroupDetails: NextPage = () => {
         </ul>
       </div>
 
-      <div className="align-center flex justify-between">
-        <Button
-          size="lg"
-          color="success"
-          onClick={() => router.push(`/groups/${group.data?.id}/group-members`)}
-        >
-          {group.data?.members.length && group.data?.members.length > 1
-            ? `Show ${group.data?.members.length} Members`
-            : "Show 1 Member"}
-        </Button>
-        {group.data?.leader ? (
-          <Button
-            color="warning"
-            onClick={() =>
-              router.push(`/groups/${group.data?.id}/change-leader`)
-            }
-          >
-            Change Leader
-          </Button>
-        ) : (
-          <Button
-            color="warning"
-            onClick={() => router.push(`/groups/${group.data?.id}/set-leader`)}
-          >
-            Set Leader
-          </Button>
-        )}
-      </div>
-
       <Modal
         show={openModal === "default"}
         onClose={() => setOpenModal(undefined)}
