@@ -47,7 +47,7 @@ const ChangeLeader: NextPage = () => {
     await changeLeader.mutateAsync({
       groupId: groupId as string,
       leaderId: group?.data?.leaderId as string,
-      newLeaderId: selectedMember[0]?.id as string,
+      newLeaderId: selectedMember[0]?.memberId as string,
     });
     router.push(`/groups/${groupId}`);
   };

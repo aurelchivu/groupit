@@ -44,7 +44,7 @@ const GroupMembers: NextPage = () => {
 
     await removeMembers.mutateAsync({
       groupId: groupId as string,
-      membersToRemove: selectedMembers.map((item) => item?.id) as string[],
+      membersToRemove: selectedMembers.map((member) => member?.id) as string[],
     });
     router.push(`/groups/${groupId}`);
   };

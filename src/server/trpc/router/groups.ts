@@ -34,13 +34,12 @@ export const groupRouter = router({
     }),
 
   getAll: protectedProcedure.query(async () => {
-    const groups = await prisma?.groupp.findMany({
+    return await prisma?.groupp.findMany({
       include: {
         leader: true,
         createdBy: true,
       },
     });
-    return groups;
   }),
 
   getById: protectedProcedure.input(z.string()).query(async ({ input }) => {
@@ -142,35 +141,35 @@ export const groupRouter = router({
       });
     }),
 
-  // How to handle this in a shorter way???
   setLeader: protectedProcedure
     .input(
       z.object({
         groupId: z.string(),
-        memberId: z.string(),
+        leaderId: z.string(),
       })
     )
     .mutation(async ({ input }) => {
-      await prisma?.groupp.update({
+      return await prisma?.groupp.update({
         where: { id: input.groupId },
         data: {
           leader: {
-            connect: { id: input.memberId },
+            connect: { id: input.leaderId },
           },
-        },
-      });
-      await prisma?.grouppMembers.updateMany({
-        where: {
-          groupId: input.groupId,
-          memberId: input.memberId,
-        },
-        data: {
-          isLeader: true,
+          members: {
+            updateMany: {
+              where: {
+                memberId: input.leaderId,
+              },
+              data: {
+                isLeader: true,
+              },
+            },
+          },
         },
       });
     }),
 
-  // How to handle this in a shorter way???
+  // How to update two ids???
   changeLeader: protectedProcedure
     .input(
       z.object({
@@ -180,30 +179,30 @@ export const groupRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      await prisma?.groupp.update({
+      return await prisma?.groupp.update({
         where: { id: input.groupId },
         data: {
           leader: {
             connect: { id: input.newLeaderId },
           },
-        },
-      });
-      await prisma?.grouppMembers.updateMany({
-        where: {
-          groupId: input.groupId,
-          memberId: input.leaderId,
-        },
-        data: {
-          isLeader: false,
-        },
-      });
-      await prisma?.grouppMembers.updateMany({
-        where: {
-          groupId: input.groupId,
-          memberId: input.newLeaderId,
-        },
-        data: {
-          isLeader: true,
+          members: {
+            updateMany: {
+              where: {
+                memberId: input.newLeaderId,
+              },
+              data: {
+                isLeader: true,
+              },
+            },
+            // updateMany: {
+            //   where: {
+            //     memberId: input.leaderId,
+            //   },
+            //   data: {
+            //     isLeader: false,
+            //   },
+            // },
+          },
         },
       });
     }),
