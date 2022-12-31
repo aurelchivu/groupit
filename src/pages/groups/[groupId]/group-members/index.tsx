@@ -63,7 +63,7 @@ const GroupMembers: NextPage = () => {
             <Table.HeadCell className="!p-4"></Table.HeadCell>
             <Table.HeadCell className="!p-4"></Table.HeadCell>
             <Table.HeadCell>Full Name</Table.HeadCell>
-            <Table.HeadCell>Id</Table.HeadCell>
+            <Table.HeadCell>Member Id</Table.HeadCell>
             <Table.HeadCell>Added To Group</Table.HeadCell>
             <Table.HeadCell>Created at</Table.HeadCell>
             <Table.HeadCell>Updated at</Table.HeadCell>
@@ -84,7 +84,7 @@ const GroupMembers: NextPage = () => {
                 </Table.Cell>
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                   <Link
-                    href={`/members/${member.memberId}`}
+                    href={`/groups/${groupId}/group-members/${member.memberId}`}
                     className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                   >
                     {member.member?.fullName}
