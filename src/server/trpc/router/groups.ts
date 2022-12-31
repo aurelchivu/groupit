@@ -16,8 +16,8 @@ export const groupRouter = router({
         data: {
           ...input,
           createdById: ctx.session.user.id,
+          // This is nice!!!! --> https://github.com/tc39/proposal-object-rest-spread/issues/45
           ...(leaderId && {
-            // This is nice!!!! --> https://github.com/tc39/proposal-object-rest-spread/issues/45
             members: {
               create: {
                 member: {
@@ -169,7 +169,6 @@ export const groupRouter = router({
       });
     }),
 
-  // How to update two ids???
   changeLeader: protectedProcedure
     .input(
       z.object({
@@ -186,22 +185,24 @@ export const groupRouter = router({
             connect: { id: input.newLeaderId },
           },
           members: {
-            updateMany: {
-              where: {
-                memberId: input.newLeaderId,
+            updateMany: [
+              {
+                where: {
+                  memberId: input.newLeaderId,
+                },
+                data: {
+                  isLeader: true,
+                },
               },
-              data: {
-                isLeader: true,
+              {
+                where: {
+                  memberId: input.leaderId,
+                },
+                data: {
+                  isLeader: false,
+                },
               },
-            },
-            // updateMany: {
-            //   where: {
-            //     memberId: input.leaderId,
-            //   },
-            //   data: {
-            //     isLeader: false,
-            //   },
-            // },
+            ],
           },
         },
       });
