@@ -23,6 +23,9 @@ export const memberRouter = router({
           },
         },
       },
+      orderBy: {
+        fullName: "asc",
+      },
     });
     return members;
   }),
@@ -37,6 +40,11 @@ export const memberRouter = router({
         leaderOf: {
           include: {
             leader: true,
+          },
+        },
+        groups: {
+          include: {
+            group: true,
           },
         },
       },

@@ -29,7 +29,7 @@ const MemberMemberDetails: NextPage = () => {
     .data?.members.find((member) => member.memberId === ids.memberId);
   console.log("Member=", member);
 
-  const deleteMember = trpc.groups.delete.useMutation();
+  const removeMember = trpc.groups.removeMember.useMutation();
 
   useEffect(() => {
     if (typeof groupMemberId === "string") {
@@ -37,10 +37,13 @@ const MemberMemberDetails: NextPage = () => {
     }
   }, [groupId, groupMemberId]);
 
-  const handleDelete = async () => {
-    await deleteMember.mutateAsync(ids.memberId as string);
+  const handleRemove = async () => {
+    await removeMember.mutateAsync({
+      groupId: groupId as string,
+      membersToRemove: [member?.id as string],
+    });
     setOpenModal(undefined);
-    router.push("/groups");
+    router.push(`/groups/${groupId}`);
   };
 
   return (
@@ -57,7 +60,7 @@ const MemberMemberDetails: NextPage = () => {
           Edit Member
         </Button>
         <Button color="failure" onClick={() => setOpenModal("default")}>
-          Delete Member
+          Remove From Group
         </Button>
       </div>
 
@@ -81,11 +84,51 @@ const MemberMemberDetails: NextPage = () => {
               Details: {member?.member?.details}
             </span>
           </li>
-          {/* <li key="Created by">
+          <li key="Created by">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
               Created by: {member?.member?.createdBy.name}
             </span>
-          </li> */}
+          </li>
+          <li key="MemberOf">
+            <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
+              Member of:{" "}
+              {member?.member?.groups.map((group, index) => (
+                <>
+                  <Link
+                    key={group.id}
+                    href={`/groups/${group?.group?.id}`}
+                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                  >
+                    {group?.group?.name}
+                  </Link>
+                  {index === Number(member?.member?.groups.length) - 1
+                    ? "."
+                    : ", "}
+                </>
+              ))}
+            </span>
+          </li>
+          <li key="LeaderOf">
+            <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
+              Leader of:{" "}
+              {member?.member?.groups
+                .filter((group) => group.isLeader === true)
+                .map((group, index) => (
+                  <>
+                    <Link
+                      key={group.id}
+                      href={`/groups/${group?.group?.id}`}
+                      className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                    >
+                      {group?.group?.name}
+                    </Link>
+                    {index === Number(member?.member?.groups.length) - 1
+                      ? ". "
+                      : ", "}
+                  </>
+                ))}
+            </span>
+          </li>
           <li key="Added">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
               Added to group: {member?.createdAt.toLocaleString()}
@@ -114,11 +157,11 @@ const MemberMemberDetails: NextPage = () => {
           <div className="text-center">
             <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
             <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-              Are you sure you want to delete the group{" "}
-              {member?.member?.fullName}?
+              Are you sure you want to remove {member?.member?.fullName} from{" "}
+              {group.data?.name}?
             </h3>
             <div className="flex justify-center gap-4">
-              <Button color="success" onClick={handleDelete}>
+              <Button color="success" onClick={handleRemove}>
                 OK, do it!
               </Button>
               <Button color="failure" onClick={() => setOpenModal(undefined)}>
