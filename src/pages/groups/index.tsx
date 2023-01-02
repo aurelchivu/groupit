@@ -1,5 +1,5 @@
 import { type NextPage } from "next";
-import { Table, Checkbox, Button } from "flowbite-react";
+import { Table, Button } from "flowbite-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
@@ -49,10 +49,9 @@ const Groups: NextPage = () => {
                 </Table.Cell>
 
                 <Table.Cell>
-                  {/* {group.leader?.fullName || "NOT SET YET"} */}
                   {group.leader ? (
                     <Link
-                      href={`/members/${group.leaderId}`}
+                      href={`/groups/${group?.id}/group-members/${group.leaderId}`}
                       className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                     >
                       {group.leader?.fullName}

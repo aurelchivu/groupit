@@ -1,12 +1,12 @@
 import { type NextPage } from "next";
-import { Table, Checkbox, Button } from "flowbite-react";
+import { Table, Button } from "flowbite-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 
 const Members: NextPage = () => {
   const router = useRouter();
-  const members = trpc.members.getAll.useQuery();
+  const members = trpc.members.getAll.useQuery().data;
   console.log("Members:", members);
   return (
     <div className="p-4">
@@ -18,7 +18,7 @@ const Members: NextPage = () => {
           </Button>
         </div>
       </div>
-      {members.data ? (
+      {members ? (
         <Table hoverable>
           <Table.Head>
             <Table.HeadCell className="!p-4"></Table.HeadCell>
@@ -28,10 +28,9 @@ const Members: NextPage = () => {
             <Table.HeadCell>Created at</Table.HeadCell>
             <Table.HeadCell>Updated at</Table.HeadCell>
             <Table.HeadCell>Leader</Table.HeadCell>
-            <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {members.data?.map((member, index) => (
+            {members?.map((member, index) => (
               <Table.Row
                 className="delay-10 bg-white transition duration-300 ease-in-out hover:-translate-y-0.5 hover:bg-violet-300 dark:border-gray-700 dark:bg-gray-800"
                 key={member.id}
@@ -51,14 +50,6 @@ const Members: NextPage = () => {
                 <Table.Cell>{member.updatedAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>
                   {member.leaderOf.length > 0 ? "Yes" : "No"}
-                </Table.Cell>
-                <Table.Cell>
-                  <Link
-                    href={`/members/${member.id}/edit`}
-                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                  >
-                    Edit
-                  </Link>
                 </Table.Cell>
               </Table.Row>
             ))}

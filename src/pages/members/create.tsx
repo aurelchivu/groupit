@@ -17,11 +17,7 @@ const CreateMember: NextPage = () => {
     details: "",
   });
 
-  const createMember = trpc.members.create.useMutation({
-    onSuccess: (data) => {
-      console.log("dataaa === ", data);
-    },
-  });
+  const createMember = trpc.members.create.useMutation();
 
   const inputRef = useRef<HTMLInputElement>(null);
 

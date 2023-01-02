@@ -1,4 +1,3 @@
-import { group } from "console";
 import { router, protectedProcedure } from "../trpc";
 import { z } from "zod";
 

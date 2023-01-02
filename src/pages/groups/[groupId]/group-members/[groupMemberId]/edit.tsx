@@ -28,8 +28,8 @@ const EditGroupMember: NextPage = () => {
     memberId: "",
   });
 
-  const group = trpc.groups.getById.useQuery(ids.grouppId as string);
-  console.log("Group=", group.data);
+  const group = trpc.groups.getById.useQuery(ids.grouppId as string).data;
+  console.log("Group=", group);
   const member = trpc.groups.getById
     .useQuery(ids.grouppId as string)
     .data?.members.find((member) => member.memberId === ids.memberId);

@@ -6,7 +6,7 @@ import { Button, Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { trpc } from "../../../../../utils/trpc";
 
-const MemberMemberDetails: NextPage = () => {
+const GroupMemberDetails: NextPage = () => {
   const [openModal, setOpenModal] = useState<string | undefined>();
 
   const router = useRouter();
@@ -22,8 +22,8 @@ const MemberMemberDetails: NextPage = () => {
     memberId: "",
   });
 
-  const group = trpc.groups.getById.useQuery(ids.grouppId as string);
-  console.log("Group=", group.data);
+  const group = trpc.groups.getById.useQuery(ids.grouppId as string).data;
+  console.log("Group=", group);
   const member = trpc.groups.getById
     .useQuery(ids.grouppId as string)
     .data?.members.find((member) => member.memberId === ids.memberId);
@@ -83,7 +83,7 @@ const MemberMemberDetails: NextPage = () => {
           </li>
           <li key="MemberOf">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Member of:{" "}
+              Member of:
               {memberOf?.map((group, index) => (
                 <>
                   <Link
@@ -98,23 +98,26 @@ const MemberMemberDetails: NextPage = () => {
               ))}
             </span>
           </li>
-          <li key="LeaderOf">
-            <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Leader of:{" "}
-              {leaderOf?.map((group, index) => (
-                <>
-                  <Link
-                    key={group.id}
-                    href={`/groups/${group?.group?.id}`}
-                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                  >
-                    {group?.group?.name}
-                  </Link>
-                  {index === Number(leaderOf.length) - 1 ? null : ", "}
-                </>
-              ))}
-            </span>
-          </li>
+          {leaderOf && leaderOf?.length > 0 ? (
+            <li key="LeaderOf">
+              <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
+                Leader of:{" "}
+                {leaderOf?.map((group, index) => (
+                  <>
+                    <Link
+                      key={group.id}
+                      href={`/groups/${group?.group?.id}`}
+                      className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                    >
+                      {group?.group?.name}
+                    </Link>
+                    {index === Number(leaderOf.length) - 1 ? null : ", "}
+                  </>
+                ))}
+              </span>
+            </li>
+          ) : null}
+
           <li key="Added">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
               Added to group: {member?.createdAt.toLocaleString()}
@@ -161,7 +164,7 @@ const MemberMemberDetails: NextPage = () => {
             <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
             <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
               Are you sure you want to remove {member?.member?.fullName} from{" "}
-              {group.data?.name}?
+              {group?.name}?
             </h3>
             <div className="flex justify-center gap-4">
               <Button color="success" onClick={handleRemove}>
@@ -178,4 +181,4 @@ const MemberMemberDetails: NextPage = () => {
   );
 };
 
-export default MemberMemberDetails;
+export default GroupMemberDetails;

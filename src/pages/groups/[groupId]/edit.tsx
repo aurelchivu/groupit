@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import { useEffect, useState } from "react";
 import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
-import { trpc } from "../../../../utils/trpc";
+import { trpc } from "../../../utils/trpc";
 
 const EditGroup: NextPage = () => {
   const router = useRouter();
@@ -22,10 +22,10 @@ const EditGroup: NextPage = () => {
     leaderId: "",
   });
 
-  const group = trpc.groups.getById.useQuery(id as string);
-  const groupName = group?.data?.name;
-  const groupDescription = group?.data?.description;
-  const groupLeaderId = group?.data?.leaderId;
+  const group = trpc.groups.getById.useQuery(id as string).data;
+  const groupName = group?.name;
+  const groupDescription = group?.description;
+  const groupLeaderId = group?.leaderId;
 
   const updateGroup = trpc.groups.update.useMutation();
 
@@ -52,18 +52,18 @@ const EditGroup: NextPage = () => {
         <Button size="lg" onClick={() => router.back()}>
           Go Back
         </Button>
-        {group.data?.members.length === 0 ? (
+        {group?.members.length === 0 ? (
           <Button
             color="success"
-            onClick={() => router.push(`/groups/${group.data?.id}/add-members`)}
+            onClick={() => router.push(`/groups/${group?.id}/add-members`)}
           >
             Add Members
           </Button>
-        ) : group.data?.leader ? (
+        ) : group?.leader ? (
           <Button
             color="success"
             onClick={() =>
-              router.push(`/groups/${group.data?.id}/change-leader`)
+              router.push(`/groups/${group?.id}/change-leader`)
             }
           >
             Change Leader
@@ -71,7 +71,7 @@ const EditGroup: NextPage = () => {
         ) : (
           <Button
             color="success"
-            onClick={() => router.push(`/groups/${group.data?.id}/set-leader`)}
+            onClick={() => router.push(`/groups/${group?.id}/set-leader`)}
           >
             Set Leader
           </Button>

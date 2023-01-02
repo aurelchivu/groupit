@@ -10,13 +10,12 @@ const GroupDetails: NextPage = () => {
   const [openModal, setOpenModal] = useState<string | undefined>();
 
   const router = useRouter();
-
   const { groupId } = router.query;
+
   const [id, setId] = useState<string>("");
 
-  const group = trpc.groups.getById.useQuery(id as string);
-  console.log("Group=", group.data);
-  const leaderId = group.data?.members.find((member) => member.isLeader)?.id;
+  const group = trpc.groups.getById.useQuery(id as string).data;
+  console.log("Group=", group);
 
   const deleteGroup = trpc.groups.delete.useMutation();
 
@@ -45,33 +44,33 @@ const GroupDetails: NextPage = () => {
         <ul className="my-4 space-y-3">
           <li key="Group name">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Group name: {group.data?.name}
+              Group name: {group?.name}
             </span>
           </li>
           <li key="Group id">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Group id: {group.data?.id}
+              Group id: {group?.id}
             </span>
           </li>
           <li key="Description">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Description: {group.data?.description}
+              Description: {group?.description}
             </span>
           </li>
           <li key="Created by">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Created by: {group.data?.createdBy.name}
+              Created by: {group?.createdBy.name}
             </span>
           </li>
           <li key="Leader">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
               Leader:
-              {group.data?.leader?.id ? (
+              {group?.leader ? (
                 <Link
-                  href={`/groups/${group.data?.id}/group-members/${group.data.leaderId}`}
+                  href={`/groups/${group?.id}/group-members/${group.leaderId}`}
                   className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                 >
-                  {group.data?.leader?.fullName}
+                  {group?.leader?.fullName}
                 </Link>
               ) : (
                 " Not set yet "
@@ -80,15 +79,15 @@ const GroupDetails: NextPage = () => {
           </li>
           <li key="Members">
             <span className="group ml-3 flex  flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              {group.data?.members.length === 0 ? (
+              {group?.members.length === 0 ? (
                 "No Members"
               ) : (
                 <Link
-                  href={`/groups/${group.data?.id}/group-members`}
+                  href={`/groups/${group?.id}/group-members`}
                   className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                 >
-                  {group.data?.members.length && group.data?.members.length > 1
-                    ? `${group.data?.members.length} Members`
+                  {group?.members.length && group?.members.length > 1
+                    ? `${group?.members.length} Members`
                     : "1 Member"}
                 </Link>
               )}
@@ -96,12 +95,12 @@ const GroupDetails: NextPage = () => {
           </li>
           <li key="Created at">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Created at: {group.data?.createdAt.toLocaleString()}
+              Created at: {group?.createdAt.toLocaleString()}
             </span>
           </li>
           <li key="Last update">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Last update : {group.data?.updatedAt.toLocaleString()}
+              Last update : {group?.updatedAt.toLocaleString()}
             </span>
           </li>
         </ul>
@@ -111,7 +110,7 @@ const GroupDetails: NextPage = () => {
         <Button
           size="lg"
           color="success"
-          onClick={() => router.push(`/groups/${group.data?.id}/edit`)}
+          onClick={() => router.push(`/groups/${group?.id}/edit`)}
         >
           Edit Group
         </Button>
@@ -129,7 +128,7 @@ const GroupDetails: NextPage = () => {
           <div className="text-center">
             <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
             <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-              Are you sure you want to delete the group {group.data?.name}?
+              Are you sure you want to delete the group {group?.name}?
             </h3>
             <div className="flex justify-center gap-4">
               <Button color="success" onClick={handleDelete}>

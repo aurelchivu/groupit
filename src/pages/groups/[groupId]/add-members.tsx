@@ -17,8 +17,8 @@ const AddMembers: NextPage = () => {
     }
   }, [groupId]);
 
-  const group = trpc.groups.getById.useQuery(id as string);
-  const groupMembers = group.data?.members;
+  const group = trpc.groups.getById.useQuery(id as string).data;
+  const groupMembers = group?.members;
   // console.log("Group Members", groupMembers);
 
   const allMembers = trpc.members.getAll.useQuery();

@@ -18,13 +18,11 @@ const ChangeLeader: NextPage = () => {
     }
   }, [groupId]);
 
-  const group = trpc.groups.getById.useQuery(id as string);
-  console.log("Group", group.data);
-  const groupName = group?.data?.name;
+  const group = trpc.groups.getById.useQuery(id as string).data;
+  console.log("Group", group);
+  const groupName = group?.name;
 
-  const members = group.data?.members.filter(
-    (member) => member.isLeader === false
-  );
+  const members = group?.members.filter((member) => member.isLeader === false);
   console.log("Members", members);
 
   const changeLeader = trpc.groups.changeLeader.useMutation();
@@ -46,7 +44,7 @@ const ChangeLeader: NextPage = () => {
 
     await changeLeader.mutateAsync({
       groupId: groupId as string,
-      leaderId: group?.data?.leaderId as string,
+      leaderId: group?.leaderId as string,
       newLeaderId: selectedMember[0]?.memberId as string,
     });
     router.push(`/groups/${groupId}`);

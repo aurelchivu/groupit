@@ -17,11 +17,11 @@ const SetLeader: NextPage = () => {
     }
   }, [groupId]);
 
-  const group = trpc.groups.getById.useQuery(id as string);
-  console.log("Group", group.data);
-  const groupName = group?.data?.name;
+  const group = trpc.groups.getById.useQuery(id as string).data;
+  console.log("Group", group);
+  const groupName = group?.name;
   const setLeader = trpc.groups.setLeader.useMutation();
-  const members = group.data?.members;
+  const members = group?.members;
   console.log("Members", members);
 
   const [checked, setChecked] = useState<{ [key: string]: boolean }>({});
