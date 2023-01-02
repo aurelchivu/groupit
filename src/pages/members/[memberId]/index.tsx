@@ -34,7 +34,7 @@ const MemberDetails: NextPage = () => {
   return (
     <div className="p-4">
       <Button size="lg" onClick={() => router.back()}>
-        Go Back To Group Members
+        Go Back To Members
       </Button>
 
       <div className="max-w-xxl my-5 w-full rounded-lg border bg-white p-4 shadow-md dark:border-gray-700 dark:bg-gray-800 sm:p-6">
