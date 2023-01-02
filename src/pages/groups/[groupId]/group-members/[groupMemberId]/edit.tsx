@@ -6,39 +6,54 @@ import { trpc } from "../../../../../utils/trpc";
 
 const EditGroupMember: NextPage = () => {
   const router = useRouter();
+  const { groupId, groupMemberId } = router.query;
 
-  interface IState {
+  interface IFormData {
     fullName: string;
     details: string;
   }
 
-  const [formData, setFormData] = useState<IState>({
+  const [formData, setFormData] = useState<IFormData>({
     fullName: "",
     details: "",
   });
 
-  const [id, setMemberId] = useState<string>("");
+  interface IState {
+    grouppId: string;
+    memberId: string;
+  }
 
-  const { memberId } = router.query;
-  const member = trpc.members.getById.useQuery(id as string);
+  const [ids, setIds] = useState<IState>({
+    grouppId: "",
+    memberId: "",
+  });
 
-  const memberFullName = member?.data?.fullName as string;
-  const memberDetails = member?.data?.details as string;
+  const group = trpc.groups.getById.useQuery(ids.grouppId as string);
+  console.log("Group=", group.data);
+  const member = trpc.groups.getById
+    .useQuery(ids.grouppId as string)
+    .data?.members.find((member) => member.memberId === ids.memberId);
+  console.log("Member=", member);
 
-  const deleteMember = trpc.members.delete.useMutation();
+  const memberFullName = member?.member?.fullName as string;
+  const memberDetails = member?.member?.details as string;
+
   const updateMember = trpc.members.update.useMutation();
 
   useEffect(() => {
-    if (typeof memberId === "string") {
-      setMemberId(memberId);
+    if (typeof groupMemberId === "string") {
+      setIds({ grouppId: groupId as string, memberId: groupMemberId });
       setFormData({ fullName: memberFullName, details: memberDetails });
     }
-  }, [memberId, memberFullName, memberDetails]);
+  }, [groupId, groupMemberId, memberFullName, memberDetails]);
 
   const submitCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    await updateMember.mutateAsync({ id: memberId as string, ...formData });
-    router.push("/members");
+    await updateMember.mutateAsync({
+      id: groupMemberId as string,
+      ...formData,
+    });
+    router.push(`/groups/${groupId}/group-members/${groupMemberId}`);
   };
 
   return (

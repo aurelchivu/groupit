@@ -26,7 +26,6 @@ const EditGroup: NextPage = () => {
   const groupName = group?.data?.name;
   const groupDescription = group?.data?.description;
   const groupLeaderId = group?.data?.leaderId;
-  // console.log(group);
 
   const updateGroup = trpc.groups.update.useMutation();
 

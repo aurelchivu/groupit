@@ -16,6 +16,7 @@ const GroupDetails: NextPage = () => {
 
   const group = trpc.groups.getById.useQuery(id as string);
   console.log("Group=", group.data);
+  const leaderId = group.data?.members.find((member) => member.isLeader)?.id;
 
   const deleteGroup = trpc.groups.delete.useMutation();
 
@@ -33,17 +34,9 @@ const GroupDetails: NextPage = () => {
 
   return (
     <div className="p-4">
-      <div className="align-center flex justify-between">
-        <Button
-          size="lg"
-          onClick={() => router.push(`/groups/${group.data?.id}/edit`)}
-        >
-          Edit Group
-        </Button>
-        <Button color="failure" onClick={() => setOpenModal("default")}>
-          Delete Group
-        </Button>
-      </div>
+      <Button size="lg" onClick={() => router.push(`/groups`)}>
+        Go Back
+      </Button>
 
       <div className="max-w-xxl my-5 w-full rounded-lg border bg-white p-4 shadow-md dark:border-gray-700 dark:bg-gray-800 sm:p-6">
         <h5 className="mb-3 ml-3 text-base font-semibold text-gray-900 dark:text-white md:text-xl">
@@ -75,7 +68,7 @@ const GroupDetails: NextPage = () => {
               Leader:
               {group.data?.leader?.id ? (
                 <Link
-                  href={`/members/${group.data?.leader?.id}`}
+                  href={`/groups/${group.data?.id}/group-members/${group.data.leaderId}`}
                   className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                 >
                   {group.data?.leader?.fullName}
@@ -94,33 +87,11 @@ const GroupDetails: NextPage = () => {
                   href={`/groups/${group.data?.id}/group-members`}
                   className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                 >
-                  {/* {group.data?.members.length && group.data?.members.length > 1
-                  ? "Members"
-                  : "Member"} */}
                   {group.data?.members.length && group.data?.members.length > 1
                     ? `${group.data?.members.length} Members`
                     : "1 Member"}
                 </Link>
               )}
-
-              {/* {":"}
-              {group.data?.members.map((member, index) => {
-                console.log(member);
-                return (
-                  <>
-                    <Link
-                      key={member.id}
-                      href={`/members/${member?.member?.id}`}
-                      className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                    >
-                      {member.member?.fullName}
-                    </Link>
-                    {index === Number(group.data?.members.length) - 1
-                      ? ". "
-                      : ","}
-                  </>
-                );
-              })} */}
             </span>
           </li>
           <li key="Created at">
@@ -134,6 +105,19 @@ const GroupDetails: NextPage = () => {
             </span>
           </li>
         </ul>
+      </div>
+
+      <div className="align-center flex justify-between">
+        <Button
+          size="lg"
+          color="success"
+          onClick={() => router.push(`/groups/${group.data?.id}/edit`)}
+        >
+          Edit Group
+        </Button>
+        <Button color="failure" onClick={() => setOpenModal("default")}>
+          Delete Group
+        </Button>
       </div>
 
       <Modal

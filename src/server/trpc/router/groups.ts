@@ -1,3 +1,4 @@
+import { group } from "console";
 import { router, protectedProcedure } from "../trpc";
 import { z } from "zod";
 
@@ -38,6 +39,7 @@ export const groupRouter = router({
       include: {
         leader: true,
         createdBy: true,
+        // members: true,
       },
       orderBy: {
         name: "asc",
@@ -54,7 +56,7 @@ export const groupRouter = router({
         members: {
           include: {
             member: {
-              include: { 
+              include: {
                 createdBy: true,
                 groups: {
                   include: {
@@ -134,7 +136,7 @@ export const groupRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      return await prisma?.groupp.update({
+      const group = await prisma?.groupp.update({
         where: {
           id: input.groupId,
         },
@@ -151,6 +153,21 @@ export const groupRouter = router({
           },
         },
       });
+
+      // I don't like this. I should disconnect the group from the member, updating the member model.
+      input.membersToRemove.map(async (id) => {
+        await prisma?.grouppMembers.delete({
+          where: {
+            id,
+          },
+          // data: {
+          //   groups: {
+          //     disconnect: [{ id: input.groupId }],
+          //   },
+          // },
+        });
+      });
+      return group;
     }),
 
   setLeader: protectedProcedure

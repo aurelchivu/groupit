@@ -28,6 +28,10 @@ const MemberMemberDetails: NextPage = () => {
     .useQuery(ids.grouppId as string)
     .data?.members.find((member) => member.memberId === ids.memberId);
   console.log("Member=", member);
+  const memberOf = member?.member?.groups;
+  const leaderOf = member?.member?.groups.filter(
+    (group) => group.isLeader === true
+  );
 
   const removeMember = trpc.groups.removeMember.useMutation();
 
@@ -48,21 +52,9 @@ const MemberMemberDetails: NextPage = () => {
 
   return (
     <div className="p-4">
-      <div className="align-center flex justify-between">
-        <Button
-          size="lg"
-          onClick={() =>
-            router.push(
-              `/groups/${groupId}/group-members/${groupMemberId}/edit`
-            )
-          }
-        >
-          Edit Member
-        </Button>
-        <Button color="failure" onClick={() => setOpenModal("default")}>
-          Remove From Group
-        </Button>
-      </div>
+      <Button size="lg" onClick={() => router.back()}>
+        Go Back To Group Members
+      </Button>
 
       <div className="max-w-xxl my-5 w-full rounded-lg border bg-white p-4 shadow-md dark:border-gray-700 dark:bg-gray-800 sm:p-6">
         <h5 className="mb-3 ml-3 text-base font-semibold text-gray-900 dark:text-white md:text-xl">
@@ -92,7 +84,7 @@ const MemberMemberDetails: NextPage = () => {
           <li key="MemberOf">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
               Member of:{" "}
-              {member?.member?.groups.map((group, index) => (
+              {memberOf?.map((group, index) => (
                 <>
                   <Link
                     key={group.id}
@@ -101,9 +93,7 @@ const MemberMemberDetails: NextPage = () => {
                   >
                     {group?.group?.name}
                   </Link>
-                  {index === Number(member?.member?.groups.length) - 1
-                    ? "."
-                    : ", "}
+                  {index === Number(memberOf?.length) - 1 ? null : ", "}
                 </>
               ))}
             </span>
@@ -111,22 +101,18 @@ const MemberMemberDetails: NextPage = () => {
           <li key="LeaderOf">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
               Leader of:{" "}
-              {member?.member?.groups
-                .filter((group) => group.isLeader === true)
-                .map((group, index) => (
-                  <>
-                    <Link
-                      key={group.id}
-                      href={`/groups/${group?.group?.id}`}
-                      className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                    >
-                      {group?.group?.name}
-                    </Link>
-                    {index === Number(member?.member?.groups.length) - 1
-                      ? ". "
-                      : ", "}
-                  </>
-                ))}
+              {leaderOf?.map((group, index) => (
+                <>
+                  <Link
+                    key={group.id}
+                    href={`/groups/${group?.group?.id}`}
+                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                  >
+                    {group?.group?.name}
+                  </Link>
+                  {index === Number(leaderOf.length) - 1 ? null : ", "}
+                </>
+              ))}
             </span>
           </li>
           <li key="Added">
@@ -146,6 +132,23 @@ const MemberMemberDetails: NextPage = () => {
             </span>
           </li>
         </ul>
+      </div>
+
+      <div className="align-center flex justify-between">
+        <Button
+          size="lg"
+          color="success"
+          onClick={() =>
+            router.push(
+              `/groups/${groupId}/group-members/${groupMemberId}/edit`
+            )
+          }
+        >
+          Edit Member
+        </Button>
+        <Button color="failure" onClick={() => setOpenModal("default")}>
+          Remove From Group
+        </Button>
       </div>
 
       <Modal

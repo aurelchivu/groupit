@@ -3,11 +3,11 @@ import { z } from "zod";
 
 export const memberRouter = router({
   create: protectedProcedure
-    .input(z.object({ fullName: z.string() }))
+    .input(z.object({ fullName: z.string(), details: z.string().optional() }))
     .mutation(async ({ input, ctx }) => {
       return await prisma?.member.create({
         data: {
-          fullName: input.fullName,
+          ...input,
           createdById: ctx.session.user.id,
         },
       });
@@ -64,6 +64,7 @@ export const memberRouter = router({
       z.object({
         id: z.string(),
         fullName: z.string(),
+        details: z.string().optional(),
         groupId: z.string().optional(),
         isLeader: z.boolean().optional(),
       })
