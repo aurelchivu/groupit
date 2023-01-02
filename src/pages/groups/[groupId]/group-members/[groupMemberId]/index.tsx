@@ -29,9 +29,7 @@ const GroupMemberDetails: NextPage = () => {
     .data?.members.find((member) => member.memberId === ids.memberId);
   console.log("Member=", member);
   const memberOf = member?.member?.groups;
-  const leaderOf = member?.member?.groups.filter(
-    (group) => group.isLeader === true
-  );
+  const leaderOf = member?.member?.leaderOf;
 
   const removeMember = trpc.groups.removeMember.useMutation();
 
@@ -93,7 +91,7 @@ const GroupMemberDetails: NextPage = () => {
                   >
                     {group?.group?.name}
                   </Link>
-                  {index === Number(memberOf?.length) - 1 ? null : ", "}
+                  {index < Number(memberOf?.length) - 1 ? ", " : null}
                 </>
               ))}
             </span>
@@ -106,12 +104,12 @@ const GroupMemberDetails: NextPage = () => {
                   <>
                     <Link
                       key={group.id}
-                      href={`/groups/${group?.group?.id}`}
+                      href={`/groups/${group?.id}`}
                       className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                     >
-                      {group?.group?.name}
+                      {group?.name}
                     </Link>
-                    {index === Number(leaderOf.length) - 1 ? null : ", "}
+                    {index < Number(leaderOf.length) - 1 ? ", " : null}
                   </>
                 ))}
               </span>

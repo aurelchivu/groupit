@@ -22,9 +22,15 @@ const CreateGroup: NextPage = () => {
     leaderId: "",
   });
 
+  const [error, setError] = useState<string | undefined>(undefined);
+
   const createGroup = trpc.groups.create.useMutation({
     onSuccess: (data) => {
       router.push(`/groups/${data?.id}`);
+    },
+    onError: (error) => {
+      console.log("Erorrrrrr===", error.message);
+      setError(error.message);
     },
   });
 
@@ -44,7 +50,7 @@ const CreateGroup: NextPage = () => {
           Go Back
         </Button>
       </div>
-
+      {error && <div className="text-red-500">{error}</div>}
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
         <h1 className="text-xl">Create New Group</h1>
         <div>

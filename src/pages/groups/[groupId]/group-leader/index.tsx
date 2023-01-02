@@ -27,9 +27,7 @@ const LeaderDetails: NextPage = () => {
   );
   console.log("Leader=", leader);
   const memberOf = leader?.member?.groups;
-  const leaderOf = leader?.member?.groups.filter(
-    (group) => group.isLeader === true
-  );
+  const leaderOf = leader?.member?.leaderOf;
 
   const removeLeader = trpc.groups.removeMember.useMutation();
 
@@ -76,7 +74,7 @@ const LeaderDetails: NextPage = () => {
           </li>
           <li key="Created by">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Created by: {leader?.member?.createdBy.name}
+              Created by: {leader?.member?.createdBy?.name}
             </span>
           </li>
           <li key="LeaderOf">
@@ -91,7 +89,7 @@ const LeaderDetails: NextPage = () => {
                   >
                     {group?.group?.name}
                   </Link>
-                  {index === Number(leaderOf?.length) - 1 ? null : ", "}
+                  {index < Number(memberOf?.length) - 1 ? "," : null}
                 </>
               ))}
             </span>
@@ -105,12 +103,12 @@ const LeaderDetails: NextPage = () => {
                   <>
                     <Link
                       key={group.id}
-                      href={`/groups/${group?.group?.id}`}
+                      href={`/groups/${group?.id}`}
                       className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                     >
-                      {group?.group?.name}
+                      {group?.name}
                     </Link>
-                    {index === Number(leaderOf.length) - 1 ? null : ", "}
+                    {index < Number(leaderOf.length) - 1 ? ", " : null}
                   </>
                 ))}
               </span>

@@ -1,5 +1,6 @@
 import { router, protectedProcedure } from "../trpc";
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 
 export const memberRouter = router({
   create: protectedProcedure
@@ -22,6 +23,11 @@ export const memberRouter = router({
             leader: true,
           },
         },
+        groups: {
+          include: {
+            group: true,
+          },
+        },
       },
       orderBy: {
         fullName: "asc",
@@ -31,24 +37,35 @@ export const memberRouter = router({
   }),
 
   getById: protectedProcedure.input(z.string()).query(async ({ input }) => {
-    return await prisma?.member.findFirst({
-      where: {
-        id: input,
-      },
-      include: {
-        createdBy: true,
-        leaderOf: {
-          include: {
-            leader: true,
+    try {
+      const member = await prisma?.member.findFirst({
+        where: {
+          id: input,
+        },
+        include: {
+          createdBy: true,
+          leaderOf: {
+            include: {
+              leader: true,
+            },
+          },
+          groups: {
+            include: {
+              group: true,
+            },
           },
         },
-        groups: {
-          include: {
-            group: true,
-          },
-        },
-      },
-    });
+      });
+      if (!member) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `Member with id ${input} not found!`,
+        });
+      }
+      return member;
+    } catch (error) {
+      throw error;
+    }
   }),
 
   delete: protectedProcedure.input(z.string()).mutation(async ({ input }) => {

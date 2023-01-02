@@ -1,5 +1,6 @@
 import { router, protectedProcedure } from "../trpc";
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 
 export const groupRouter = router({
   create: protectedProcedure
@@ -12,25 +13,36 @@ export const groupRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       const { leaderId } = input;
-      return await prisma?.groupp.create({
-        data: {
-          ...input,
-          createdById: ctx.session.user.id,
-          // This is nice!!!! --> https://github.com/tc39/proposal-object-rest-spread/issues/45
-          ...(leaderId && {
-            members: {
-              create: {
-                member: {
-                  connect: {
-                    id: leaderId,
+      try {
+        const group = await prisma?.groupp.create({
+          data: {
+            ...input,
+            createdById: ctx.session.user.id,
+            // This is nice!!!! --> https://github.com/tc39/proposal-object-rest-spread/issues/45
+            ...(leaderId && {
+              members: {
+                create: {
+                  member: {
+                    connect: {
+                      id: leaderId,
+                    },
                   },
+                  isLeader: true,
                 },
-                isLeader: true,
               },
-            },
-          }),
-        },
-      });
+            }),
+          },
+        });
+        return group;
+      } catch (error: any) {
+        if (error.code === "P2002") {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "Group with that name already exists!",
+          });
+        }
+        throw error;
+      }
     }),
 
   getAll: protectedProcedure.query(async () => {
@@ -62,6 +74,7 @@ export const groupRouter = router({
                     group: true,
                   },
                 },
+                leaderOf: true,
               },
             },
           },

@@ -2,7 +2,6 @@ import { type NextPage } from "next";
 import { useEffect, useState } from "react";
 import { Button, Label, Modal, TextInput, Toast } from "flowbite-react";
 import { useRouter } from "next/router";
-import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { trpc } from "../../../utils/trpc";
 
 const EditMember: NextPage = () => {
@@ -21,10 +20,10 @@ const EditMember: NextPage = () => {
   const [id, setMemberId] = useState<string>("");
 
   const { memberId } = router.query;
-  const member = trpc.members.getById.useQuery(id as string).data;
+  const { data: member } = trpc.members.getById.useQuery(id as string);
 
-    const memberFullName = member?.fullName as string;
-    const memberDetails = member?.details as string;
+  const memberFullName = member?.fullName as string;
+  const memberDetails = member?.details as string;
 
   const updateMember = trpc.members.update.useMutation();
 
