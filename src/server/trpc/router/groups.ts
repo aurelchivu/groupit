@@ -38,59 +38,98 @@ export const groupRouter = router({
         if (error.code === "P2002") {
           throw new TRPCError({
             code: "CONFLICT",
-            message: "Group with that name already exists!",
+            message: "Error: Group with that name already exists!",
           });
         }
-        throw error;
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
       }
     }),
 
   getAll: protectedProcedure.query(async () => {
-    return await prisma?.groupp.findMany({
-      include: {
-        leader: true,
-        createdBy: true,
-        // members: true,
-      },
-      orderBy: {
-        name: "asc",
-      },
-    });
+    try {
+      const groups = await prisma?.groupp.findMany({
+        include: {
+          leader: true,
+          createdBy: true,
+          // members: true,
+        },
+        orderBy: {
+          name: "asc",
+        },
+      });
+      return groups;
+    } catch (error: any) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: error.message,
+      });
+    }
   }),
 
   getById: protectedProcedure.input(z.string()).query(async ({ input }) => {
-    return await prisma?.groupp.findFirst({
-      where: {
-        id: input,
-      },
-      include: {
-        members: {
-          include: {
-            member: {
-              include: {
-                createdBy: true,
-                groups: {
-                  include: {
-                    group: true,
+    try {
+      const group = await prisma?.groupp.findFirst({
+        where: {
+          id: input,
+        },
+        include: {
+          members: {
+            include: {
+              member: {
+                include: {
+                  createdBy: true,
+                  groups: {
+                    include: {
+                      group: true,
+                    },
                   },
+                  leaderOf: true,
                 },
-                leaderOf: true,
               },
             },
           },
+          leader: true,
+          createdBy: true,
         },
-        leader: true,
-        createdBy: true,
-      },
-    });
+      });
+      if (!group) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `Group with id ${input} not found!`,
+        });
+      }
+      return group;
+    } catch (error: any) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: error.message,
+      });
+    }
   }),
 
   delete: protectedProcedure.input(z.string()).mutation(async ({ input }) => {
-    return await prisma?.groupp.delete({
-      where: {
-        id: input,
-      },
-    });
+    try {
+      const group = await prisma?.groupp.delete({
+        where: {
+          id: input,
+        },
+      });
+      if (!group) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `Group with id ${input} not found!`,
+        });
+      }
+      return group;
+    } catch (error: any) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: error.message,
+      });
+    }
   }),
 
   update: protectedProcedure
@@ -102,14 +141,28 @@ export const groupRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      return await prisma?.groupp.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          ...input,
-        },
-      });
+      try {
+        const group = await prisma?.groupp.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            ...input,
+          },
+        });
+        if (!group) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: `Group with id ${input.id} not found!`,
+          });
+        }
+        return group;
+      } catch (error: any) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
+      }
     }),
 
   addMember: protectedProcedure
@@ -120,24 +173,38 @@ export const groupRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      return await prisma?.groupp.update({
-        where: {
-          id: input.groupId,
-        },
-        data: {
-          members: {
-            create: [
-              ...input.membersToAdd.map((id) => ({
-                member: {
-                  connect: {
-                    id,
-                  },
-                },
-              })),
-            ],
+      try {
+        const group = await prisma?.groupp.update({
+          where: {
+            id: input.groupId,
           },
-        },
-      });
+          data: {
+            members: {
+              create: [
+                ...input.membersToAdd.map((id) => ({
+                  member: {
+                    connect: {
+                      id,
+                    },
+                  },
+                })),
+              ],
+            },
+          },
+        });
+        if (!group) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: `Group with id ${input.groupId} not found!`,
+          });
+        }
+        return group;
+      } catch (error: any) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
+      }
     }),
 
   removeMember: protectedProcedure
@@ -148,38 +215,65 @@ export const groupRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const group = await prisma?.groupp.update({
-        where: {
-          id: input.groupId,
-        },
-        data: {
-          members: {
-            disconnect: [
-              ...input.membersToRemove.map((id) => ({
-                id,
-              })),
-            ],
-          },
-          leader: {
-            disconnect: true,
-          },
-        },
-      });
-
-      // I don't like this. I should disconnect the group from the member, updating the member model.
-      input.membersToRemove.map(async (id) => {
-        await prisma?.grouppMembers.delete({
+      try {
+        const group = await prisma?.groupp.update({
           where: {
-            id,
+            id: input.groupId,
           },
-          // data: {
-          //   groups: {
-          //     disconnect: [{ id: input.groupId }],
-          //   },
-          // },
+          data: {
+            members: {
+              disconnect: [
+                ...input.membersToRemove.map((id) => ({
+                  id,
+                })),
+              ],
+            },
+            leader: {
+              disconnect: true,
+            },
+          },
         });
-      });
-      return group;
+
+        if (!group) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: `Group with id ${input.groupId} not found!`,
+          });
+        }
+
+        // I don't like this. I should disconnect the group from the member, updating the member model.
+        input.membersToRemove.map(async (id) => {
+          try {
+            await prisma?.grouppMembers.delete({
+              where: {
+                id,
+              },
+              // data: {
+              //   groups: {
+              //     disconnect: [{ id: input.groupId }],
+              //   },
+              // },
+            });
+            if (!id) {
+              throw new TRPCError({
+                code: "NOT_FOUND",
+                message: `Member with id ${id} not found!`,
+              });
+            }
+          } catch (error: any) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: error.message,
+            });
+          }
+        });
+        return group;
+      } catch (error: any) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
+      }
     }),
 
   setLeader: protectedProcedure
@@ -190,24 +284,38 @@ export const groupRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      return await prisma?.groupp.update({
-        where: { id: input.groupId },
-        data: {
-          leader: {
-            connect: { id: input.leaderId },
-          },
-          members: {
-            updateMany: {
-              where: {
-                memberId: input.leaderId,
-              },
-              data: {
-                isLeader: true,
+      try {
+        const group = await prisma?.groupp.update({
+          where: { id: input.groupId },
+          data: {
+            leader: {
+              connect: { id: input.leaderId },
+            },
+            members: {
+              updateMany: {
+                where: {
+                  memberId: input.leaderId,
+                },
+                data: {
+                  isLeader: true,
+                },
               },
             },
           },
-        },
-      });
+        });
+        if (!group) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: `Group with id ${input.groupId} not found!`,
+          });
+        }
+        return group;
+      } catch (error: any) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
+      }
     }),
 
   changeLeader: protectedProcedure
@@ -219,33 +327,47 @@ export const groupRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      return await prisma?.groupp.update({
-        where: { id: input.groupId },
-        data: {
-          leader: {
-            connect: { id: input.newLeaderId },
+      try {
+        const group = await prisma?.groupp.update({
+          where: { id: input.groupId },
+          data: {
+            leader: {
+              connect: { id: input.newLeaderId },
+            },
+            members: {
+              updateMany: [
+                {
+                  where: {
+                    memberId: input.newLeaderId,
+                  },
+                  data: {
+                    isLeader: true,
+                  },
+                },
+                {
+                  where: {
+                    memberId: input.leaderId,
+                  },
+                  data: {
+                    isLeader: false,
+                  },
+                },
+              ],
+            },
           },
-          members: {
-            updateMany: [
-              {
-                where: {
-                  memberId: input.newLeaderId,
-                },
-                data: {
-                  isLeader: true,
-                },
-              },
-              {
-                where: {
-                  memberId: input.leaderId,
-                },
-                data: {
-                  isLeader: false,
-                },
-              },
-            ],
-          },
-        },
-      });
+        });
+        if (!group) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: `Group with id ${input.groupId} not found!`,
+          });
+        }
+        return group;
+      } catch (error: any) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
+      }
     }),
 });

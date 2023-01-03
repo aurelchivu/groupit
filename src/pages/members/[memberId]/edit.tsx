@@ -25,7 +25,11 @@ const EditMember: NextPage = () => {
   const memberFullName = member?.fullName as string;
   const memberDetails = member?.details as string;
 
-  const updateMember = trpc.members.update.useMutation();
+  const updateMember = trpc.members.update.useMutation({
+    onSuccess: (data) => {
+      router.push(`/members/${data?.id}`);
+    },
+  });
 
   useEffect(() => {
     if (typeof memberId === "string") {
@@ -37,13 +41,12 @@ const EditMember: NextPage = () => {
   const submitCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     await updateMember.mutateAsync({ id: memberId as string, ...formData });
-    router.push("/members");
   };
 
   return (
     <div className="px-40 py-4">
       <div className="align-center flex justify-between">
-        <Button size="lg" onClick={() => router.push("/members")}>
+        <Button size="lg" onClick={() => router.back()}>
           Go Back
         </Button>
       </div>

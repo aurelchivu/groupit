@@ -29,10 +29,11 @@ const CreateGroup: NextPage = () => {
       router.push(`/groups/${data?.id}`);
     },
     onError: (error) => {
-      console.log("Erorrrrrr===", error.message);
       setError(error.message);
     },
   });
+
+  console.log("createGroup", createGroup);
 
   const submitCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -50,7 +51,7 @@ const CreateGroup: NextPage = () => {
           Go Back
         </Button>
       </div>
-      {error && <div className="text-red-500">{error}</div>}
+      {error && <h1 className="text-white">{error}</h1>}
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
         <h1 className="text-xl">Create New Group</h1>
         <div>

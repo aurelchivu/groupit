@@ -22,7 +22,14 @@ const EditGroup: NextPage = () => {
     leaderId: "",
   });
 
-  const group = trpc.groups.getById.useQuery(id as string).data;
+  const {
+    status,
+    data: group,
+    error,
+    isFetching,
+  } = trpc.groups.getById.useQuery(id as string);
+  console.log("Group=", group);
+
   const groupName = group?.name;
   const groupDescription = group?.description;
   const groupLeaderId = group?.leaderId;
