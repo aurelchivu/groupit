@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Button, Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { trpc } from "../../../../../utils/trpc";
+import { trpc } from "@/utils/trpc";
 
 const GroupMemberDetails: NextPage = () => {
   const [openModal, setOpenModal] = useState<string | undefined>();
@@ -22,8 +22,9 @@ const GroupMemberDetails: NextPage = () => {
     memberId: "",
   });
 
-  const group = trpc.groups.getById.useQuery(ids.grouppId as string).data;
+  const { data: group } = trpc.groups.getById.useQuery(ids.grouppId);
   console.log("Group=", group);
+  
   const member = trpc.groups.getById
     .useQuery(ids.grouppId as string)
     .data?.members.find((member) => member.memberId === ids.memberId);

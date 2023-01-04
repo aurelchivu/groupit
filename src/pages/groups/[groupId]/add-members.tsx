@@ -3,7 +3,8 @@ import { useCallback, useEffect, useState } from "react";
 import { Table, Checkbox, Button } from "flowbite-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { trpc } from "../../../utils/trpc";
+import { trpc } from "@/utils/trpc";
+import ErrorModal from "@/components/ErrorModal";
 
 const AddMembers: NextPage = () => {
   const [id, setId] = useState<string>("");
@@ -17,12 +18,13 @@ const AddMembers: NextPage = () => {
     }
   }, [groupId]);
 
-  const group = trpc.groups.getById.useQuery(id as string).data;
+  const {data: group} = trpc.groups.getById.useQuery(id);
   const groupMembers = group?.members;
   // console.log("Group Members", groupMembers);
 
   const allMembers = trpc.members.getAll.useQuery();
   const addMembers = trpc.groups.addMember.useMutation();
+  const { error } = addMembers;
   // console.log("All Members", allMembers.data);
 
   const filteredMembers = allMembers.data?.filter(
@@ -69,7 +71,7 @@ const AddMembers: NextPage = () => {
           </Button>
         </div>
       </div>
-
+      {error && <ErrorModal errorMessage={error.message} />}
       {filteredMembers ? (
         <Table hoverable>
           <Table.Head>

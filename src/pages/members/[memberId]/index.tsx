@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Button, Modal, Spinner } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { trpc } from "../../../utils/trpc";
+import { trpc } from "@/utils/trpc";
 
 const MemberDetails: NextPage = () => {
   const [openModal, setOpenModal] = useState<string | undefined>();

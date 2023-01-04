@@ -2,7 +2,8 @@ import { type NextPage } from "next";
 import { useState } from "react";
 import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
-import { trpc } from "../../utils/trpc";
+import { trpc } from "@/utils/trpc";
+import ErrorModal from "@/components/ErrorModal";
 
 const CreateGroup: NextPage = () => {
   const router = useRouter();
@@ -22,18 +23,13 @@ const CreateGroup: NextPage = () => {
     leaderId: "",
   });
 
-  const [error, setError] = useState<string | undefined>(undefined);
-
   const createGroup = trpc.groups.create.useMutation({
     onSuccess: (data) => {
       router.push(`/groups/${data?.id}`);
     },
-    onError: (error) => {
-      setError(error.message);
-    },
   });
 
-  console.log("createGroup", createGroup);
+  const { error } = createGroup;
 
   const submitCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -51,7 +47,7 @@ const CreateGroup: NextPage = () => {
           Go Back
         </Button>
       </div>
-      {error && <h1 className="text-white">{error}</h1>}
+      {error && <ErrorModal errorMessage={error.message} />}
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
         <h1 className="text-xl">Create New Group</h1>
         <div>

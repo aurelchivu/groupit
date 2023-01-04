@@ -2,7 +2,8 @@ import { type NextPage } from "next";
 import { useEffect, useState } from "react";
 import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
-import { trpc } from "../../../utils/trpc";
+import { trpc } from "@/utils/trpc";
+import ErrorModal from "@/components/ErrorModal";
 
 const EditGroup: NextPage = () => {
   const router = useRouter();
@@ -22,19 +23,19 @@ const EditGroup: NextPage = () => {
     leaderId: "",
   });
 
-  const {
-    status,
-    data: group,
-    error,
-    isFetching,
-  } = trpc.groups.getById.useQuery(id as string);
-  console.log("Group=", group);
+  const { data: group } = trpc.groups.getById.useQuery(id);
 
   const groupName = group?.name;
   const groupDescription = group?.description;
   const groupLeaderId = group?.leaderId;
 
-  const updateGroup = trpc.groups.update.useMutation();
+  const updateGroup = trpc.groups.update.useMutation({
+    onSuccess: () => {
+      router.back();
+    },
+  });
+
+  const { error } = updateGroup;
 
   useEffect(() => {
     if (typeof groupId === "string") {
@@ -50,7 +51,6 @@ const EditGroup: NextPage = () => {
   const submitCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     await updateGroup.mutateAsync({ id: groupId as string, ...formData });
-    router.back();
   };
 
   return (
@@ -69,9 +69,7 @@ const EditGroup: NextPage = () => {
         ) : group?.leader ? (
           <Button
             color="success"
-            onClick={() =>
-              router.push(`/groups/${group?.id}/change-leader`)
-            }
+            onClick={() => router.push(`/groups/${group?.id}/change-leader`)}
           >
             Change Leader
           </Button>
@@ -84,10 +82,10 @@ const EditGroup: NextPage = () => {
           </Button>
         )}
       </div>
-
+      {error && <ErrorModal errorMessage={error.message} />}
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
         <h1 className="text-xl">Edit Group: {groupName}</h1>
-        <div>
+        <>
           <div className="mb-2 block">
             <Label htmlFor="name" value="Group name" />
           </div>
@@ -100,8 +98,8 @@ const EditGroup: NextPage = () => {
               setFormData({ ...formData, name: e.target.value });
             }}
           />
-        </div>
-        <div>
+        </>
+        <>
           <div className="mb-2 block">
             <Label htmlFor="base" value="Group Description" />
           </div>
@@ -117,7 +115,7 @@ const EditGroup: NextPage = () => {
               });
             }}
           ></textarea>
-        </div>
+        </>
 
         <Button type="submit" size="lg">
           Save

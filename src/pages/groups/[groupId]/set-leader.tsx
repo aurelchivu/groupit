@@ -3,7 +3,8 @@ import { useCallback, useEffect, useState } from "react";
 import { Table, Checkbox, Button } from "flowbite-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { trpc } from "../../../utils/trpc";
+import { trpc } from "@/utils/trpc";
+import ErrorModal from "@/components/ErrorModal";
 
 const SetLeader: NextPage = () => {
   const [id, setId] = useState<string>("");
@@ -17,12 +18,15 @@ const SetLeader: NextPage = () => {
     }
   }, [groupId]);
 
-  const group = trpc.groups.getById.useQuery(id as string).data;
+  const { data: group } = trpc.groups.getById.useQuery(id);
   console.log("Group", group);
   const groupName = group?.name;
-  const setLeader = trpc.groups.setLeader.useMutation();
+
   const members = group?.members;
   console.log("Members", members);
+
+  const setLeader = trpc.groups.setLeader.useMutation();
+  const { error } = setLeader;
 
   const [checked, setChecked] = useState<{ [key: string]: boolean }>({});
   console.log("Checked", checked);
@@ -51,7 +55,8 @@ const SetLeader: NextPage = () => {
 
   return (
     <div className="p-4">
-      <h1 className="p-2 text-xl">Set Leader</h1>
+      {error && <ErrorModal errorMessage={error.message} />}
+      <h1 className="p-2 text-xl">Set Leader To {groupName} </h1>
       <div className="flex items-center justify-between">
         <Button size="lg" onClick={() => router.push(`/groups/${groupId}`)}>
           Go Back To {groupName}

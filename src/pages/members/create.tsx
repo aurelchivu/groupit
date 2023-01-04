@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import { useState, useEffect, useRef } from "react";
 import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
-import { trpc } from "../../utils/trpc";
+import { trpc } from "@/utils/trpc";
 
 const CreateMember: NextPage = () => {
   interface MemberState {

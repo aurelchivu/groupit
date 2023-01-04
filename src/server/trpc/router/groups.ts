@@ -43,7 +43,8 @@ export const groupRouter = router({
         }
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: error.message,
+          message:
+            "An unexpected error occurred while creating the group, please try again later.",
         });
       }
     }),
@@ -64,7 +65,8 @@ export const groupRouter = router({
     } catch (error: any) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: error.message,
+        message:
+          "An unexpected error occurred while getting the groups, please try again later.",
       });
     }
   }),
@@ -105,7 +107,8 @@ export const groupRouter = router({
     } catch (error: any) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: error.message,
+        message:
+          "An unexpected error occurred while getting the group, please try again later.",
       });
     }
   }),
@@ -127,7 +130,8 @@ export const groupRouter = router({
     } catch (error: any) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: error.message,
+        message:
+          "An unexpected error occurred while deleting the group, please try again later.",
       });
     }
   }),
@@ -160,7 +164,8 @@ export const groupRouter = router({
       } catch (error: any) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: error.message,
+          message:
+            "An unexpected error occurred while updating, please try again later.",
         });
       }
     }),
@@ -202,7 +207,8 @@ export const groupRouter = router({
       } catch (error: any) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: error.message,
+          message:
+            "An unexpected error occurred while adding the member, please try again later.",
         });
       }
     }),
@@ -263,7 +269,8 @@ export const groupRouter = router({
           } catch (error: any) {
             throw new TRPCError({
               code: "INTERNAL_SERVER_ERROR",
-              message: error.message,
+              message:
+                "An unexpected error occurred while getting the member, please try again later.",
             });
           }
         });
@@ -271,7 +278,8 @@ export const groupRouter = router({
       } catch (error: any) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: error.message,
+          message:
+            "An unexpected error occurred while removing the member, please try again later.",
         });
       }
     }),
@@ -313,7 +321,8 @@ export const groupRouter = router({
       } catch (error: any) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: error.message,
+          message:
+            "An unexpected error occurred while setting the leader, please try again later.",
         });
       }
     }),
@@ -366,7 +375,8 @@ export const groupRouter = router({
       } catch (error: any) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: error.message,
+          message:
+            "An unexpected error occurred while changing the leader, please try again later.",
         });
       }
     }),

@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Button, Modal, Spinner } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { trpc } from "../../../utils/trpc";
+import { trpc } from "@/utils/trpc";
+import ErrorModal from "@/components/ErrorModal";
 
 const GroupDetails: NextPage = () => {
   const [openModal, setOpenModal] = useState<string | undefined>();
@@ -14,14 +15,8 @@ const GroupDetails: NextPage = () => {
 
   const [id, setId] = useState<string>("");
 
-  const {
-    status,
-    data: group,
-    error,
-    isFetching,
-  } = trpc.groups.getById.useQuery(id as string);
+  const { status, data: group, error } = trpc.groups.getById.useQuery(id);
   console.log("Group=", group);
-  console.log("error=", error);
 
   const deleteGroup = trpc.groups.delete.useMutation();
 
@@ -52,13 +47,9 @@ const GroupDetails: NextPage = () => {
           />
         </span>
       ) : status === "error" ? (
-        <span className="flex justify-center text-white">
-          Error: {error.message}
-        </span>
+        <ErrorModal errorMessage={error.message} />
       ) : (
         <>
-          {isFetching ? <div>Refreshing...</div> : null}
-
           <div className="max-w-xxl my-5 w-full rounded-lg border bg-white p-4 shadow-md dark:border-gray-700 dark:bg-gray-800 sm:p-6">
             <h5 className="mb-3 ml-3 text-base font-semibold text-gray-900 dark:text-white md:text-xl">
               Group Details

@@ -3,7 +3,8 @@ import { useCallback, useEffect, useState } from "react";
 import { Table, Checkbox, Button } from "flowbite-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { trpc } from "../../../utils/trpc";
+import { trpc } from "@/utils/trpc";
+import ErrorModal from "@/components/ErrorModal";
 
 const ChangeLeader: NextPage = () => {
   const [id, setId] = useState<string>("");
@@ -18,7 +19,7 @@ const ChangeLeader: NextPage = () => {
     }
   }, [groupId]);
 
-  const group = trpc.groups.getById.useQuery(id as string).data;
+  const {data: group} = trpc.groups.getById.useQuery(id);
   console.log("Group", group);
   const groupName = group?.name;
 
@@ -26,6 +27,7 @@ const ChangeLeader: NextPage = () => {
   console.log("Members", members);
 
   const changeLeader = trpc.groups.changeLeader.useMutation();
+  const { error } = changeLeader;
 
   const handleOnChange = useCallback((memberId: string) => {
     console.log("MemberId", memberId);
@@ -52,6 +54,7 @@ const ChangeLeader: NextPage = () => {
 
   return (
     <div className="p-4">
+      {error && <ErrorModal errorMessage={error.message} />}
       <h1 className="p-2 text-xl">Change Leader</h1>
       <div className="flex items-center justify-between">
         <Button size="lg" onClick={() => router.push(`/groups/${groupId}`)}>
@@ -63,6 +66,7 @@ const ChangeLeader: NextPage = () => {
           </Button>
         </div>
       </div>
+
       {members ? (
         <Table hoverable>
           <Table.Head>

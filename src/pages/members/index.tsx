@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import { Table, Button } from "flowbite-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { trpc } from "../../utils/trpc";
+import { trpc } from "@/utils/trpc";
 
 const Members: NextPage = () => {
   const router = useRouter();

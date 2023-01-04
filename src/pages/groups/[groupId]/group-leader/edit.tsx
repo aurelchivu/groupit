@@ -2,7 +2,8 @@ import { type NextPage } from "next";
 import { useEffect, useState } from "react";
 import { Button, Label, Modal, TextInput, Toast } from "flowbite-react";
 import { useRouter } from "next/router";
-import { trpc } from "../../../../utils/trpc";
+import { trpc } from "@/utils/trpc";
+import ErrorModal from "@/components/ErrorModal";
 
 const EditGroupLeader: NextPage = () => {
   const router = useRouter();
@@ -26,7 +27,7 @@ const EditGroupLeader: NextPage = () => {
     groupId: "",
   });
 
-  const group = trpc.groups.getById.useQuery(ids.groupId as string).data;
+  const {data: group} = trpc.groups.getById.useQuery(ids.groupId);
   console.log("Group=", group);
   const leader = group?.members?.find(
     (member) => member?.member?.id === group.leaderId
@@ -37,6 +38,7 @@ const EditGroupLeader: NextPage = () => {
   const leaderDetails = leader?.member?.details as string;
 
   const updateMember = trpc.members.update.useMutation();
+  const { error } = updateMember;
 
   useEffect(() => {
     if (typeof groupId === "string") {
@@ -56,6 +58,7 @@ const EditGroupLeader: NextPage = () => {
 
   return (
     <div className="px-40 py-4">
+      {error && <ErrorModal errorMessage={error.message} />}
       <div className="align-center flex justify-between">
         <Button size="lg" onClick={() => router.back()}>
           Go Back
@@ -67,6 +70,7 @@ const EditGroupLeader: NextPage = () => {
           Change Leader
         </Button>
       </div>
+      
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
         <h1 className="text-xl">Edit Leader: {leaderFullName}</h1>
         <div>

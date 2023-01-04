@@ -2,9 +2,10 @@ import { type NextPage } from "next";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { Button, Modal } from "flowbite-react";
+import { Button, Modal, Spinner } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { trpc } from "../../../../utils/trpc";
+import { trpc } from "@/utils/trpc";
+import ErrorModal from "@/components/ErrorModal";
 
 const LeaderDetails: NextPage = () => {
   const [openModal, setOpenModal] = useState<string | undefined>();
@@ -20,8 +21,13 @@ const LeaderDetails: NextPage = () => {
     groupId: "",
   });
 
-  const group = trpc.groups.getById.useQuery(ids.groupId as string).data;
+  const {
+    status,
+    data: group,
+    error,
+  } = trpc.groups.getById.useQuery(ids.groupId);
   console.log("Group=", group);
+
   const leader = group?.members?.find(
     (member) => member?.member?.id === group.leaderId
   );
@@ -52,100 +58,116 @@ const LeaderDetails: NextPage = () => {
         Go Back
       </Button>
 
-      <div className="max-w-xxl my-5 w-full rounded-lg border bg-white p-4 shadow-md dark:border-gray-700 dark:bg-gray-800 sm:p-6">
-        <h5 className="mb-3 ml-3 text-base font-semibold text-gray-900 dark:text-white md:text-xl">
-          Leader Details
-        </h5>
-        <ul className="my-4 space-y-3">
-          <li key="Leader name">
-            <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Leader name: {leader?.member?.fullName}
-            </span>
-          </li>
-          <li key="Leader id">
-            <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Group Leader id: {leader?.member?.id}
-            </span>
-          </li>
-          <li key="Description">
-            <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Details: {leader?.member?.details}
-            </span>
-          </li>
-          <li key="Created by">
-            <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Created by: {leader?.member?.createdBy?.name}
-            </span>
-          </li>
-          <li key="LeaderOf">
-            <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Member of:
-              {memberOf?.map((group, index) => (
-                <>
-                  <Link
-                    key={group.id}
-                    href={`/groups/${group?.group?.id}`}
-                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                  >
-                    {group?.group?.name}
-                  </Link>
-                  {index < Number(memberOf?.length) - 1 ? "," : null}
-                </>
-              ))}
-            </span>
-          </li>
+      {status === "loading" ? (
+        <span className="flex h-screen items-center justify-center">
+          <Spinner
+            color="failure"
+            aria-label="Extra large spinner example"
+            size="xl"
+          />
+        </span>
+      ) : status === "error" ? (
+        <ErrorModal errorMessage={error.message} />
+      ) : (
+        <>
+          <div className="max-w-xxl my-5 w-full rounded-lg border bg-white p-4 shadow-md dark:border-gray-700 dark:bg-gray-800 sm:p-6">
+            <h5 className="mb-3 ml-3 text-base font-semibold text-gray-900 dark:text-white md:text-xl">
+              Leader Details
+            </h5>
+            <ul className="my-4 space-y-3">
+              <li key="Leader name">
+                <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
+                  Leader name: {leader?.member?.fullName}
+                </span>
+              </li>
+              <li key="Leader id">
+                <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
+                  Group Leader id: {leader?.member?.id}
+                </span>
+              </li>
+              <li key="Description">
+                <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
+                  Details: {leader?.member?.details}
+                </span>
+              </li>
+              <li key="Created by">
+                <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
+                  Created by: {leader?.member?.createdBy?.name}
+                </span>
+              </li>
+              <li key="LeaderOf">
+                <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
+                  Member of:
+                  {memberOf?.map((group, index) => (
+                    <>
+                      <Link
+                        key={group.id}
+                        href={`/groups/${group?.group?.id}`}
+                        className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                      >
+                        {group?.group?.name}
+                      </Link>
+                      {index < Number(memberOf?.length) - 1 ? "," : null}
+                    </>
+                  ))}
+                </span>
+              </li>
 
-          {leaderOf && leaderOf?.length > 0 ? (
-            <li key="LeaderOf">
-              <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-                Leader of:{" "}
-                {leaderOf?.map((group, index) => (
-                  <>
-                    <Link
-                      key={group.id}
-                      href={`/groups/${group?.id}`}
-                      className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                    >
-                      {group?.name}
-                    </Link>
-                    {index < Number(leaderOf.length) - 1 ? ", " : null}
-                  </>
-                ))}
-              </span>
-            </li>
-          ) : null}
+              {leaderOf && leaderOf?.length > 0 ? (
+                <li key="LeaderOf">
+                  <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
+                    Leader of:
+                    {leaderOf?.map((group, index) => (
+                      <>
+                        <Link
+                          key={group.id}
+                          href={`/groups/${group?.id}`}
+                          className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                        >
+                          {group?.name}
+                        </Link>
+                        {index < Number(leaderOf.length) - 1 ? ", " : null}
+                      </>
+                    ))}
+                  </span>
+                </li>
+              ) : null}
 
-          <li key="Added">
-            <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Added to group: {leader?.createdAt.toLocaleString()}
-            </span>
-          </li>
+              <li key="Added">
+                <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
+                  Added to group: {leader?.createdAt.toLocaleString()}
+                </span>
+              </li>
 
-          <li key="Created at">
-            <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Created at: {leader?.member?.createdAt.toLocaleString()}
-            </span>
-          </li>
-          <li key="Last update">
-            <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Last update : {leader?.member?.updatedAt.toLocaleString()}
-            </span>
-          </li>
-        </ul>
-      </div>
+              <li key="Created at">
+                <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
+                  Created at: {leader?.member?.createdAt.toLocaleString()}
+                </span>
+              </li>
+              <li key="Last update">
+                <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
+                  Last update : {leader?.member?.updatedAt.toLocaleString()}
+                </span>
+              </li>
+            </ul>
+          </div>
 
-      <div className="align-center flex justify-between">
-        <Button
-          size="lg"
-          color="success"
-          onClick={() => router.push(`/groups/${groupId}/group-leader/edit`)}
-        >
-          Edit Leader
-        </Button>
-        <Button color="failure" onClick={() => setOpenModal("default")}>
-          Remove From Group
-        </Button>
-      </div>
+          <div className="align-center flex justify-between">
+            <Button
+              size="lg"
+              color="success"
+              onClick={() =>
+                router.push(`/groups/${groupId}/group-leader/edit`)
+              }
+            >
+              Edit Leader
+            </Button>
+            <Button color="failure" onClick={() => setOpenModal("default")}>
+              Remove From Group
+            </Button>
+          </div>
+        </>
+      )}
 
       <Modal
         show={openModal === "default"}

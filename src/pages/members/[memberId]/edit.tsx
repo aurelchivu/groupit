@@ -1,8 +1,8 @@
 import { type NextPage } from "next";
 import { useEffect, useState } from "react";
-import { Button, Label, Modal, TextInput, Toast } from "flowbite-react";
+import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
-import { trpc } from "../../../utils/trpc";
+import { trpc } from "@/utils/trpc";
 
 const EditMember: NextPage = () => {
   const router = useRouter();
@@ -52,7 +52,7 @@ const EditMember: NextPage = () => {
       </div>
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
         <h1 className="text-xl">Edit Member: {memberFullName}</h1>
-        <div>
+        <>
           <div className="mb-2 block">
             <Label htmlFor="firstName" value="Member First Name" />
           </div>
@@ -65,8 +65,8 @@ const EditMember: NextPage = () => {
               setFormData({ ...formData, fullName: e.target.value });
             }}
           />
-        </div>
-        <div>
+        </>
+        <>
           <div className="mb-2 block">
             <Label htmlFor="base" value="Member Details" />
           </div>
@@ -82,7 +82,7 @@ const EditMember: NextPage = () => {
               });
             }}
           ></textarea>
-        </div>
+        </>
         <Button type="submit" size="lg">
           Edit Member
         </Button>

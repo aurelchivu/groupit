@@ -2,16 +2,12 @@ import { type NextPage } from "next";
 import { Table, Button, Spinner } from "flowbite-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { trpc } from "../../utils/trpc";
+import { trpc } from "@/utils/trpc";
+import ErrorModal from "@/components/ErrorModal";
 
 const Groups: NextPage = () => {
   const router = useRouter();
-  const {
-    status,
-    data: groups,
-    error,
-    isFetching,
-  } = trpc.groups.getAll.useQuery();
+  const { status, data: groups, error } = trpc.groups.getAll.useQuery();
   console.log(groups);
 
   return status === "loading" ? (
@@ -23,13 +19,9 @@ const Groups: NextPage = () => {
       />
     </span>
   ) : status === "error" ? (
-    <span className="flex justify-center text-white">
-      Error: {error.message}
-    </span>
+    <ErrorModal errorMessage={error.message} />
   ) : (
     <>
-      {isFetching ? <div>Refreshing...</div> : null}
-
       <div className="p-4">
         <div className="flex items-center justify-between">
           <h1 className="p-2 text-xl">Groups</h1>
