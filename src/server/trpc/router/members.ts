@@ -6,34 +6,51 @@ export const memberRouter = router({
   create: protectedProcedure
     .input(z.object({ fullName: z.string(), details: z.string().optional() }))
     .mutation(async ({ input, ctx }) => {
-      return await prisma?.member.create({
-        data: {
-          ...input,
-          createdById: ctx.session.user.id,
-        },
-      });
+      try {
+        const member = await prisma?.member.create({
+          data: {
+            ...input,
+            createdById: ctx.session.user.id,
+          },
+        });
+        return member;
+      } catch (error: any) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message:
+            "An unexpected error occurred while creating the member, please try again later.",
+        });
+      }
     }),
 
   getAll: protectedProcedure.query(async () => {
-    const members = await prisma?.member.findMany({
-      include: {
-        createdBy: true,
-        leaderOf: {
-          include: {
-            leader: true,
+    try {
+      const members = await prisma?.member.findMany({
+        include: {
+          createdBy: true,
+          leaderOf: {
+            include: {
+              leader: true,
+            },
+          },
+          groups: {
+            include: {
+              group: true,
+            },
           },
         },
-        groups: {
-          include: {
-            group: true,
-          },
+        orderBy: {
+          fullName: "asc",
         },
-      },
-      orderBy: {
-        fullName: "asc",
-      },
-    });
-    return members;
+      });
+      return members;
+    } catch (error: any) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message:
+          "An unexpected error occurred while getting the members, please try again later.",
+      });
+    }
   }),
 
   getById: protectedProcedure.input(z.string()).query(async ({ input }) => {
@@ -63,17 +80,36 @@ export const memberRouter = router({
         });
       }
       return member;
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message:
+          "An unexpected error occurred while getting the group, please try again later.",
+      });
     }
   }),
 
   delete: protectedProcedure.input(z.string()).mutation(async ({ input }) => {
-    return await prisma?.member.delete({
-      where: {
-        id: input,
-      },
-    });
+    try {
+      const member = await prisma?.member.delete({
+        where: {
+          id: input,
+        },
+      });
+      if (!member) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `Member with id ${input} not found!`,
+        });
+      }
+      return member;
+    } catch (error: any) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message:
+          "An unexpected error occurred while deleting the member, please try again later.",
+      });
+    }
   }),
 
   update: protectedProcedure
@@ -87,34 +123,28 @@ export const memberRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      return await prisma?.member.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          ...input,
-        },
-      });
-    }),
-
-  addMemberToGroup: protectedProcedure
-    .input(
-      z.object({
-        memberId: z.string(),
-        groupId: z.string(),
-      })
-    )
-    .mutation(async ({ input }) => {
-      const { groupId } = input;
-      return await prisma?.member.update({
-        where: {
-          id: input.memberId,
-        },
-        data: {
-          groups: {
-            connect: { id: groupId },
+      try {
+        const member = await prisma?.member.update({
+          where: {
+            id: input.id,
           },
-        },
-      });
+          data: {
+            ...input,
+          },
+        });
+        if (!member) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: `Group with id ${input.id} not found!`,
+          });
+        }
+        return member;
+      } catch (error: any) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message:
+            "An unexpected error occurred while updating the member, please try again later.",
+        });
+      }
     }),
 });
