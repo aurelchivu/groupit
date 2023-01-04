@@ -9,6 +9,7 @@ const Members: NextPage = () => {
   const router = useRouter();
   const { status, data: members, error } = trpc.members.getAll.useQuery();
   console.log("Members:", members);
+  
   return status === "loading" ? (
     <span className="flex h-screen items-center justify-center">
       <Spinner

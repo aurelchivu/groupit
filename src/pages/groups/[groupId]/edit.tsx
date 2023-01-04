@@ -82,10 +82,12 @@ const EditGroup: NextPage = () => {
           </Button>
         )}
       </div>
+
       {error && <ErrorModal errorMessage={error.message} />}
+
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
-        <h1 className="text-xl">Edit Group: {groupName}</h1>
-        <>
+        <h1 className="text-xl">Edit Group {groupName}</h1>
+        <div>
           <div className="mb-2 block">
             <Label htmlFor="name" value="Group name" />
           </div>
@@ -98,8 +100,9 @@ const EditGroup: NextPage = () => {
               setFormData({ ...formData, name: e.target.value });
             }}
           />
-        </>
-        <>
+        </div>
+
+        <div>
           <div className="mb-2 block">
             <Label htmlFor="base" value="Group Description" />
           </div>
@@ -115,7 +118,7 @@ const EditGroup: NextPage = () => {
               });
             }}
           ></textarea>
-        </>
+        </div>
 
         <Button type="submit" size="lg">
           Save

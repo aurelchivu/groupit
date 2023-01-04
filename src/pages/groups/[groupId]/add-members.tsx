@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import { useCallback, useEffect, useState } from "react";
-import { Table, Checkbox, Button } from "flowbite-react";
+import { Table, Checkbox, Button, Spinner } from "flowbite-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
@@ -18,13 +18,13 @@ const AddMembers: NextPage = () => {
     }
   }, [groupId]);
 
-  const {data: group} = trpc.groups.getById.useQuery(id);
+  const { status, data: group, error } = trpc.groups.getById.useQuery(id);
   const groupMembers = group?.members;
   // console.log("Group Members", groupMembers);
 
   const allMembers = trpc.members.getAll.useQuery();
   const addMembers = trpc.groups.addMember.useMutation();
-  const { error } = addMembers;
+  const { error: errorAddMembers } = addMembers;
   // console.log("All Members", allMembers.data);
 
   const filteredMembers = allMembers.data?.filter(
@@ -60,19 +60,44 @@ const AddMembers: NextPage = () => {
 
   return (
     <div className="p-4">
-      <h1 className="p-2 text-xl">Add Members</h1>
+      <h1 className="p-2 text-xl">Add Members to {group?.name}</h1>
       <div className="flex items-center justify-between">
-        <Button size="lg" onClick={() => router.back()}>
-          Go Back
-        </Button>
         <div className="py-4">
-          <Button size="lg" color="success" onClick={addSelectedMembers}>
+          <Button size="lg" onClick={() => router.back()}>
+            Go Back
+          </Button>
+        </div>
+
+        <div className="py-4">
+          <Button
+            size="lg"
+            color="success"
+            disabled={
+              Object.entries(checked)
+                .filter(([_, isChecked]) => isChecked)
+                .map(([memberId, _]) =>
+                  filteredMembers?.find((member) => member.id === memberId)
+                ).length === 0
+            }
+            onClick={addSelectedMembers}
+          >
             Add Selected Members
           </Button>
         </div>
       </div>
-      {error && <ErrorModal errorMessage={error.message} />}
-      {filteredMembers ? (
+      {errorAddMembers && <ErrorModal errorMessage={errorAddMembers.message} />}
+
+      {status === "loading" ? (
+        <span className="flex h-screen items-center justify-center">
+          <Spinner
+            color="failure"
+            aria-label="Extra large spinner example"
+            size="xl"
+          />
+        </span>
+      ) : status === "error" ? (
+        <ErrorModal errorMessage={error.message} />
+      ) : (
         <Table hoverable>
           <Table.Head>
             <Table.HeadCell className="!p-4"></Table.HeadCell>
@@ -126,8 +151,6 @@ const AddMembers: NextPage = () => {
             ))}
           </Table.Body>
         </Table>
-      ) : (
-        <div>Loading...</div>
       )}
     </div>
   );

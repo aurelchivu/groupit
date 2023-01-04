@@ -27,7 +27,7 @@ const EditGroupLeader: NextPage = () => {
     groupId: "",
   });
 
-  const {data: group} = trpc.groups.getById.useQuery(ids.groupId);
+  const { data: group } = trpc.groups.getById.useQuery(ids.groupId);
   console.log("Group=", group);
   const leader = group?.members?.find(
     (member) => member?.member?.id === group.leaderId
@@ -70,9 +70,9 @@ const EditGroupLeader: NextPage = () => {
           Change Leader
         </Button>
       </div>
-      
+
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
-        <h1 className="text-xl">Edit Leader: {leaderFullName}</h1>
+        <h1 className="text-xl">{`Edit ${group?.name}'s Leader ${leaderFullName}`}</h1>
         <div>
           <div className="mb-2 block">
             <Label htmlFor="fullName" value="Leader Full Name" />

@@ -53,10 +53,12 @@ const EditMember: NextPage = () => {
           Go Back
         </Button>
       </div>
+
       {error && <ErrorModal errorMessage={error.message} />}
+
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
-        <h1 className="text-xl">Edit Member: {memberFullName}</h1>
-        <>
+        <h1 className="text-xl">Edit Member {memberFullName}</h1>
+        <div>
           <div className="mb-2 block">
             <Label htmlFor="firstName" value="Member First Name" />
           </div>
@@ -69,8 +71,9 @@ const EditMember: NextPage = () => {
               setFormData({ ...formData, fullName: e.target.value });
             }}
           />
-        </>
-        <>
+        </div>
+
+        <div>
           <div className="mb-2 block">
             <Label htmlFor="base" value="Member Details" />
           </div>
@@ -86,7 +89,8 @@ const EditMember: NextPage = () => {
               });
             }}
           ></textarea>
-        </>
+        </div>
+
         <Button type="submit" size="lg">
           Edit Member
         </Button>

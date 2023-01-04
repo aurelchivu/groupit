@@ -56,17 +56,29 @@ const SetLeader: NextPage = () => {
   return (
     <div className="p-4">
       {error && <ErrorModal errorMessage={error.message} />}
-      <h1 className="p-2 text-xl">Set Leader To {groupName} </h1>
+
       <div className="flex items-center justify-between">
         <Button size="lg" onClick={() => router.push(`/groups/${groupId}`)}>
           Go Back To {groupName}
         </Button>
         <div className="py-4">
-          <Button size="lg" color="success" onClick={setSelectedLeader}>
+          <Button
+            size="lg"
+            color="success"
+            disabled={
+              Object.entries(checked)
+                .filter(([_, isChecked]) => isChecked)
+                .map(([memberId, _]) =>
+                  members?.find((member) => member.id === memberId)
+                ).length !== 1
+            }
+            onClick={setSelectedLeader}
+          >
             Set Selected Member as Leader
           </Button>
         </div>
       </div>
+      <h1 className="p-2 text-xl">{`Set ${groupName}'s Leader`} </h1>
       {members ? (
         <Table hoverable>
           <Table.Head>

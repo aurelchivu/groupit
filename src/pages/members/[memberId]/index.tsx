@@ -15,11 +15,7 @@ const MemberDetails: NextPage = () => {
 
   const [id, setId] = useState<string>("");
 
-  const {
-    status,
-    data: member,
-    error,
-  } = trpc.members.getById.useQuery(id);
+  const { status, data: member, error } = trpc.members.getById.useQuery(id);
   console.log("Member=", member);
 
   const deleteMember = trpc.members.delete.useMutation();
@@ -38,8 +34,8 @@ const MemberDetails: NextPage = () => {
 
   return (
     <div className="p-4">
-      <Button size="lg" onClick={() => router.push("/members")}>
-        Go Back To Members
+      <Button size="lg" onClick={() => router.back()}>
+        Go Back
       </Button>
 
       {status === "loading" ? (

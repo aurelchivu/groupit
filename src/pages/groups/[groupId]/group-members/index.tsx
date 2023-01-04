@@ -1,13 +1,15 @@
 import { type NextPage } from "next";
 import { useCallback, useEffect, useState } from "react";
-import { Table, Checkbox, Button, Spinner } from "flowbite-react";
+import { Table, Checkbox, Button, Spinner, Modal } from "flowbite-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
 import ErrorModal from "@/components/ErrorModal";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 
 const GroupMembers: NextPage = () => {
   const [id, setId] = useState<string>("");
+  const [openModal, setOpenModal] = useState<string | undefined>();
 
   const router = useRouter();
   const { groupId } = router.query;
@@ -18,15 +20,16 @@ const GroupMembers: NextPage = () => {
     }
   }, [groupId]);
 
-  const {
-    status,
-    data: group,
-    error,
-  } = trpc.groups.getById.useQuery(id);
+  const { status, data: group, error } = trpc.groups.getById.useQuery(id);
   console.log("Group", group);
   const groupName = group?.name;
 
-  const removeMembers = trpc.groups.removeMember.useMutation();
+  const removeMembers = trpc.groups.removeMember.useMutation({
+    onSuccess: () => {
+      router.push(`/groups/${groupId}`);
+    },
+  });
+
   const members = group?.members;
   console.log("Members", members);
 
@@ -57,18 +60,28 @@ const GroupMembers: NextPage = () => {
       groupId: groupId as string,
       membersToRemove: selectedMembers.map((member) => member?.id) as string[],
     });
-    router.push(`/groups/${groupId}`);
   };
 
-  return (
-    <div className="p-4">
-      <h1 className="p-2 text-xl">{groupName} Members</h1>
-      <div className="py-4">
-        <Button size="lg" onClick={() => router.push(`/groups/${groupId}`)}>
-          Go Back To {groupName}
-        </Button>
-      </div>
-      {members ? (
+  return status === "loading" ? (
+    <span className="flex h-screen items-center justify-center">
+      <Spinner
+        color="failure"
+        aria-label="Extra large spinner example"
+        size="xl"
+      />
+    </span>
+  ) : status === "error" ? (
+    <ErrorModal errorMessage={error.message} />
+  ) : (
+    <>
+      <div className="p-4">
+        <div className="py-4">
+          <Button size="lg" onClick={() => router.push(`/groups/${groupId}`)}>
+            Go Back To {groupName}
+          </Button>
+        </div>
+        <h1 className="p-2 text-xl">{`${groupName}'s Members`}</h1>
+
         <>
           <Table hoverable>
             <Table.Head>
@@ -150,11 +163,6 @@ const GroupMembers: NextPage = () => {
           </Table>
           <div className="flex items-center justify-between">
             <div className="py-4">
-              <Button size="lg" color="failure" onClick={removeSelectedMembers}>
-                Remove Selected Members
-              </Button>
-            </div>
-            <div className="py-4">
               <Button
                 size="lg"
                 color="success"
@@ -163,24 +171,49 @@ const GroupMembers: NextPage = () => {
                 Add New Members
               </Button>
             </div>
+
+            <div className="py-4">
+              <Button
+                size="lg"
+                color="failure"
+                disabled={
+                  Object.entries(checked)
+                    .filter(([_, isChecked]) => isChecked)
+                    .map(([memberId, _]) =>
+                      members?.find((member) => member.id === memberId)
+                    ).length === 0
+                }
+                onClick={() => setOpenModal("default")}
+              >
+                Remove Selected Members
+              </Button>
+            </div>
           </div>
         </>
-      ) : status === "loading" ? (
-        <span className="flex h-screen items-center justify-center">
-          <Spinner
-            color="failure"
-            aria-label="Extra large spinner example"
-            size="xl"
-          />
-        </span>
-      ) : status === "error" ? (
-        <ErrorModal errorMessage={error.message} />
-      ) : (
-        <div className="flex items-center justify-center">
-          <h1 className="text-2xl">No Members Found</h1>
-        </div>
-      )}
-    </div>
+      </div>
+      <Modal
+        show={openModal === "default"}
+        onClose={() => setOpenModal(undefined)}
+      >
+        <Modal.Header>Delete Confirmation</Modal.Header>
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+              Are you sure you want to remove the selected member(s)?
+            </h3>
+            <div className="flex justify-center gap-4">
+              <Button color="success" onClick={removeSelectedMembers}>
+                OK, do it!
+              </Button>
+              <Button color="failure" onClick={() => setOpenModal(undefined)}>
+                NO, get me out of here!
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+    </>
   );
 };
 

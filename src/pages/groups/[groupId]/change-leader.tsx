@@ -19,7 +19,7 @@ const ChangeLeader: NextPage = () => {
     }
   }, [groupId]);
 
-  const {data: group} = trpc.groups.getById.useQuery(id);
+  const { data: group } = trpc.groups.getById.useQuery(id);
   console.log("Group", group);
   const groupName = group?.name;
 
@@ -55,17 +55,27 @@ const ChangeLeader: NextPage = () => {
   return (
     <div className="p-4">
       {error && <ErrorModal errorMessage={error.message} />}
-      <h1 className="p-2 text-xl">Change Leader</h1>
+
       <div className="flex items-center justify-between">
         <Button size="lg" onClick={() => router.push(`/groups/${groupId}`)}>
           Go Back To {groupName}
         </Button>
         <div className="py-4">
-          <Button size="lg" color="success" onClick={changeSelectedLeader}>
+          <Button
+            disabled={Object.entries(checked)
+              .filter(([_, isChecked]) => isChecked)
+              .map(([memberId, _]) =>
+                members?.find((member) => member.id === memberId)
+              ).length !== 1}
+            size="lg"
+            color="success"
+            onClick={changeSelectedLeader}
+          >
             Set Selected Member as New Leader
           </Button>
         </div>
       </div>
+      <h1 className="p-2 text-xl">{`Change ${group?.name}'s Leader`}</h1>
 
       {members ? (
         <Table hoverable>
@@ -77,7 +87,6 @@ const ChangeLeader: NextPage = () => {
             <Table.HeadCell>Added To Group</Table.HeadCell>
             <Table.HeadCell>Created at</Table.HeadCell>
             <Table.HeadCell>Updated at</Table.HeadCell>
-            <Table.HeadCell>Leader</Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
             {members?.map((member, index) => (
@@ -108,7 +117,6 @@ const ChangeLeader: NextPage = () => {
                 <Table.Cell>
                   {member.member?.updatedAt.toLocaleString()}
                 </Table.Cell>
-                <Table.Cell>{member.isLeader ? "Yes" : "No"}</Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>

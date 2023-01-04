@@ -72,7 +72,7 @@ const LeaderDetails: NextPage = () => {
         <>
           <div className="max-w-xxl my-5 w-full rounded-lg border bg-white p-4 shadow-md dark:border-gray-700 dark:bg-gray-800 sm:p-6">
             <h5 className="mb-3 ml-3 text-base font-semibold text-gray-900 dark:text-white md:text-xl">
-              Leader Details
+              {`${group.name}'s Leader Details`}
             </h5>
             <ul className="my-4 space-y-3">
               <li key="Leader name">

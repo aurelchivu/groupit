@@ -108,7 +108,6 @@ export const groupRouter = router({
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message:
-          error.message ||
           "An unexpected error occurred while getting the group, please try again later.",
       });
     }
