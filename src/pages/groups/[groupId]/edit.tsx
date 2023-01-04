@@ -30,8 +30,8 @@ const EditGroup: NextPage = () => {
   const groupLeaderId = group?.leaderId;
 
   const updateGroup = trpc.groups.update.useMutation({
-    onSuccess: () => {
-      router.back();
+    onSuccess: (data) => {
+      router.push(`/groups/${data?.id}`);
     },
   });
 

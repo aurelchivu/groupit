@@ -3,21 +3,20 @@ import { useState, useEffect, useRef } from "react";
 import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
+import ErrorModal from "@/components/ErrorModal";
 
 const CreateMember: NextPage = () => {
-  interface MemberState {
+  const router = useRouter();
+
+  interface IState {
     fullName: string;
     details?: string;
   }
 
-  const router = useRouter();
-
-  const [formData, setFormData] = useState<MemberState>({
+  const [formData, setFormData] = useState<IState>({
     fullName: "",
     details: "",
   });
-
-  const createMember = trpc.members.create.useMutation();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -27,10 +26,17 @@ const CreateMember: NextPage = () => {
     }
   }, []);
 
+  const createMember = trpc.members.create.useMutation({
+    onSuccess: (data) => {
+      router.push(`/members/${data?.id}`);
+    },
+  });
+
+  const { error } = createMember;
+
   const submitCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     await createMember.mutateAsync({ ...formData });
-    router.push("/members");
   };
 
   return (
@@ -40,7 +46,7 @@ const CreateMember: NextPage = () => {
           Go Back
         </Button>
       </div>
-
+      {error && <ErrorModal errorMessage={error.message} />}
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
         <h1 className="text-xl">Create New Member</h1>
         <div>

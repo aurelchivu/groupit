@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
+import ErrorModal from "@/components/ErrorModal";
 
 const EditMember: NextPage = () => {
   const router = useRouter();
+  const { memberId } = router.query;
 
   interface IFormData {
     fullName: string;
@@ -17,10 +19,9 @@ const EditMember: NextPage = () => {
     details: "",
   });
 
-  const [id, setMemberId] = useState<string>("");
+  const [id, setId] = useState<string>("");
 
-  const { memberId } = router.query;
-  const { data: member } = trpc.members.getById.useQuery(id as string);
+  const { data: member } = trpc.members.getById.useQuery(id);
 
   const memberFullName = member?.fullName as string;
   const memberDetails = member?.details as string;
@@ -31,9 +32,11 @@ const EditMember: NextPage = () => {
     },
   });
 
+  const { error } = updateMember;
+
   useEffect(() => {
     if (typeof memberId === "string") {
-      setMemberId(memberId);
+      setId(memberId);
       setFormData({ fullName: memberFullName, details: memberDetails });
     }
   }, [memberId, memberFullName, memberDetails]);
@@ -50,6 +53,7 @@ const EditMember: NextPage = () => {
           Go Back
         </Button>
       </div>
+      {error && <ErrorModal errorMessage={error.message} />}
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
         <h1 className="text-xl">Edit Member: {memberFullName}</h1>
         <>

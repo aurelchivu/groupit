@@ -1,24 +1,36 @@
 import { type NextPage } from "next";
-import { Table, Button } from "flowbite-react";
+import { Table, Button, Spinner } from "flowbite-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
+import ErrorModal from "@/components/ErrorModal";
 
 const Members: NextPage = () => {
   const router = useRouter();
-  const members = trpc.members.getAll.useQuery().data;
+  const { status, data: members, error } = trpc.members.getAll.useQuery();
   console.log("Members:", members);
-  return (
-    <div className="p-4">
-      <div className="flex items-center justify-between">
-        <h1 className="p-2 text-xl">Members</h1>
-        <div className="py-4">
-          <Button size="lg" onClick={() => router.push("/members/create")}>
-            Create New Member
-          </Button>
+  return status === "loading" ? (
+    <span className="flex h-screen items-center justify-center">
+      <Spinner
+        color="failure"
+        aria-label="Extra large spinner example"
+        size="xl"
+      />
+    </span>
+  ) : status === "error" ? (
+    <ErrorModal errorMessage={error.message} />
+  ) : (
+    <>
+      <div className="p-4">
+        <div className="flex items-center justify-between">
+          <h1 className="p-2 text-xl">Members</h1>
+          <div className="py-4">
+            <Button size="lg" onClick={() => router.push("/members/create")}>
+              Create New Member
+            </Button>
+          </div>
         </div>
-      </div>
-      {members ? (
+
         <Table hoverable>
           <Table.Head>
             <Table.HeadCell className="!p-4"></Table.HeadCell>
@@ -55,10 +67,8 @@ const Members: NextPage = () => {
             ))}
           </Table.Body>
         </Table>
-      ) : (
-        <div>Loading...</div>
-      )}
-    </div>
+      </div>
+    </>
   );
 };
 
