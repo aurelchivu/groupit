@@ -67,7 +67,7 @@ const GroupMemberDetails: NextPage = () => {
           </li>
           <li key="Member id">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Group Member id: {member?.id}
+              Member id: {member?.member?.id}
             </span>
           </li>
           <li key="Description">

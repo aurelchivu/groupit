@@ -79,6 +79,12 @@ export const groupRouter = router({
         },
         include: {
           members: {
+            orderBy: {
+              // isLeader: "asc", - this is not working, orderBy needs exactly one argument...
+              member: {
+                fullName: "asc",
+              },
+            },
             include: {
               member: {
                 include: {
@@ -108,7 +114,7 @@ export const groupRouter = router({
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message:
-          "An unexpected error occurred while getting the group, please try again later.",
+          "An unexpected error occurred while getting the groups, please try again later.",
       });
     }
   }),
@@ -246,19 +252,12 @@ export const groupRouter = router({
             message: `Group with id ${input.groupId} not found!`,
           });
         }
-
-        // I don't like this. I should disconnect the group from the member, updating the member model.
         input.membersToRemove.map(async (id) => {
           try {
             await prisma?.grouppMembers.delete({
               where: {
                 id,
               },
-              // data: {
-              //   groups: {
-              //     disconnect: [{ id: input.groupId }],
-              //   },
-              // },
             });
             if (!id) {
               throw new TRPCError({

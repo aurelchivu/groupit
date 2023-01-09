@@ -115,7 +115,7 @@ const GroupMembers: NextPage = () => {
                       {leader?.member?.fullName}
                     </Link>
                   </Table.Cell>
-                  <Table.Cell>{leader?.id}</Table.Cell>
+                  <Table.Cell>{leader?.member?.id}</Table.Cell>
                   <Table.Cell>{leader?.createdAt.toLocaleString()}</Table.Cell>
                   <Table.Cell>
                     {leader?.member?.createdAt.toLocaleString()}
@@ -148,7 +148,7 @@ const GroupMembers: NextPage = () => {
                       {member.member?.fullName}
                     </Link>
                   </Table.Cell>
-                  <Table.Cell>{member.id}</Table.Cell>
+                  <Table.Cell>{member.member?.id}</Table.Cell>
                   <Table.Cell>{member.createdAt.toLocaleString()}</Table.Cell>
                   <Table.Cell>
                     {member.member?.createdAt.toLocaleString()}

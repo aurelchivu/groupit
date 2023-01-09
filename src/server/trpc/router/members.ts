@@ -67,6 +67,11 @@ export const memberRouter = router({
             },
           },
           groups: {
+            orderBy: {
+              group: {
+                name: "asc",
+              },
+            },
             include: {
               group: true,
             },

@@ -24,6 +24,7 @@ const EditGroup: NextPage = () => {
   });
 
   const { data: group } = trpc.groups.getById.useQuery(id);
+  console.log("Group", group);
 
   const groupName = group?.name;
   const groupDescription = group?.description;
