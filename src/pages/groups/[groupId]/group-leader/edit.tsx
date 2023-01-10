@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import { useEffect, useState } from "react";
-import { Button, Label, Modal, TextInput, Toast } from "flowbite-react";
+import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
 import ErrorModal from "@/components/ErrorModal";

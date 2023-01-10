@@ -2,12 +2,12 @@ import { type NextPage } from "next";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { Button, Modal } from "flowbite-react";
-import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { Button } from "flowbite-react";
 import { trpc } from "@/utils/trpc";
+import DeleteModal from "@/components/DeleteModal";
 
 const GroupMemberDetails: NextPage = () => {
-  const [openModal, setOpenModal] = useState<string | undefined>();
+  const [isModalOpen, setIsModalOpen] = useState<string | undefined>();
 
   const router = useRouter();
   const { groupId, groupMemberId } = router.query;
@@ -24,7 +24,7 @@ const GroupMemberDetails: NextPage = () => {
 
   const { data: group } = trpc.groups.getById.useQuery(ids.grouppId);
   console.log("Group=", group);
-  
+
   const member = trpc.groups.getById
     .useQuery(ids.grouppId as string)
     .data?.members.find((member) => member.memberId === ids.memberId);
@@ -45,7 +45,7 @@ const GroupMemberDetails: NextPage = () => {
       groupId: groupId as string,
       membersToRemove: [member?.id as string],
     });
-    setOpenModal(undefined);
+    setIsModalOpen(undefined);
     router.push(`/groups/${groupId}`);
   };
 
@@ -148,34 +148,17 @@ const GroupMemberDetails: NextPage = () => {
         >
           Edit Member
         </Button>
-        <Button color="failure" onClick={() => setOpenModal("default")}>
+        <Button color="failure" onClick={() => setIsModalOpen("default")}>
           Remove From Group
         </Button>
       </div>
 
-      <Modal
-        show={openModal === "default"}
-        onClose={() => setOpenModal(undefined)}
-      >
-        <Modal.Header>Delete Confirmation</Modal.Header>
-        <Modal.Body>
-          <div className="text-center">
-            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
-            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-              Are you sure you want to remove {member?.member?.fullName} from{" "}
-              {group?.name}?
-            </h3>
-            <div className="flex justify-center gap-4">
-              <Button color="success" onClick={handleRemove}>
-                OK, do it!
-              </Button>
-              <Button color="failure" onClick={() => setOpenModal(undefined)}>
-                NO, get me out of here!
-              </Button>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal>
+      <DeleteModal
+        message={`Are you sure you want to remove ${member?.member?.fullName} from ${group?.name}?`}
+        handleAction={handleRemove}
+        openModal={isModalOpen}
+        setOpenModal={setIsModalOpen}
+      />
     </div>
   );
 };

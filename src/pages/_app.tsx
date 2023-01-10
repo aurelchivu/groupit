@@ -27,9 +27,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
           <main className="flex-grow">
             <Component {...pageProps} />
           </main>
-          {/* <footer className="h-15 sticky bottom-0 z-50 w-full">
+          <footer className="h-15 sticky bottom-0 z-50 w-full">
             <Footerr />
-          </footer> */}
+          </footer>
         </div>
       </SessionProvider>
     </>
