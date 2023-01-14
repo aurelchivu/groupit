@@ -1,16 +1,21 @@
 import { type NextPage } from "next";
 import { useCallback, useEffect, useState } from "react";
-import { Table, Checkbox, Button, Spinner } from "flowbite-react";
-import Link from "next/link";
+import { Button, Spinner } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
 import ErrorModal from "@/components/ErrorModal";
+import DataTable from "@/components/DataTable";
+import type { Group, Member } from "@/types/prismaTypes";
 
 const AddMembers: NextPage = () => {
   const [id, setId] = useState<string>("");
+  const [checkboxStates, setCheckboxStates] = useState<{
+    [key: string]: boolean;
+  }>({});
+  console.log("Checked", checkboxStates);
 
   const router = useRouter();
-  const { groupId } = router.query;
+  const groupId = router.query.groupId as string | undefined;
 
   useEffect(() => {
     if (typeof groupId === "string") {
@@ -18,36 +23,36 @@ const AddMembers: NextPage = () => {
     }
   }, [groupId]);
 
-  const { status, data: group, error } = trpc.groups.getById.useQuery(id);
-  const groupMembers = group?.members;
-  // console.log("Group Members", groupMembers);
+  const { status, data, error } = trpc.groups.getById.useQuery(id);
+  const group = data as Group | undefined;
 
-  const allMembers = trpc.members.getAll.useQuery();
+  const allMembers = trpc.members.getAll.useQuery().data as
+    | Member[]
+    | undefined;
+  console.log("All Members", allMembers);
+
   const addMembers = trpc.groups.addMember.useMutation();
   const { error: errorAddMembers } = addMembers;
-  // console.log("All Members", allMembers.data);
-
-  const filteredMembers = allMembers.data?.filter(
-    (member) =>
-      !groupMembers?.some((groupMember) => groupMember.member?.id === member.id)
-  );
-  // console.log("Filtered Members", filteredMembers);
-
-  const [checked, setChecked] = useState<{ [key: string]: boolean }>({});
-  console.log("Checked", checked);
 
   const handleOnChange = useCallback((memberId: string) => {
-    setChecked((prevState) => ({
+    setCheckboxStates((prevState) => ({
       ...prevState,
       [memberId]: !prevState[memberId],
     }));
   }, []);
 
   const addSelectedMembers = async () => {
-    const selectedMembers = Object.entries(checked)
+    const selectedMembers = Object.entries(checkboxStates)
       .filter(([_, isChecked]) => isChecked)
       .map(([memberId, _]) =>
-        filteredMembers?.find((member) => member.id === memberId)
+        allMembers
+          ?.filter(
+            (member) =>
+              !group?.members?.some(
+                (groupMember) => groupMember.member?.id === member.id
+              )
+          )
+          ?.find((member) => member.id === memberId)
       );
     console.log("Selected Members", selectedMembers);
 
@@ -73,10 +78,17 @@ const AddMembers: NextPage = () => {
             size="lg"
             color="success"
             disabled={
-              Object.entries(checked)
+              Object.entries(checkboxStates)
                 .filter(([_, isChecked]) => isChecked)
                 .map(([memberId, _]) =>
-                  filteredMembers?.find((member) => member.id === memberId)
+                  allMembers
+                    ?.filter(
+                      (member) =>
+                        !group?.members?.some(
+                          (groupMember) => groupMember.member?.id === member.id
+                        )
+                    )
+                    ?.find((member) => member.id === memberId)
                 ).length === 0
             }
             onClick={addSelectedMembers}
@@ -98,59 +110,16 @@ const AddMembers: NextPage = () => {
       ) : status === "error" ? (
         <ErrorModal errorMessage={error.message} />
       ) : (
-        <Table hoverable>
-          <Table.Head>
-            <Table.HeadCell className="!p-4"></Table.HeadCell>
-            <Table.HeadCell>Full Name</Table.HeadCell>
-            <Table.HeadCell>Created by</Table.HeadCell>
-            <Table.HeadCell>Created at</Table.HeadCell>
-            <Table.HeadCell>Updated at</Table.HeadCell>
-            <Table.HeadCell></Table.HeadCell>
-            <Table.HeadCell></Table.HeadCell>
-          </Table.Head>
-          <Table.Body className="divide-y">
-            {filteredMembers?.map((member) => (
-              <Table.Row
-                className="delay-10 bg-white transition duration-300 ease-in-out hover:-translate-y-0.5 hover:bg-violet-300 dark:border-gray-700 dark:bg-gray-800"
-                key={member.id}
-              >
-                <Table.Cell className="!p-4">
-                  <Checkbox
-                    checked={checked[member.id]}
-                    onChange={() => handleOnChange(member.id)}
-                  />
-                </Table.Cell>
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  <Link
-                    href={`/members/${member.id}`}
-                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                  >
-                    {member.fullName}{" "}
-                  </Link>
-                </Table.Cell>
-                <Table.Cell>{member.createdBy.name}</Table.Cell>
-                <Table.Cell>{member.createdAt.toLocaleString()}</Table.Cell>
-                <Table.Cell>{member.updatedAt.toLocaleString()}</Table.Cell>
-                <Table.Cell>
-                  <Link
-                    href={`/members/${member.id}`}
-                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                  >
-                    Details
-                  </Link>
-                </Table.Cell>
-                <Table.Cell>
-                  <Link
-                    href={`/members/${member.id}/edit`}
-                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                  >
-                    Edit
-                  </Link>
-                </Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
+        <>
+          {" "}
+          <DataTable
+            addMembers={group}
+            allMembers={allMembers}
+            groupId={groupId}
+            checkboxStates={checkboxStates}
+            onCheckboxChange={handleOnChange}
+          />
+        </>
       )}
     </div>
   );

@@ -1,31 +1,19 @@
 import { type NextPage } from "next";
-import { Table, Button, Spinner, TextInput } from "flowbite-react";
-import Link from "next/link";
+import { Button, Spinner, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
 import ErrorModal from "@/components/ErrorModal";
 import { useEffect, useState } from "react";
-
-interface Member {
-  id: string;
-  fullName: string;
-  leaderOf: {
-    id: string;
-    name: string;
-  }[];
-  createdBy: {
-    name: string;
-  };
-  createdAt: Date;
-  updatedAt: Date;
-}
+import type { Member } from "@/types/prismaTypes";
+import DataTable from "@/components/DataTable";
 
 const Members: NextPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredMembers, setFilteredMembers] = useState<Member[]>([]);
 
   const router = useRouter();
-  const { status, data: members, error } = trpc.members.getAll.useQuery();
+  const { status, data, error } = trpc.members.getAll.useQuery();
+  const members = data as Member[] | undefined;
   console.log("Members:", members);
 
   useEffect(() => {
@@ -79,43 +67,7 @@ const Members: NextPage = () => {
             </Button>
           </div>
         </div>
-
-        <Table hoverable>
-          <Table.Head>
-            <Table.HeadCell className="!p-4"></Table.HeadCell>
-            <Table.HeadCell>Full Name</Table.HeadCell>
-            <Table.HeadCell>Id</Table.HeadCell>
-            <Table.HeadCell>Created by</Table.HeadCell>
-            <Table.HeadCell>Created at</Table.HeadCell>
-            <Table.HeadCell>Updated at</Table.HeadCell>
-            <Table.HeadCell>Leader</Table.HeadCell>
-          </Table.Head>
-          <Table.Body className="divide-y">
-            {filteredMembers?.map((member, index) => (
-              <Table.Row
-                className="delay-10 bg-white transition duration-300 ease-in-out hover:-translate-y-0.5 hover:bg-violet-300 dark:border-gray-700 dark:bg-gray-800"
-                key={member.id}
-              >
-                <Table.Cell className="!p-4">{index + 1}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  <Link
-                    href={`/members/${member.id}`}
-                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                  >
-                    {member.fullName}{" "}
-                  </Link>
-                </Table.Cell>
-                <Table.Cell>{member.id}</Table.Cell>
-                <Table.Cell>{member.createdBy.name}</Table.Cell>
-                <Table.Cell>{member.createdAt.toLocaleString()}</Table.Cell>
-                <Table.Cell>{member.updatedAt.toLocaleString()}</Table.Cell>
-                <Table.Cell>
-                  {member?.leaderOf?.length > 0 ? "Yes" : "No"}
-                </Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
+        <DataTable members={filteredMembers} />
       </div>
     </>
   );

@@ -5,7 +5,7 @@ import { Button, Spinner } from "flowbite-react";
 import { trpc } from "@/utils/trpc";
 import ErrorModal from "@/components/ErrorModal";
 import DeleteModal from "@/components/DeleteModal";
-import Details from "@/components/Details";
+import Details from "@/components/DetailCard";
 import type { Group } from "@/types/prismaTypes";
 
 const GroupDetails: NextPage = () => {
@@ -29,7 +29,7 @@ const GroupDetails: NextPage = () => {
   }, [groupId]);
 
   const handleDelete = async () => {
-    await deleteGroup.mutateAsync(id as string);
+    await deleteGroup.mutateAsync(id);
     setIsModalOpen(undefined);
     router.push("/groups");
   };
@@ -68,7 +68,11 @@ const GroupDetails: NextPage = () => {
               Edit Group
             </Button>
 
-            <Button color="failure" onClick={() => setIsModalOpen("default")}>
+            <Button
+              color="failure"
+              size="lg"
+              onClick={() => setIsModalOpen("default")}
+            >
               Delete Group
             </Button>
           </div>

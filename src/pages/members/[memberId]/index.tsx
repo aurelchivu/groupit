@@ -5,7 +5,7 @@ import { Button, Spinner } from "flowbite-react";
 import { trpc } from "@/utils/trpc";
 import ErrorModal from "@/components/ErrorModal";
 import DeleteModal from "@/components/DeleteModal";
-import Details from "@/components/Details";
+import Details from "@/components/DetailCard";
 import type { Member } from "@/types/prismaTypes";
 
 const MemberDetails: NextPage = () => {
@@ -68,7 +68,11 @@ const MemberDetails: NextPage = () => {
             >
               Edit Member
             </Button>
-            <Button color="failure" onClick={() => setIsModalOpen("default")}>
+            <Button
+              color="failure"
+              size="lg"
+              onClick={() => setIsModalOpen("default")}
+            >
               Delete Member
             </Button>
           </div>

@@ -1,16 +1,21 @@
 import { type NextPage } from "next";
 import { useCallback, useEffect, useState } from "react";
-import { Table, Checkbox, Button } from "flowbite-react";
-import Link from "next/link";
+import { Button } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
 import ErrorModal from "@/components/ErrorModal";
+import DataTable from "@/components/DataTable";
+import type { Group } from "@/types/prismaTypes";
 
 const SetLeader: NextPage = () => {
   const [id, setId] = useState<string>("");
+  const [checkboxStates, setCheckboxStates] = useState<{
+    [key: string]: boolean;
+  }>({});
+  console.log("Checked", checkboxStates);
 
   const router = useRouter();
-  const { groupId } = router.query;
+  const groupId = router.query.groupId as string | undefined;
 
   useEffect(() => {
     if (typeof groupId === "string") {
@@ -18,31 +23,25 @@ const SetLeader: NextPage = () => {
     }
   }, [groupId]);
 
-  const { data: group } = trpc.groups.getById.useQuery(id);
+  const { data } = trpc.groups.getById.useQuery(id);
+  const group = data as Group | undefined;
   console.log("Group", group);
-  const groupName = group?.name;
-
-  const members = group?.members;
-  console.log("Members", members);
 
   const setLeader = trpc.groups.setLeader.useMutation();
   const { error } = setLeader;
 
-  const [checked, setChecked] = useState<{ [key: string]: boolean }>({});
-  console.log("Checked", checked);
-
   const handleOnChange = useCallback((memberId: string) => {
     console.log("MemberId", memberId);
-    setChecked((prevState) => ({
+    setCheckboxStates((prevState) => ({
       [memberId]: !prevState[memberId],
     }));
   }, []);
 
   const setSelectedLeader = async () => {
-    const selectedMembers = Object.entries(checked)
+    const selectedMembers = Object.entries(checkboxStates)
       .filter(([_, isChecked]) => isChecked)
       .map(([memberId, _]) =>
-        members?.find((member) => member.id === memberId)
+        group?.members?.find((member) => member.id === memberId)
       );
     console.log("Selected Members", selectedMembers);
 
@@ -59,17 +58,17 @@ const SetLeader: NextPage = () => {
 
       <div className="flex items-center justify-between">
         <Button size="lg" onClick={() => router.push(`/groups/${groupId}`)}>
-          Go Back To {groupName}
+          Go Back To {group?.name}
         </Button>
         <div className="py-4">
           <Button
             size="lg"
             color="success"
             disabled={
-              Object.entries(checked)
+              Object.entries(checkboxStates)
                 .filter(([_, isChecked]) => isChecked)
                 .map(([memberId, _]) =>
-                  members?.find((member) => member.id === memberId)
+                  group?.members?.find((member) => member.id === memberId)
                 ).length !== 1
             }
             onClick={setSelectedLeader}
@@ -78,53 +77,16 @@ const SetLeader: NextPage = () => {
           </Button>
         </div>
       </div>
-      <h1 className="p-2 text-xl">{`Set ${groupName}'s Leader`} </h1>
-      {members ? (
-        <Table hoverable>
-          <Table.Head>
-            <Table.HeadCell className="!p-4"></Table.HeadCell>
-            <Table.HeadCell className="!p-4"></Table.HeadCell>
-            <Table.HeadCell>Full Name</Table.HeadCell>
-            <Table.HeadCell>Id</Table.HeadCell>
-            <Table.HeadCell>Added To Group</Table.HeadCell>
-            <Table.HeadCell>Created at</Table.HeadCell>
-            <Table.HeadCell>Updated at</Table.HeadCell>
-            <Table.HeadCell>Leader</Table.HeadCell>
-          </Table.Head>
-          <Table.Body className="divide-y">
-            {members?.map((member, index) => (
-              <Table.Row
-                className="delay-10 bg-white transition duration-300 ease-in-out hover:-translate-y-0.5 hover:bg-violet-300 dark:border-gray-700 dark:bg-gray-800"
-                key={member.id}
-              >
-                <Table.Cell className="!p-4">{index + 1}</Table.Cell>
-                <Table.Cell className="!p-4">
-                  <Checkbox
-                    checked={checked[member.id]}
-                    onChange={() => handleOnChange(member.id)}
-                  />
-                </Table.Cell>
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  <Link
-                    href={`/members/${member.memberId}`}
-                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                  >
-                    {member.member?.fullName}
-                  </Link>
-                </Table.Cell>
-                <Table.Cell>{member.id}</Table.Cell>
-                <Table.Cell>{member.createdAt.toLocaleString()}</Table.Cell>
-                <Table.Cell>
-                  {member.member?.createdAt.toLocaleString()}
-                </Table.Cell>
-                <Table.Cell>
-                  {member.member?.updatedAt.toLocaleString()}
-                </Table.Cell>
-                <Table.Cell>{member.isLeader ? "Yes" : "No"}</Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
+      <h1 className="p-2 text-xl">{`Set ${group?.name}'s Leader`} </h1>
+      {group?.members ? (
+        <>
+          <DataTable
+            setLeader={group}
+            groupId={groupId}
+            checkboxStates={checkboxStates}
+            onCheckboxChange={handleOnChange}
+          />
+        </>
       ) : (
         <div>Loading...</div>
       )}

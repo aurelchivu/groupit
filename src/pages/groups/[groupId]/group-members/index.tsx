@@ -1,18 +1,19 @@
 import { type NextPage } from "next";
 import { useCallback, useEffect, useState } from "react";
-import { Table, Checkbox, Button, Spinner } from "flowbite-react";
-import Link from "next/link";
+import { Button, Spinner } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
 import ErrorModal from "@/components/ErrorModal";
 import DeleteModal from "@/components/DeleteModal";
+import DataTable from "@/components/DataTable";
+import type { Group } from "@/types/prismaTypes";
 
 const GroupMembers: NextPage = () => {
   const [id, setId] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<string | undefined>();
 
   const router = useRouter();
-  const { groupId } = router.query;
+  const groupId = router.query.groupId as string | undefined;
 
   useEffect(() => {
     if (typeof groupId === "string") {
@@ -20,39 +21,36 @@ const GroupMembers: NextPage = () => {
     }
   }, [groupId]);
 
-  const { status, data: group, error } = trpc.groups.getById.useQuery(id);
+  const { status, data, error } = trpc.groups.getById.useQuery(id);
+  const group = data as Group | undefined;
   console.log("Group", group);
-  const groupName = group?.name;
 
   const removeMembers = trpc.groups.removeMember.useMutation({
     onSuccess: () => {
       router.push(`/groups/${groupId}`);
     },
+    onError: (error) => {
+      console.log(error);
+    },
   });
 
-  const members = group?.members;
-  console.log("Members", members);
-
-  const leader = members?.find((member) => member?.isLeader);
-  console.log("Leader", leader);
-
-  const membersToDisplay = group?.members.filter((member) => !member?.isLeader);
-
-  const [checked, setChecked] = useState<{ [key: string]: boolean }>({});
-  console.log("Checked", checked);
+  const [checkboxStates, setCheckboxStates] = useState<{
+    [key: string]: boolean;
+  }>({});
+  console.log("Checked", checkboxStates);
 
   const handleOnChange = useCallback((memberId: string) => {
-    setChecked((prevState) => ({
+    setCheckboxStates((prevState) => ({
       ...prevState,
       [memberId]: !prevState[memberId],
     }));
   }, []);
 
   const removeSelectedMembers = async () => {
-    const selectedMembers = Object.entries(checked)
+    const selectedMembers = Object.entries(checkboxStates)
       .filter(([_, isChecked]) => isChecked)
       .map(([memberId, _]) =>
-        members?.find((member) => member.id === memberId)
+        group?.members?.find((member) => member.id === memberId)
       );
     console.log("Selected Members", selectedMembers);
 
@@ -77,90 +75,18 @@ const GroupMembers: NextPage = () => {
       <div className="p-4">
         <div className="py-4">
           <Button size="lg" onClick={() => router.push(`/groups/${groupId}`)}>
-            Go Back To {groupName}
+            Go Back To {group?.name}
           </Button>
         </div>
-        <h1 className="p-2 text-xl">{`${groupName}'s Members`}</h1>
+        <h1 className="p-2 text-xl">{`${group?.name}'s Members`}</h1>
 
         <>
-          <Table hoverable>
-            <Table.Head>
-              <Table.HeadCell className="!p-4"></Table.HeadCell>
-              <Table.HeadCell className="!p-4"></Table.HeadCell>
-              <Table.HeadCell>Full Name</Table.HeadCell>
-              <Table.HeadCell>Member Id</Table.HeadCell>
-              <Table.HeadCell>Added To Group</Table.HeadCell>
-              <Table.HeadCell>Created at</Table.HeadCell>
-              <Table.HeadCell>Updated at</Table.HeadCell>
-              <Table.HeadCell></Table.HeadCell>
-            </Table.Head>
-            <Table.Body className="divide-y">
-              {leader && (
-                <Table.Row
-                  className="delay-10 bg-white transition duration-300 ease-in-out hover:-translate-y-0.5 hover:bg-violet-300 dark:border-gray-700 dark:bg-gray-800"
-                  key={leader?.id}
-                >
-                  <Table.Cell className="!p-4">1</Table.Cell>
-                  <Table.Cell className="!p-4">
-                    <Checkbox
-                      checked={checked[leader?.id as string]}
-                      onChange={() => handleOnChange(leader?.id as string)}
-                    />
-                  </Table.Cell>
-                  <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                    <Link
-                      href={`/groups/${groupId}/group-leader`}
-                      className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                    >
-                      {leader?.member?.fullName}
-                    </Link>
-                  </Table.Cell>
-                  <Table.Cell>{leader?.member?.id}</Table.Cell>
-                  <Table.Cell>{leader?.createdAt.toLocaleString()}</Table.Cell>
-                  <Table.Cell>
-                    {leader?.member?.createdAt.toLocaleString()}
-                  </Table.Cell>
-                  <Table.Cell>
-                    {leader?.member?.updatedAt.toLocaleString()}
-                  </Table.Cell>
-                  <Table.Cell>LEADER</Table.Cell>
-                </Table.Row>
-              )}
-              {membersToDisplay?.map((member, index) => (
-                <Table.Row
-                  className="delay-10 bg-white transition duration-300 ease-in-out hover:-translate-y-0.5 hover:bg-violet-300 dark:border-gray-700 dark:bg-gray-800"
-                  key={member.id}
-                >
-                  <Table.Cell className="!p-4">
-                    {leader ? index + 2 : index + 1}
-                  </Table.Cell>
-                  <Table.Cell className="!p-4">
-                    <Checkbox
-                      checked={checked[member.id]}
-                      onChange={() => handleOnChange(member.id)}
-                    />
-                  </Table.Cell>
-                  <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                    <Link
-                      href={`/groups/${groupId}/group-members/${member.memberId}`}
-                      className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                    >
-                      {member.member?.fullName}
-                    </Link>
-                  </Table.Cell>
-                  <Table.Cell>{member.member?.id}</Table.Cell>
-                  <Table.Cell>{member.createdAt.toLocaleString()}</Table.Cell>
-                  <Table.Cell>
-                    {member.member?.createdAt.toLocaleString()}
-                  </Table.Cell>
-                  <Table.Cell>
-                    {member.member?.updatedAt.toLocaleString()}
-                  </Table.Cell>
-                  <Table.Cell>{member.isLeader ? "LEADER" : null}</Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table>
+          <DataTable
+            groupMembers={group}
+            groupId={groupId}
+            checkboxStates={checkboxStates}
+            onCheckboxChange={handleOnChange}
+          />
           <div className="flex items-center justify-between">
             <div className="py-4">
               <Button
@@ -177,10 +103,10 @@ const GroupMembers: NextPage = () => {
                 size="lg"
                 color="failure"
                 disabled={
-                  Object.entries(checked)
+                  Object.entries(checkboxStates)
                     .filter(([_, isChecked]) => isChecked)
                     .map(([memberId, _]) =>
-                      members?.find((member) => member.id === memberId)
+                      group?.members?.find((member) => member.id === memberId)
                     ).length === 0
                 }
                 onClick={() => setIsModalOpen("default")}
