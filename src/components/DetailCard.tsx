@@ -32,7 +32,7 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
           </li>
           <li key="Created by">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Created by: {group?.createdBy.name}
+              Created by: {group?.createdBy.name || group?.createdBy.email}
             </span>
           </li>
 
@@ -102,7 +102,7 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
 
           <li key="Created by">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Created by: {member?.createdBy.name}
+              Created by: {member?.createdBy.name || member?.createdBy.email}
             </span>
           </li>
           {member?.groups && member?.groups?.length > 0 ? (
@@ -179,7 +179,9 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
           </li>
           <li key="Created by">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Created by: {leader?.member?.createdBy?.name}
+              Created by:{" "}
+              {leader?.member?.createdBy?.name ||
+                leader?.member?.createdBy?.email}
             </span>
           </li>
           <li key="LeaderOf">
@@ -262,7 +264,7 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
           </li>
           <li key="Created by">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Created by: {groupMember.member?.createdBy.name}
+              Created by: {groupMember.member?.createdBy.name || groupMember.member?.createdBy.email}
             </span>
           </li>
           <li key="MemberOf">

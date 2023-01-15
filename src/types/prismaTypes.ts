@@ -6,7 +6,8 @@ export interface Group {
   leader?: Member;
   leaderId?: string;
   createdBy: {
-    name: string;
+    name?: string;
+    email?: string;
   };
   createdById: string;
   createdAt: Date;
@@ -20,7 +21,8 @@ export interface Member {
   groups: GroupMembers[];
   leaderOf: Group[];
   createdBy: {
-    name: string;
+    name?: string;
+    email?: string;
   };
   createdById: string;
   createdAt: Date;

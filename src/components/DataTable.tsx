@@ -86,7 +86,9 @@ const DataTable: FC<IProps> = ({
                     "NOT SET YET"
                   )}
                 </Table.Cell>
-                <Table.Cell>{group.createdBy.name}</Table.Cell>
+                <Table.Cell>
+                  {group.createdBy.name || group.createdBy.email}
+                </Table.Cell>
                 <Table.Cell>{group.createdAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>{group.updatedAt.toLocaleString()}</Table.Cell>
               </Table.Row>
@@ -122,7 +124,9 @@ const DataTable: FC<IProps> = ({
                   </Link>
                 </Table.Cell>
                 <Table.Cell>{member.id}</Table.Cell>
-                <Table.Cell>{member.createdBy.name}</Table.Cell>
+                <Table.Cell>
+                  {member.createdBy.name || member.createdBy.email}
+                </Table.Cell>
                 <Table.Cell>{member.createdAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>{member.updatedAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>
@@ -292,7 +296,9 @@ const DataTable: FC<IProps> = ({
                       {member.fullName}{" "}
                     </Link>
                   </Table.Cell>
-                  <Table.Cell>{member.createdBy.name}</Table.Cell>
+                  <Table.Cell>
+                    {member.createdBy.name || member.createdBy.email}
+                  </Table.Cell>
                   <Table.Cell>{member.createdAt.toLocaleString()}</Table.Cell>
                   <Table.Cell>{member.updatedAt.toLocaleString()}</Table.Cell>
                   <Table.Cell>
