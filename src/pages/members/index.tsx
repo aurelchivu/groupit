@@ -1,40 +1,68 @@
 import { type NextPage } from "next";
-import { Button, Spinner, TextInput } from "flowbite-react";
+import { Button, Checkbox, Label, Spinner, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
 import ErrorModal from "@/components/ErrorModal";
 import { useEffect, useState } from "react";
 import type { Member } from "@/types/prismaTypes";
 import DataTable from "@/components/DataTable";
+import { useSession } from "next-auth/react";
 
 const Members: NextPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredMembers, setFilteredMembers] = useState<Member[]>([]);
+  const [showOnlyMyMembers, setShowOnlyMyMembers] = useState<boolean>(false);
+
+  const { data: session } = useSession();
 
   const router = useRouter();
+
   const { status, data, error } = trpc.members.getAll.useQuery();
   const members = data as Member[] | undefined;
   console.log("Members:", members);
 
   useEffect(() => {
-    if (members) {
-      setFilteredMembers(members as Member[]);
-    }
     const onSearch = (searchTerm: string) => {
-      if (searchTerm === "") {
+      if (searchTerm === "" && !showOnlyMyMembers) {
         setFilteredMembers(members as Member[]);
-      } else {
-        const filtered = members?.filter((member) =>
-          member.fullName.toLowerCase().includes(searchTerm.toLowerCase())
+      } else if (searchTerm === "" && showOnlyMyMembers) {
+        setFilteredMembers(
+          members?.filter(
+            (group) => group.createdById === session?.user?.id
+          ) as Member[]
         );
+      } else if (searchTerm !== "" && !showOnlyMyMembers) {
+        const filtered = members?.filter((group) =>
+          group.fullName.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilteredMembers(filtered as Member[]);
+      } else if (searchTerm !== "" && showOnlyMyMembers) {
+        const filtered = members
+          ?.filter((group) => group.createdById === session?.user?.id)
+          ?.filter((group) =>
+            group.fullName.toLowerCase().includes(searchTerm.toLowerCase())
+          );
         setFilteredMembers(filtered as Member[]);
       }
     };
     onSearch(searchTerm);
-  }, [members, searchTerm]);
+  }, [members, searchTerm, session?.user?.id, showOnlyMyMembers]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
+  };
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setShowOnlyMyMembers(!showOnlyMyMembers);
+    if (event.target.checked) {
+      setFilteredMembers(
+        members?.filter(
+          (group) => group.createdById === session?.user?.id
+        ) as Member[]
+      );
+    } else {
+      setFilteredMembers(members as Member[]);
+    }
   };
 
   return status === "loading" ? (
@@ -58,8 +86,18 @@ const Members: NextPage = () => {
               type="text"
               placeholder="Search for a member"
               value={searchTerm}
-              onChange={handleChange}
+              onChange={handleInputChange}
             />
+          </div>
+          <div className="flex items-center gap-2 ">
+            <Checkbox
+              id="checked"
+              checked={showOnlyMyMembers}
+              onChange={handleCheckboxChange}
+            />
+            <Label htmlFor="checked">
+              <span className="text-lg">Show Only My Members</span>
+            </Label>
           </div>
           <div className="py-4">
             <Button size="lg" onClick={() => router.push("/members/create")}>

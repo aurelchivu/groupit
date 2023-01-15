@@ -12,6 +12,7 @@ const AddMembers: NextPage = () => {
   const [checkboxStates, setCheckboxStates] = useState<{
     [key: string]: boolean;
   }>({});
+  
   console.log("Checked", checkboxStates);
 
   const router = useRouter();

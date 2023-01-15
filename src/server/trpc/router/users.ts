@@ -17,4 +17,14 @@ export const userRouter = router({
       },
     });
   }),
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    if (!ctx.session?.user?.id) {
+      throw new Error("Not authenticated");
+    }
+    // if (ctx.session.user.role !== "ADMIN") {
+    //   throw new Error("Not authorized");
+    // }
+    const users = await ctx.prisma.user.findMany();
+    return users;
+  }),
 });

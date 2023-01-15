@@ -1,3 +1,4 @@
+import { User, Role } from "./../../../prisma/interfaces/prismaTypes";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 
@@ -25,6 +26,7 @@ const isAuthed = t.middleware(({ ctx, next }) => {
   if (!ctx.session || !ctx.session.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
+
   return next({
     ctx: {
       // infers the `session` as non-nullable
