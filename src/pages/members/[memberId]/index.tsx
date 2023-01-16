@@ -3,18 +3,20 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Button, Spinner } from "flowbite-react";
 import { trpc } from "@/utils/trpc";
-import ErrorModal from "@/components/ErrorModal";
-import DeleteModal from "@/components/DeleteModal";
+import InfoModal from "@/components/InfoModal";
 import Details from "@/components/DetailCard";
 import type { Member } from "@/types/prismaTypes";
+import { useSession } from "next-auth/react";
 
 const MemberDetails: NextPage = () => {
-  const [isModalOpen, setIsModalOpen] = useState<string | undefined>();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<string>("close");
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState<string>("open");
+  const [isAllowModalOpen, setIsAllowModalOpen] = useState<string>("close");
+  const [id, setId] = useState<string>("");
 
   const router = useRouter();
   const { memberId } = router.query;
-
-  const [id, setId] = useState<string>("");
+  const { data: session } = useSession();
 
   const { status, data, error } = trpc.members.getById.useQuery(id);
   const member = data as Member | undefined;
@@ -31,7 +33,6 @@ const MemberDetails: NextPage = () => {
 
   const handleRemove = async () => {
     await deleteMember.mutateAsync(id as string);
-    setIsModalOpen(undefined);
     router.push("/members");
   };
 
@@ -50,7 +51,11 @@ const MemberDetails: NextPage = () => {
           />
         </span>
       ) : status === "error" ? (
-        <ErrorModal errorMessage={error.message} />
+        <InfoModal
+          message={error?.message}
+          openModal={isErrorModalOpen}
+          setOpenModal={setIsErrorModalOpen}
+        />
       ) : (
         <>
           <div className="max-w-xxl my-5 w-full rounded-lg border bg-white p-4 shadow-md dark:border-gray-700 dark:bg-gray-800 sm:p-6">
@@ -64,14 +69,22 @@ const MemberDetails: NextPage = () => {
             <Button
               size="lg"
               color="success"
-              onClick={() => router.push(`/members/${memberId}/edit`)}
+              onClick={() => {
+                member?.createdById === session?.user?.id
+                  ? router.push(`/members/${memberId}/edit`)
+                  : setIsAllowModalOpen("open");
+              }}
             >
               Edit Member
             </Button>
             <Button
               color="failure"
               size="lg"
-              onClick={() => setIsModalOpen("default")}
+              onClick={() => {
+                member?.createdById === session?.user?.id
+                  ? setIsDeleteModalOpen("open")
+                  : setIsAllowModalOpen("open");
+              }}
             >
               Delete Member
             </Button>
@@ -79,11 +92,17 @@ const MemberDetails: NextPage = () => {
         </>
       )}
 
-      <DeleteModal
+      <InfoModal
         message={`Are you sure you want to remove ${member?.fullName}?`}
         handleAction={handleRemove}
-        openModal={isModalOpen}
-        setOpenModal={setIsModalOpen}
+        openModal={isDeleteModalOpen}
+        setOpenModal={setIsDeleteModalOpen}
+      />
+
+      <InfoModal
+        message="You are not allowed to edit or delete this member. Only the member creator can edit or delete this member."
+        openModal={isAllowModalOpen}
+        setOpenModal={setIsAllowModalOpen}
       />
     </div>
   );

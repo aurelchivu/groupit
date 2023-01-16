@@ -4,21 +4,21 @@ import { HiOutlineExclamationCircle } from "react-icons/hi";
 
 interface Props {
   message: string;
-  handleAction: () => void;
   openModal: string | undefined;
   setOpenModal: (openModal: string | undefined) => void;
+  handleAction: () => void;
 }
 
 const DeleteModal: FC<Props> = ({
   message,
-  handleAction,
   openModal,
   setOpenModal,
+  handleAction,
 }) => {
   return (
     <>
       <Modal
-        show={openModal === "default"}
+        show={openModal === "open"}
         onClose={() => setOpenModal(undefined)}
       >
         <Modal.Body>

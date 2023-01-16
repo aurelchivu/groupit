@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Button, Spinner } from "flowbite-react";
 import { trpc } from "@/utils/trpc";
-import ErrorModal from "@/components/ErrorModal";
+import InfoModal from "@/components/InfoModal";
 import DeleteModal from "@/components/DeleteModal";
 import Details from "@/components/DetailCard";
 import type { Group } from "@/types/prismaTypes";
@@ -49,7 +49,7 @@ const GroupDetails: NextPage = () => {
           />
         </span>
       ) : status === "error" ? (
-        <ErrorModal errorMessage={error.message} />
+        <InfoModal message={error.message} />
       ) : (
         <>
           <div className="max-w-xxl my-5 w-full rounded-lg border bg-white p-4 shadow-md dark:border-gray-700 dark:bg-gray-800 sm:p-6">
@@ -71,7 +71,7 @@ const GroupDetails: NextPage = () => {
             <Button
               color="failure"
               size="lg"
-              onClick={() => setIsModalOpen("default")}
+              onClick={() => setIsModalOpen("open")}
             >
               Delete Group
             </Button>

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
-import ErrorModal from "@/components/ErrorModal";
+import InfoModal from "@/components/InfoModal";
 
 const EditGroupLeader: NextPage = () => {
   const router = useRouter();
@@ -58,7 +58,7 @@ const EditGroupLeader: NextPage = () => {
 
   return (
     <div className="px-40 py-4">
-      {error && <ErrorModal errorMessage={error.message} />}
+      {error && <InfoModal message={error.message} />}
       <div className="align-center flex justify-between">
         <Button size="lg" onClick={() => router.back()}>
           Go Back

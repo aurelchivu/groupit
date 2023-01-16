@@ -78,7 +78,7 @@ const GroupMemberDetails: NextPage = () => {
         <Button
           color="failure"
           size="lg"
-          onClick={() => setIsModalOpen("default")}
+          onClick={() => setIsModalOpen("open")}
         >
           Remove From Group
         </Button>

@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import { Button, Checkbox, Label, Spinner, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
-import ErrorModal from "@/components/ErrorModal";
+import InfoModal from "@/components/InfoModal";
 import { useEffect, useState } from "react";
 import type { Group } from "@/types/prismaTypes";
 import DataTable from "@/components/DataTable";
@@ -23,6 +23,7 @@ const Groups: NextPage = () => {
 
   useEffect(() => {
     const onSearch = (searchTerm: string) => {
+      let filtered: Group[] | undefined;
       if (searchTerm === "" && !showOnlyMyGroups) {
         setFilteredGroups(groups as Group[]);
       } else if (searchTerm === "" && showOnlyMyGroups) {
@@ -32,12 +33,12 @@ const Groups: NextPage = () => {
           ) as Group[]
         );
       } else if (searchTerm !== "" && !showOnlyMyGroups) {
-        const filtered = groups?.filter((group) =>
+        filtered = groups?.filter((group) =>
           group.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setFilteredGroups(filtered as Group[]);
       } else if (searchTerm !== "" && showOnlyMyGroups) {
-        const filtered = groups
+        filtered = groups
           ?.filter((group) => group.createdById === session?.user?.id)
           ?.filter((group) =>
             group.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -74,7 +75,7 @@ const Groups: NextPage = () => {
       />
     </span>
   ) : status === "error" ? (
-    <ErrorModal errorMessage={error.message} />
+    <InfoModal message={error.message} />
   ) : (
     <>
       <div className="p-4">

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Button } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
-import ErrorModal from "@/components/ErrorModal";
+import InfoModal from "@/components/InfoModal";
 import DataTable from "@/components/DataTable";
 import type { Group } from "@/types/prismaTypes";
 
@@ -58,7 +58,7 @@ const ChangeLeader: NextPage = () => {
 
   return (
     <div className="p-4">
-      {error && <ErrorModal errorMessage={error.message} />}
+      {error && <InfoModal message={error.message} />}
 
       <div className="flex items-center justify-between">
         <Button size="lg" onClick={() => router.push(`/groups/${groupId}`)}>

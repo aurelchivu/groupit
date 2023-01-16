@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
-import ErrorModal from "@/components/ErrorModal";
+import InfoModal from "@/components/InfoModal";
 
 const EditMember: NextPage = () => {
   const router = useRouter();
@@ -18,7 +18,9 @@ const EditMember: NextPage = () => {
     fullName: "",
     details: "",
   });
-
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState<string | undefined>(
+    "open"
+  );
   const [id, setId] = useState<string>("");
 
   const { data: member } = trpc.members.getById.useQuery(id);
@@ -54,7 +56,13 @@ const EditMember: NextPage = () => {
         </Button>
       </div>
 
-      {error && <ErrorModal errorMessage={error.message} />}
+      {error && (
+        <InfoModal
+          message={error.message}
+          openModal={isErrorModalOpen}
+          setOpenModal={() => setIsErrorModalOpen}
+        />
+      )}
 
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
         <h1 className="text-xl">Edit Member {memberFullName}</h1>

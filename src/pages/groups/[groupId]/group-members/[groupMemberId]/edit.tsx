@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
-import ErrorModal from "@/components/ErrorModal";
+import InfoModal from "@/components/InfoModal";
 
 const EditGroupMember: NextPage = () => {
   const router = useRouter();
@@ -66,7 +66,7 @@ const EditGroupMember: NextPage = () => {
           Go Back
         </Button>
       </div>
-      {error && <ErrorModal errorMessage={error.message} />}
+      {error && <InfoModal message={error.message} />}
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
         <h1 className="text-xl">Edit Member: {memberFullName}</h1>
         <div>

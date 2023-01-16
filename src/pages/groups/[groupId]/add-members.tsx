@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Button, Spinner } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
-import ErrorModal from "@/components/ErrorModal";
+import InfoModal from "@/components/InfoModal";
 import DataTable from "@/components/DataTable";
 import type { Group, Member } from "@/types/prismaTypes";
 
@@ -12,7 +12,7 @@ const AddMembers: NextPage = () => {
   const [checkboxStates, setCheckboxStates] = useState<{
     [key: string]: boolean;
   }>({});
-  
+
   console.log("Checked", checkboxStates);
 
   const router = useRouter();
@@ -98,7 +98,7 @@ const AddMembers: NextPage = () => {
           </Button>
         </div>
       </div>
-      {errorAddMembers && <ErrorModal errorMessage={errorAddMembers.message} />}
+      {errorAddMembers && <InfoModal message={errorAddMembers.message} />}
 
       {status === "loading" ? (
         <span className="flex h-screen items-center justify-center">
@@ -109,7 +109,7 @@ const AddMembers: NextPage = () => {
           />
         </span>
       ) : status === "error" ? (
-        <ErrorModal errorMessage={error.message} />
+        <InfoModal message={error.message} />
       ) : (
         <>
           {" "}

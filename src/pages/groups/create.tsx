@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
-import ErrorModal from "@/components/ErrorModal";
+import InfoModal from "@/components/InfoModal";
 
 const CreateGroup: NextPage = () => {
   const router = useRouter();
@@ -47,7 +47,7 @@ const CreateGroup: NextPage = () => {
           Go Back
         </Button>
       </div>
-      {error && <ErrorModal errorMessage={error.message} />}
+      {error && <InfoModal message={error.message} />}
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
         <h1 className="text-xl">Create New Group</h1>
         <div>

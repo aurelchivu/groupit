@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Button, Spinner } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
-import ErrorModal from "@/components/ErrorModal";
+import InfoModal from "@/components/InfoModal";
 import DeleteModal from "@/components/DeleteModal";
 import DataTable from "@/components/DataTable";
 import type { Group } from "@/types/prismaTypes";
@@ -69,7 +69,7 @@ const GroupMembers: NextPage = () => {
       />
     </span>
   ) : status === "error" ? (
-    <ErrorModal errorMessage={error.message} />
+    <InfoModal message={error.message} />
   ) : (
     <>
       <div className="p-4">
@@ -109,7 +109,7 @@ const GroupMembers: NextPage = () => {
                       group?.members?.find((member) => member.id === memberId)
                     ).length === 0
                 }
-                onClick={() => setIsModalOpen("default")}
+                onClick={() => setIsModalOpen("open")}
               >
                 Remove Selected Members
               </Button>
