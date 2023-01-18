@@ -9,9 +9,15 @@ import type { Member } from "@/types/prismaTypes";
 import { useSession } from "next-auth/react";
 
 const MemberDetails: NextPage = () => {
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<string>("close");
-  const [isErrorModalOpen, setIsErrorModalOpen] = useState<string>("open");
-  const [isAllowModalOpen, setIsAllowModalOpen] = useState<string>("close");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<
+    string | undefined
+  >(undefined);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState<string | undefined>(
+    "open"
+  );
+  const [isAllowModalOpen, setIsAllowModalOpen] = useState<string | undefined>(
+    undefined
+  );
   const [id, setId] = useState<string>("");
 
   const router = useRouter();
@@ -20,7 +26,6 @@ const MemberDetails: NextPage = () => {
 
   const { status, data, error } = trpc.members.getById.useQuery(id);
   const member = data as Member | undefined;
-
   console.log("Member=", member);
 
   const deleteMember = trpc.members.delete.useMutation();
@@ -31,7 +36,7 @@ const MemberDetails: NextPage = () => {
     }
   }, [memberId]);
 
-  const handleRemove = async () => {
+  const handleDelete = async () => {
     await deleteMember.mutateAsync(id as string);
     router.push("/members");
   };
@@ -71,7 +76,7 @@ const MemberDetails: NextPage = () => {
               color="success"
               onClick={() => {
                 member?.createdById === session?.user?.id
-                  ? router.push(`/members/${memberId}/edit`)
+                  ? router.push(`/members/${member?.id}/edit`)
                   : setIsAllowModalOpen("open");
               }}
             >
@@ -94,13 +99,13 @@ const MemberDetails: NextPage = () => {
 
       <InfoModal
         message={`Are you sure you want to remove ${member?.fullName}?`}
-        handleAction={handleRemove}
+        handleAction={handleDelete}
         openModal={isDeleteModalOpen}
         setOpenModal={setIsDeleteModalOpen}
       />
 
       <InfoModal
-        message="You are not allowed to edit or delete this member. Only the member creator can edit or delete this member."
+        message="You are not allowed to edit or delete this member. Only the creator can edit or delete this member."
         openModal={isAllowModalOpen}
         setOpenModal={setIsAllowModalOpen}
       />

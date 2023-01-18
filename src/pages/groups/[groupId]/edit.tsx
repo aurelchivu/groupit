@@ -5,23 +5,25 @@ import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
 import InfoModal from "@/components/InfoModal";
 
+interface IGroup {
+  name: string;
+  description: string;
+  leaderId: string;
+}
+
 const EditGroup: NextPage = () => {
-  const router = useRouter();
-  const { groupId } = router.query;
-
-  interface IGroup {
-    name: string;
-    description: string;
-    leaderId: string;
-  }
-
   const [id, setId] = useState<string>("");
-
   const [formData, setFormData] = useState<IGroup>({
     name: "",
     description: "",
     leaderId: "",
   });
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState<string | undefined>(
+    "open"
+  );
+
+  const router = useRouter();
+  const { groupId } = router.query;
 
   const { data: group } = trpc.groups.getById.useQuery(id);
   console.log("Group", group);
@@ -84,7 +86,13 @@ const EditGroup: NextPage = () => {
         )}
       </div>
 
-      {error && <InfoModal message={error.message} />}
+      {error && (
+        <InfoModal
+          message={error.message}
+          openModal={isErrorModalOpen}
+          setOpenModal={setIsErrorModalOpen}
+        />
+      )}
 
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
         <h1 className="text-xl">Edit Group {groupName}</h1>

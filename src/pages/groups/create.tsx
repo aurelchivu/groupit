@@ -5,23 +5,26 @@ import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
 import InfoModal from "@/components/InfoModal";
 
+interface IGroup {
+  groupName: string;
+  description?: string;
+  leader: string | undefined;
+  leaderId?: string | undefined;
+}
+
 const CreateGroup: NextPage = () => {
-  const router = useRouter();
-  const members = trpc.members.getAll.useQuery();
-
-  interface IGroup {
-    groupName: string;
-    description?: string;
-    leader: string | undefined;
-    leaderId?: string | undefined;
-  }
-
   const [formData, setFormData] = useState<IGroup>({
     groupName: "",
     description: "",
     leader: "",
     leaderId: "",
   });
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState<string | undefined>(
+    "open"
+  );
+
+  const router = useRouter();
+  const members = trpc.members.getAll.useQuery();
 
   const createGroup = trpc.groups.create.useMutation({
     onSuccess: (data) => {
@@ -47,7 +50,13 @@ const CreateGroup: NextPage = () => {
           Go Back
         </Button>
       </div>
-      {error && <InfoModal message={error.message} />}
+      {error && (
+        <InfoModal
+          message={error.message}
+          openModal={isErrorModalOpen}
+          setOpenModal={setIsErrorModalOpen}
+        />
+      )}
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
         <h1 className="text-xl">Create New Group</h1>
         <div>

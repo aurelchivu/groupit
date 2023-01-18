@@ -5,19 +5,22 @@ import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
 import InfoModal from "@/components/InfoModal";
 
+interface IFormData {
+  fullName: string;
+  details: string;
+}
+
 const EditGroupLeader: NextPage = () => {
-  const router = useRouter();
-  const { groupId } = router.query;
-
-  interface IFormData {
-    fullName: string;
-    details: string;
-  }
-
   const [formData, setFormData] = useState<IFormData>({
     fullName: "",
     details: "",
   });
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState<string | undefined>(
+    "open"
+  );
+
+  const router = useRouter();
+  const { groupId } = router.query;
 
   interface IState {
     groupId: string;
@@ -29,6 +32,7 @@ const EditGroupLeader: NextPage = () => {
 
   const { data: group } = trpc.groups.getById.useQuery(ids.groupId);
   console.log("Group=", group);
+
   const leader = group?.members?.find(
     (member) => member?.member?.id === group.leaderId
   );
@@ -58,7 +62,13 @@ const EditGroupLeader: NextPage = () => {
 
   return (
     <div className="px-40 py-4">
-      {error && <InfoModal message={error.message} />}
+      {error && (
+        <InfoModal
+          message={error.message}
+          openModal={isErrorModalOpen}
+          setOpenModal={setIsErrorModalOpen}
+        />
+      )}
       <div className="align-center flex justify-between">
         <Button size="lg" onClick={() => router.back()}>
           Go Back

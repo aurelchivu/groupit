@@ -5,18 +5,21 @@ import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
 import InfoModal from "@/components/InfoModal";
 
+interface IState {
+  fullName: string;
+  details?: string;
+}
+
 const CreateMember: NextPage = () => {
-  const router = useRouter();
-
-  interface IState {
-    fullName: string;
-    details?: string;
-  }
-
   const [formData, setFormData] = useState<IState>({
     fullName: "",
     details: "",
   });
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState<string | undefined>(
+    "open"
+  );
+
+  const router = useRouter();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -46,7 +49,13 @@ const CreateMember: NextPage = () => {
           Go Back
         </Button>
       </div>
-      {error && <InfoModal message={error.message} />}
+      {error && (
+        <InfoModal
+          message={error.message}
+          openModal={isErrorModalOpen}
+          setOpenModal={setIsErrorModalOpen}
+        />
+      )}
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
         <h1 className="text-xl">Create New Member</h1>
         <div>

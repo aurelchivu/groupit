@@ -12,6 +12,7 @@ const Groups: NextPage = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredGroups, setFilteredGroups] = useState<Group[]>([]);
   const [showOnlyMyGroups, setShowOnlyMyGroups] = useState<boolean>(false);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState<string | undefined>("open");
 
   const { data: session } = useSession();
 
@@ -75,7 +76,11 @@ const Groups: NextPage = () => {
       />
     </span>
   ) : status === "error" ? (
-    <InfoModal message={error.message} />
+    <InfoModal
+      message={error.message}
+      openModal={isErrorModalOpen}
+      setOpenModal={setIsErrorModalOpen}
+    />
   ) : (
     <>
       <div className="p-4">

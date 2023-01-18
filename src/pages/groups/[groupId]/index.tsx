@@ -4,17 +4,25 @@ import { useRouter } from "next/router";
 import { Button, Spinner } from "flowbite-react";
 import { trpc } from "@/utils/trpc";
 import InfoModal from "@/components/InfoModal";
-import DeleteModal from "@/components/DeleteModal";
 import Details from "@/components/DetailCard";
 import type { Group } from "@/types/prismaTypes";
+import { useSession } from "next-auth/react";
 
 const GroupDetails: NextPage = () => {
-  const [isModalOpen, setIsModalOpen] = useState<string | undefined>();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<
+    string | undefined
+  >(undefined);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState<string | undefined>(
+    "open"
+  );
+  const [isAllowModalOpen, setIsAllowModalOpen] = useState<string | undefined>(
+    undefined
+  );
+  const [id, setId] = useState<string>("");
 
   const router = useRouter();
   const { groupId } = router.query;
-
-  const [id, setId] = useState<string>("");
+  const { data: session } = useSession();
 
   const { status, data, error } = trpc.groups.getById.useQuery(id);
   const group = data as Group | undefined;
@@ -30,7 +38,6 @@ const GroupDetails: NextPage = () => {
 
   const handleDelete = async () => {
     await deleteGroup.mutateAsync(id);
-    setIsModalOpen(undefined);
     router.push("/groups");
   };
 
@@ -49,7 +56,11 @@ const GroupDetails: NextPage = () => {
           />
         </span>
       ) : status === "error" ? (
-        <InfoModal message={error.message} />
+        <InfoModal
+          message={error.message}
+          openModal={isErrorModalOpen}
+          setOpenModal={setIsErrorModalOpen}
+        />
       ) : (
         <>
           <div className="max-w-xxl my-5 w-full rounded-lg border bg-white p-4 shadow-md dark:border-gray-700 dark:bg-gray-800 sm:p-6">
@@ -63,7 +74,11 @@ const GroupDetails: NextPage = () => {
             <Button
               size="lg"
               color="success"
-              onClick={() => router.push(`/groups/${group?.id}/edit`)}
+              onClick={() => {
+                group?.createdById === session?.user?.id
+                  ? router.push(`/groups/${group?.id}/edit`)
+                  : setIsAllowModalOpen("open");
+              }}
             >
               Edit Group
             </Button>
@@ -71,7 +86,11 @@ const GroupDetails: NextPage = () => {
             <Button
               color="failure"
               size="lg"
-              onClick={() => setIsModalOpen("open")}
+              onClick={() => {
+                group?.createdById === session?.user?.id
+                  ? setIsDeleteModalOpen("open")
+                  : setIsAllowModalOpen("open");
+              }}
             >
               Delete Group
             </Button>
@@ -79,11 +98,17 @@ const GroupDetails: NextPage = () => {
         </>
       )}
 
-      <DeleteModal
-        message={`Are you sure you want to delete the group ${group?.name}?`}
+      <InfoModal
+        message={`Are you sure you want to delete ${group?.name}?`}
         handleAction={handleDelete}
-        openModal={isModalOpen}
-        setOpenModal={setIsModalOpen}
+        openModal={isDeleteModalOpen}
+        setOpenModal={setIsDeleteModalOpen}
+      />
+
+      <InfoModal
+        message="You are not allowed to edit or delete this group. Only the creator can edit or delete this group."
+        openModal={isAllowModalOpen}
+        setOpenModal={setIsAllowModalOpen}
       />
     </div>
   );

@@ -9,6 +9,9 @@ import type { Group } from "@/types/prismaTypes";
 
 const ChangeLeader: NextPage = () => {
   const [id, setId] = useState<string>("");
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState<string | undefined>(
+    "open"
+  );
   const [checkboxStates, setCheckboxStates] = useState<{
     [key: string]: boolean;
   }>({});
@@ -58,7 +61,13 @@ const ChangeLeader: NextPage = () => {
 
   return (
     <div className="p-4">
-      {error && <InfoModal message={error.message} />}
+      {error && (
+        <InfoModal
+          message={error.message}
+          openModal={isErrorModalOpen}
+          setOpenModal={setIsErrorModalOpen}
+        />
+      )}
 
       <div className="flex items-center justify-between">
         <Button size="lg" onClick={() => router.push(`/groups/${groupId}`)}>

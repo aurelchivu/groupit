@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Button } from "flowbite-react";
 import { trpc } from "@/utils/trpc";
-import DeleteModal from "@/components/DeleteModal";
+import InfoModal from "@/components/InfoModal";
 import type { Group } from "@/types/prismaTypes";
 import Details from "@/components/DetailCard";
 
 const GroupMemberDetails: NextPage = () => {
-  const [isModalOpen, setIsModalOpen] = useState<string | undefined>();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<
+    string | undefined
+  >(undefined);
 
   const router = useRouter();
   const { groupId, groupMemberId } = router.query;
@@ -46,7 +48,7 @@ const GroupMemberDetails: NextPage = () => {
       groupId: groupId as string,
       membersToRemove: [member?.id as string],
     });
-    setIsModalOpen(undefined);
+    setIsDeleteModalOpen(undefined);
     router.push(`/groups/${groupId}`);
   };
 
@@ -78,17 +80,17 @@ const GroupMemberDetails: NextPage = () => {
         <Button
           color="failure"
           size="lg"
-          onClick={() => setIsModalOpen("open")}
+          onClick={() => setIsDeleteModalOpen("open")}
         >
           Remove From Group
         </Button>
       </div>
 
-      <DeleteModal
+      <InfoModal
         message={`Are you sure you want to remove ${member?.member?.fullName} from ${group?.name}?`}
         handleAction={handleRemove}
-        openModal={isModalOpen}
-        setOpenModal={setIsModalOpen}
+        openModal={isDeleteModalOpen}
+        setOpenModal={setIsDeleteModalOpen}
       />
     </div>
   );

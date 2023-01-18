@@ -9,10 +9,12 @@ import type { Group, Member } from "@/types/prismaTypes";
 
 const AddMembers: NextPage = () => {
   const [id, setId] = useState<string>("");
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState<string | undefined>(
+    "open"
+  );
   const [checkboxStates, setCheckboxStates] = useState<{
     [key: string]: boolean;
   }>({});
-
   console.log("Checked", checkboxStates);
 
   const router = useRouter();
@@ -98,7 +100,13 @@ const AddMembers: NextPage = () => {
           </Button>
         </div>
       </div>
-      {errorAddMembers && <InfoModal message={errorAddMembers.message} />}
+      {errorAddMembers && (
+        <InfoModal
+          message={errorAddMembers.message}
+          openModal={isErrorModalOpen}
+          setOpenModal={setIsErrorModalOpen}
+        />
+      )}
 
       {status === "loading" ? (
         <span className="flex h-screen items-center justify-center">
@@ -109,7 +117,11 @@ const AddMembers: NextPage = () => {
           />
         </span>
       ) : status === "error" ? (
-        <InfoModal message={error.message} />
+        <InfoModal
+          message={error.message}
+          openModal={isErrorModalOpen}
+          setOpenModal={setIsErrorModalOpen}
+        />
       ) : (
         <>
           {" "}

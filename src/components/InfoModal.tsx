@@ -4,8 +4,8 @@ import { HiOutlineExclamationCircle } from "react-icons/hi";
 
 interface Props {
   message: string | undefined;
-  openModal: string;
-  setOpenModal: (openModal: string) => void;
+  openModal: string | undefined;
+  setOpenModal: (openModal: string | undefined) => void;
   handleAction?: () => void;
 }
 
@@ -17,7 +17,7 @@ const InfoModal: FC<Props> = ({
 }) => {
   return (
     <>
-      <Modal show={openModal === "open"} onClose={() => setOpenModal("close")}>
+      <Modal show={openModal === "open"} onClose={() => setOpenModal(undefined)}>
         <Modal.Body>
           <div className="text-center">
             <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
@@ -30,12 +30,12 @@ const InfoModal: FC<Props> = ({
                   <Button color="success" onClick={handleAction}>
                     OK, do it!
                   </Button>
-                  <Button color="failure" onClick={() => setOpenModal("close")}>
+                  <Button color="failure" onClick={() => setOpenModal(undefined)}>
                     NO, get me out of here!
                   </Button>
                 </div>
               ) : (
-                <Button color="failure" onClick={() => setOpenModal("close")}>
+                <Button color="failure" onClick={() => setOpenModal(undefined)}>
                   OK
                 </Button>
               )}

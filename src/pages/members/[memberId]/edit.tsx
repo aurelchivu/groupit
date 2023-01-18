@@ -5,15 +5,13 @@ import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
 import InfoModal from "@/components/InfoModal";
 
+interface IFormData {
+  fullName: string;
+  details: string;
+}
+
 const EditMember: NextPage = () => {
-  const router = useRouter();
-  const { memberId } = router.query;
-
-  interface IFormData {
-    fullName: string;
-    details: string;
-  }
-
+  const [id, setId] = useState<string>("");
   const [formData, setFormData] = useState<IFormData>({
     fullName: "",
     details: "",
@@ -21,7 +19,9 @@ const EditMember: NextPage = () => {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState<string | undefined>(
     "open"
   );
-  const [id, setId] = useState<string>("");
+
+  const router = useRouter();
+  const { memberId } = router.query;
 
   const { data: member } = trpc.members.getById.useQuery(id);
 
@@ -60,7 +60,7 @@ const EditMember: NextPage = () => {
         <InfoModal
           message={error.message}
           openModal={isErrorModalOpen}
-          setOpenModal={() => setIsErrorModalOpen}
+          setOpenModal={setIsErrorModalOpen}
         />
       )}
 

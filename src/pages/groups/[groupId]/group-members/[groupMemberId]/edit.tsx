@@ -5,29 +5,31 @@ import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
 import InfoModal from "@/components/InfoModal";
 
+interface IFormData {
+  fullName: string;
+  details: string;
+}
+
+interface IState {
+  grouppId: string;
+  memberId: string;
+}
+
 const EditGroupMember: NextPage = () => {
-  const router = useRouter();
-  const { groupId, groupMemberId } = router.query;
-
-  interface IFormData {
-    fullName: string;
-    details: string;
-  }
-
   const [formData, setFormData] = useState<IFormData>({
     fullName: "",
     details: "",
   });
-
-  interface IState {
-    grouppId: string;
-    memberId: string;
-  }
-
   const [ids, setIds] = useState<IState>({
     grouppId: "",
     memberId: "",
   });
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState<string | undefined>(
+    "open"
+  );
+
+  const router = useRouter();
+  const { groupId, groupMemberId } = router.query;
 
   const { data: group } = trpc.groups.getById.useQuery(ids.grouppId);
   console.log("Group=", group);
@@ -66,7 +68,13 @@ const EditGroupMember: NextPage = () => {
           Go Back
         </Button>
       </div>
-      {error && <InfoModal message={error.message} />}
+      {error && (
+        <InfoModal
+          message={error.message}
+          openModal={isErrorModalOpen}
+          setOpenModal={setIsErrorModalOpen}
+        />
+      )}
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
         <h1 className="text-xl">Edit Member: {memberFullName}</h1>
         <div>
