@@ -62,7 +62,7 @@ const EditGroup: NextPage = () => {
         <Button size="lg" onClick={() => router.back()}>
           Go Back
         </Button>
-        {group?.members.length === 0 ? (
+        {/* {group?.members.length === 0 ? (
           <Button
             color="success"
             onClick={() => router.push(`/groups/${group?.id}/add-members`)}
@@ -83,7 +83,7 @@ const EditGroup: NextPage = () => {
           >
             Set Leader
           </Button>
-        )}
+        )} */}
       </div>
 
       {error && (

@@ -12,6 +12,9 @@ const Members: NextPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredMembers, setFilteredMembers] = useState<Member[]>([]);
   const [showOnlyMyMembers, setShowOnlyMyMembers] = useState<boolean>(false);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState<string | undefined>(
+    "open"
+  );
 
   const { data: session } = useSession();
 
@@ -75,11 +78,15 @@ const Members: NextPage = () => {
       />
     </span>
   ) : status === "error" ? (
-    <InfoModal message={error.message} />
+    <InfoModal
+      message={error.message}
+      openModal={isErrorModalOpen}
+      setOpenModal={setIsErrorModalOpen}
+    />
   ) : (
     <>
       <div className="p-4">
-        <h1 className="p-2 text-xl">Members</h1>
+        <h1 className="p-2 text-2xl">Members</h1>
         <div className="flex items-center justify-between">
           <div className="py-4">
             <TextInput

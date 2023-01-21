@@ -1,6 +1,8 @@
 import { type FC } from "react";
 import Link from "next/link";
 import type { Group, Member, GroupMembers } from "@/types/prismaTypes";
+import { Button } from "flowbite-react";
+import router from "next/router";
 
 interface IProps {
   group?: Group;
@@ -40,14 +42,45 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
               Leader:
               {group?.leader ? (
-                <Link
-                  href={`/groups/${group?.id}/group-leader`}
-                  className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                >
-                  {group?.leader?.fullName}
-                </Link>
+                <>
+                  <>
+                    &nbsp;
+                    <Link
+                      href={`/groups/${group?.id}/group-leader`}
+                      className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                    >
+                      {group?.leader?.fullName}
+                    </Link>
+                  </>
+
+                  <>
+                    &nbsp;
+                    <Button
+                      onClick={() =>
+                        router.push(`/groups/${group?.id}/change-leader`)
+                      }
+                      size="xs"
+                      color="success"
+                    >
+                      Change leader
+                    </Button>
+                  </>
+                </>
               ) : (
-                " Not set yet "
+                <>
+                  &nbsp;
+                  {"Not set yet"}
+                  &nbsp;
+                  <Button
+                    onClick={() =>
+                      router.push(`/groups/${group?.id}/set-leader`)
+                    }
+                    size="xs"
+                    color="success"
+                  >
+                    Set a leader
+                  </Button>
+                </>
               )}
             </span>
           </li>
@@ -55,7 +88,20 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
           <li key="Members">
             <span className="group ml-3 flex  flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
               {group?.members?.length === 0 ? (
-                "No Members"
+                <>
+                  &nbsp;
+                  {"No members"}
+                  &nbsp;
+                  <Button
+                    onClick={() =>
+                      router.push(`/groups/${group?.id}/add-members`)
+                    }
+                    size="xs"
+                    color="success"
+                  >
+                    Add members
+                  </Button>
+                </>
               ) : (
                 <Link
                   href={`/groups/${group?.id}/group-members`}
@@ -108,7 +154,7 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
           {member?.groups && member?.groups?.length > 0 ? (
             <li key="MemberOf">
               <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-                Member of:
+                Member of: &nbsp;
                 {member?.groups?.map((group, index) => (
                   <>
                     <Link
@@ -128,7 +174,7 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
           {member?.leaderOf?.length > 0 ? (
             <li key="LeaderOf">
               <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-                Leader of:{" "}
+                Leader of: &nbsp;
                 {member?.leaderOf?.map((group, index) => (
                   <>
                     <Link
@@ -140,7 +186,7 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
                     </Link>
                     {index === Number(member?.leaderOf.length) - 1
                       ? null
-                      : ", "}
+                      : ", - "}
                   </>
                 ))}
               </span>
@@ -186,7 +232,7 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
           </li>
           <li key="LeaderOf">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Member of:
+              Member of: &nbsp;
               {leader.member?.groups?.map((group, index) => (
                 <>
                   <Link
@@ -207,7 +253,7 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
           {leader.member?.leaderOf && leader?.member?.leaderOf?.length > 0 ? (
             <li key="LeaderOf">
               <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-                Leader of:
+                Leader of: &nbsp;
                 {leader.member?.leaderOf?.map((group, index) => (
                   <>
                     <Link
@@ -264,12 +310,14 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
           </li>
           <li key="Created by">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Created by: {groupMember.member?.createdBy.name || groupMember.member?.createdBy.email}
+              Created by:{" "}
+              {groupMember.member?.createdBy.name ||
+                groupMember.member?.createdBy.email}
             </span>
           </li>
           <li key="MemberOf">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Member of:
+              Member of: &nbsp;
               {groupMember.member?.groups?.map((group, index) => (
                 <>
                   <Link
@@ -290,7 +338,7 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
           groupMember.member?.leaderOf?.length > 0 ? (
             <li key="LeaderOf">
               <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-                Leader of:{" "}
+                Leader of: &nbsp;
                 {groupMember.member?.leaderOf?.map((group, index) => (
                   <>
                     <Link
