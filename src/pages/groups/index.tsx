@@ -7,12 +7,15 @@ import { useEffect, useState } from "react";
 import type { Group } from "@/types/prismaTypes";
 import DataTable from "@/components/DataTable";
 import { useSession } from "next-auth/react";
+import { motion } from "framer-motion";
 
 const Groups: NextPage = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredGroups, setFilteredGroups] = useState<Group[]>([]);
   const [showOnlyMyGroups, setShowOnlyMyGroups] = useState<boolean>(false);
-  const [isErrorModalOpen, setIsErrorModalOpen] = useState<string | undefined>("open");
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState<string | undefined>(
+    "open"
+  );
 
   const { data: session } = useSession();
 
@@ -84,7 +87,14 @@ const Groups: NextPage = () => {
   ) : (
     <>
       <div className="p-4">
-        <h1 className="p-2 text-2xl">Groups</h1>
+        <motion.h1
+          className="p-2 text-2xl"
+          initial={{ translateX: 1500 }}
+          animate={{ translateX: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          Groups
+        </motion.h1>
 
         <div className="flex items-center justify-between">
           <div className="py-4">

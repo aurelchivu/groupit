@@ -24,6 +24,7 @@
     "@upstash/ratelimit": "^0.1.5",
     "flowbite": "^1.5.4",
     "flowbite-react": "^0.3.5",
+    "framer-motion": "^8.5.0",
     "next": "13.0.2",
     "next-auth": "^4.15.1",
     "next-themes": "^0.2.1",

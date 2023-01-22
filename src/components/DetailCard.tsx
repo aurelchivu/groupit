@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Group, Member, GroupMembers } from "@/types/prismaTypes";
 import { Button } from "flowbite-react";
 import router from "next/router";
+import { motion } from "framer-motion";
 
 interface IProps {
   group?: Group;
@@ -13,7 +14,15 @@ interface IProps {
 
 const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
   return (
-    <>
+    <motion.div
+      initial={{
+        opacity: 0,
+      }}
+      animate={{
+        opacity: 1,
+      }}
+      transition={{ duration: 0.5, delay: 0.5 }}
+    >
       {group && (
         <ul className="my-4 space-y-3">
           <li key="Group name">
@@ -374,7 +383,7 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
           </li>
         </ul>
       )}
-    </>
+    </motion.div>
   );
 };
 

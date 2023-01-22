@@ -2,6 +2,7 @@ import { useCallback, useState, type FC } from "react";
 import Link from "next/link";
 import type { Group, Member } from "@/types/prismaTypes";
 import { Checkbox, Table } from "flowbite-react";
+import { motion } from "framer-motion";
 
 interface IProps {
   groups?: Group[];
@@ -43,7 +44,11 @@ const DataTable: FC<IProps> = ({
   );
 
   return (
-    <>
+    <motion.div
+      initial={{ translateY: 1500 }}
+      animate={{ translateY: 0 }}
+      transition={{ duration: 0.8 }}
+    >
       {groups && (
         <Table hoverable>
           <Table.Head>
@@ -418,7 +423,7 @@ const DataTable: FC<IProps> = ({
           </Table.Body>
         </Table>
       )}
-    </>
+    </motion.div>
   );
 };
 
