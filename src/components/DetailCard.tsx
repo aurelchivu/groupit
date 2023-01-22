@@ -40,11 +40,10 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
 
           <li key="Leader">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Leader:
               {group?.leader ? (
                 <>
                   <>
-                    &nbsp;
+                    Leader: &nbsp;
                     <Link
                       href={`/groups/${group?.id}/group-leader`}
                       className="font-medium text-blue-600 hover:underline dark:text-blue-500"
@@ -68,9 +67,7 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
                 </>
               ) : (
                 <>
-                  &nbsp;
-                  {"Not set yet"}
-                  &nbsp;
+                  No leader &nbsp;
                   <Button
                     onClick={() =>
                       router.push(`/groups/${group?.id}/set-leader`)
@@ -89,7 +86,6 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
             <span className="group ml-3 flex  flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
               {group?.members?.length === 0 ? (
                 <>
-                  &nbsp;
                   {"No members"}
                   &nbsp;
                   <Button
@@ -154,9 +150,10 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
           {member?.groups && member?.groups?.length > 0 ? (
             <li key="MemberOf">
               <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-                Member of: &nbsp;
+                Member of:
                 {member?.groups?.map((group, index) => (
                   <>
+                    &nbsp;
                     <Link
                       key={group.id}
                       href={`/groups/${group?.group?.id}`}
@@ -164,7 +161,7 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
                     >
                       {group?.group?.name}
                     </Link>
-                    {index === Number(member?.groups?.length) - 1 ? null : ", "}
+                    {index === Number(member?.groups?.length) - 1 ? null : ","}
                   </>
                 ))}
               </span>
@@ -232,9 +229,10 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
           </li>
           <li key="LeaderOf">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Member of: &nbsp;
+              Member of:
               {leader.member?.groups?.map((group, index) => (
                 <>
+                  &nbsp;
                   <Link
                     key={group.id}
                     href={`/groups/${group?.group?.id}`}
@@ -317,9 +315,10 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
           </li>
           <li key="MemberOf">
             <span className="group ml-3 flex flex-1 items-center whitespace-nowrap rounded-lg bg-gray-100 p-3 text-base font-bold text-gray-900 hover:bg-gray-200 hover:shadow dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">
-              Member of: &nbsp;
+              Member of:
               {groupMember.member?.groups?.map((group, index) => (
                 <>
+                  &nbsp;
                   <Link
                     key={group.id}
                     href={`/groups/${group?.group?.id}`}
@@ -328,7 +327,7 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
                     {group?.group?.name}
                   </Link>
                   {index < Number(groupMember.member?.groups?.length) - 1
-                    ? ", "
+                    ? ","
                     : null}
                 </>
               ))}
