@@ -11,7 +11,7 @@ const Home: NextPage = () => {
   return (
     <>
       <div className="p-4">
-        <h1 className="text-white">{hello.data?.greeting}</h1>
+        <h1>{hello.data?.greeting}</h1>
       </div>
     </>
   );

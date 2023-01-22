@@ -44,7 +44,7 @@ export const authOptions: NextAuthOptions = {
   ],
   secret: env.NEXTAUTH_SECRET,
   theme: {
-    colorScheme: "auto", // "auto" | "dark" | "light"
+    colorScheme: "light", // "auto" | "dark" | "light"
     brandColor: "", // Hex color code
     logo: "", // Absolute URL to image
     buttonText: "", // Hex color code

@@ -4,7 +4,7 @@ import { Footer } from "flowbite-react";
 const Footerr: FC = () => {
   return (
     <Footer
-      className="align-center flex justify-center bg-gradient-to-r from-[#d0d2f5] to-[#857995] opacity-90"
+      className="align-center flex justify-center bg-[#417177] opacity-90 dark:bg-gray-800"
       container={true}
     >
       <Footer.Copyright
