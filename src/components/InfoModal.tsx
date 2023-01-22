@@ -17,7 +17,10 @@ const InfoModal: FC<Props> = ({
 }) => {
   return (
     <>
-      <Modal show={openModal === "open"} onClose={() => setOpenModal(undefined)}>
+      <Modal
+        show={openModal === "open"}
+        onClose={() => setOpenModal(undefined)}
+      >
         <Modal.Body>
           <div className="text-center">
             <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
@@ -30,7 +33,10 @@ const InfoModal: FC<Props> = ({
                   <Button color="success" onClick={handleAction}>
                     OK, do it!
                   </Button>
-                  <Button color="failure" onClick={() => setOpenModal(undefined)}>
+                  <Button
+                    color="failure"
+                    onClick={() => setOpenModal(undefined)}
+                  >
                     NO, get me out of here!
                   </Button>
                 </div>

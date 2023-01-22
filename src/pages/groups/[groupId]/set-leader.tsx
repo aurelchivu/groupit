@@ -12,6 +12,9 @@ const SetLeader: NextPage = () => {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState<string | undefined>(
     "open"
   );
+  const [isLeaderModalOpen, setIsLeaderModalOpen] = useState<
+    string | undefined
+  >(undefined);
   const [checkboxStates, setCheckboxStates] = useState<{
     [key: string]: boolean;
   }>({});
@@ -20,18 +23,21 @@ const SetLeader: NextPage = () => {
   const router = useRouter();
   const groupId = router.query.groupId as string | undefined;
 
-  useEffect(() => {
-    if (typeof groupId === "string") {
-      setId(groupId);
-    }
-  }, [groupId]);
-
   const { data } = trpc.groups.getById.useQuery(id);
   const group = data as Group | undefined;
   console.log("Group", group);
 
   const setLeader = trpc.groups.setLeader.useMutation();
   const { error } = setLeader;
+
+  useEffect(() => {
+    if (typeof groupId === "string") {
+      setId(groupId);
+    }
+    if (group?.members?.length === 0) {
+      setIsLeaderModalOpen("open");
+    }
+  }, [group?.members?.length, groupId]);
 
   const handleOnChange = useCallback((memberId: string) => {
     console.log("MemberId", memberId);
@@ -87,17 +93,21 @@ const SetLeader: NextPage = () => {
         </div>
       </div>
       <h1 className="p-2 text-xl">{`Set ${group?.name}'s Leader`} </h1>
-      {group?.members ? (
-        <>
-          <DataTable
-            setLeader={group}
-            groupId={groupId}
-            checkboxStates={checkboxStates}
-            onCheckboxChange={handleOnChange}
-          />
-        </>
-      ) : (
-        <div>Loading...</div>
+      {group?.members && (
+        <DataTable
+          setLeader={group}
+          groupId={groupId}
+          checkboxStates={checkboxStates}
+          onCheckboxChange={handleOnChange}
+        />
+      )}
+      {group?.members?.length === 0 && (
+        <InfoModal
+          message="No members in this group yet. The leader will be set once you add members."
+          openModal={isLeaderModalOpen}
+          setOpenModal={setIsLeaderModalOpen}
+          // handleAction={() => router.push(`/groups/${groupId}/add-members`)}
+        />
       )}
     </div>
   );
