@@ -96,7 +96,12 @@ const Members: NextPage = () => {
           Members
         </motion.h1>
         <div className="flex items-center justify-between">
-          <div className="py-4">
+          <motion.div
+            className="py-4"
+            initial={{ translateX: -500 }}
+            animate={{ translateX: 0 }}
+            transition={{ duration: 1 }}
+          >
             <TextInput
               id="search"
               type="text"
@@ -104,8 +109,13 @@ const Members: NextPage = () => {
               value={searchTerm}
               onChange={handleInputChange}
             />
-          </div>
-          <div className="flex items-center gap-2 ">
+          </motion.div>
+          <motion.div
+            className="flex items-center gap-2"
+            initial={{ translateY: -500 }}
+            animate={{ translateY: 0 }}
+            transition={{ duration: 1 }}
+          >
             <Checkbox
               id="checked"
               checked={showOnlyMyMembers}
@@ -114,12 +124,17 @@ const Members: NextPage = () => {
             <Label htmlFor="checked">
               <span className="text-lg">Show Only My Members</span>
             </Label>
-          </div>
-          <div className="py-4">
+          </motion.div>
+          <motion.div
+            className="py-4"
+            initial={{ translateX: 500 }}
+            animate={{ translateX: 0 }}
+            transition={{ duration: 1 }}
+          >
             <Button size="lg" onClick={() => router.push("/members/create")}>
               Create New Member
             </Button>
-          </div>
+          </motion.div>
         </div>
         <DataTable members={filteredMembers} />
       </div>

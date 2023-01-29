@@ -54,9 +54,17 @@ const LeaderDetails: NextPage = () => {
 
   return (
     <div className="p-4">
-      <Button size="lg" onClick={() => router.back()}>
-        Go Back
-      </Button>
+      <div className="align-center flex justify-between">
+        <Button size="lg" onClick={() => router.back()}>
+          Go Back
+        </Button>
+        <Button
+          color="success"
+          onClick={() => router.push(`/groups/${group?.id}/change-leader`)}
+        >
+          Change Leader
+        </Button>
+      </div>
 
       {status === "loading" ? (
         <span className="flex h-screen items-center justify-center">

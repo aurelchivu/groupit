@@ -7,6 +7,7 @@ import InfoModal from "@/components/InfoModal";
 import Details from "@/components/DetailCard";
 import type { Group } from "@/types/prismaTypes";
 import { useSession } from "next-auth/react";
+import { motion } from "framer-motion";
 
 const GroupDetails: NextPage = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<
@@ -43,9 +44,15 @@ const GroupDetails: NextPage = () => {
 
   return (
     <div className="p-4">
-      <Button size="lg" onClick={() => router.push(`/groups`)}>
-        Go Back
-      </Button>
+      <motion.div
+        initial={{ translateX: -500 }}
+        animate={{ translateX: 0 }}
+        transition={{ duration: 1 }}
+      >
+        <Button size="lg" onClick={() => router.push(`/groups`)}>
+          Go Back
+        </Button>
+      </motion.div>
 
       {status === "loading" ? (
         <span className="flex h-screen items-center justify-center">
@@ -63,25 +70,41 @@ const GroupDetails: NextPage = () => {
         />
       ) : (
         <>
-          <div className="max-w-xxl my-5 w-full rounded-lg border bg-white p-4 shadow-md dark:border-gray-700 dark:bg-gray-800 sm:p-6">
+          <motion.div
+            className="max-w-xxl my-5 w-full rounded-lg border bg-white p-4 shadow-md dark:border-gray-700 dark:bg-gray-800 sm:p-6"
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            transition={{ duration: 1.5 }}
+          >
             <h5 className="mb-3 ml-3 text-base font-semibold text-gray-900 dark:text-white md:text-xl">
               {group?.name} Group Details
             </h5>
             <Details group={group} />
-          </div>
+          </motion.div>
 
-          <div className="align-center flex justify-between">
-            <Button
-              size="lg"
-              color="success"
-              onClick={() => {
-                group?.createdById === session?.user?.id
-                  ? router.push(`/groups/${group?.id}/edit`)
-                  : setIsAllowModalOpen("open");
-              }}
-            >
-              Edit Group
-            </Button>
+          <motion.div
+            className="align-center flex justify-between"
+            initial={{ translateY: 2000 }}
+            animate={{ translateY: 0 }}
+            transition={{ duration: 1 }}
+          >
+            <div>
+              <Button
+                size="lg"
+                color="success"
+                onClick={() => {
+                  group?.createdById === session?.user?.id
+                    ? router.push(`/groups/${group?.id}/edit`)
+                    : setIsAllowModalOpen("open");
+                }}
+              >
+                Edit Group
+              </Button>
+            </div>
 
             <Button
               color="failure"
@@ -94,7 +117,7 @@ const GroupDetails: NextPage = () => {
             >
               Delete Group
             </Button>
-          </div>
+          </motion.div>
         </>
       )}
 

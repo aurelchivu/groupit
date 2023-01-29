@@ -78,7 +78,6 @@ const DataTable: FC<IProps> = ({
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 hover:scale-105 dark:text-white">
                   {group.id}
                 </Table.Cell>
-
                 <Table.Cell>
                   {group.leader ? (
                     <Link
