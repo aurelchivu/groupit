@@ -6,6 +6,7 @@ import { trpc } from "@/utils/trpc";
 import InfoModal from "@/components/InfoModal";
 import DataTable from "@/components/DataTable";
 import type { Group } from "@/types/prismaTypes";
+import { motion } from "framer-motion";
 
 const SetLeader: NextPage = () => {
   const [id, setId] = useState<string>("");
@@ -71,7 +72,12 @@ const SetLeader: NextPage = () => {
         />
       )}
 
-      <div className="flex items-center justify-between">
+      <motion.div
+        className="flex items-center justify-between"
+        initial={{ translateY: -500 }}
+        animate={{ translateY: 0 }}
+        transition={{ duration: 0.8 }}
+      >
         <Button size="lg" onClick={() => router.push(`/groups/${groupId}`)}>
           Go Back To {group?.name}
         </Button>
@@ -91,8 +97,15 @@ const SetLeader: NextPage = () => {
             Set Selected Member as Leader
           </Button>
         </div>
-      </div>
-      <h1 className="p-2 text-xl">{`Set ${group?.name}'s Leader`} </h1>
+      </motion.div>
+      <motion.h1
+        className="p-2 text-xl"
+        initial={{ translateX: 1500 }}
+        animate={{ translateX: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        {`Set ${group?.name}'s Leader`}{" "}
+      </motion.h1>
       {group?.members && (
         <DataTable
           setLeader={group}

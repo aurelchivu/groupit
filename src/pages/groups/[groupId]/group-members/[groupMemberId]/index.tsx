@@ -6,6 +6,7 @@ import { trpc } from "@/utils/trpc";
 import InfoModal from "@/components/InfoModal";
 import type { Group } from "@/types/prismaTypes";
 import Details from "@/components/DetailCard";
+import { motion } from "framer-motion";
 
 const GroupMemberDetails: NextPage = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<
@@ -54,18 +55,38 @@ const GroupMemberDetails: NextPage = () => {
 
   return (
     <div className="p-4">
-      <Button size="lg" onClick={() => router.back()}>
-        Go Back
-      </Button>
+      <motion.div
+        initial={{ translateY: -1000 }}
+        animate={{ translateY: 0 }}
+        transition={{ duration: 1 }}
+      >
+        <Button size="lg" onClick={() => router.back()}>
+          Go Back
+        </Button>
+      </motion.div>
 
-      <div className="max-w-xxl my-5 w-full rounded-lg border bg-white p-4 shadow-md dark:border-gray-700 dark:bg-gray-800 sm:p-6">
+      <motion.div
+        className="max-w-xxl my-5 w-full rounded-lg border bg-white p-4 shadow-md dark:border-gray-700 dark:bg-gray-800 sm:p-6"
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: 1,
+        }}
+        transition={{ duration: 1.5 }}
+      >
         <h5 className="mb-3 ml-3 text-base font-semibold text-gray-900 dark:text-white md:text-xl">
           Member Details
         </h5>
         <Details groupMember={member} />
-      </div>
+      </motion.div>
 
-      <div className="align-center flex justify-between">
+      <motion.div
+        className="align-center flex justify-between"
+        initial={{ translateY: 2000 }}
+        animate={{ translateY: 0 }}
+        transition={{ duration: 1 }}
+      >
         <Button
           size="lg"
           color="success"
@@ -84,7 +105,7 @@ const GroupMemberDetails: NextPage = () => {
         >
           Remove From Group
         </Button>
-      </div>
+      </motion.div>
 
       <InfoModal
         message={`Are you sure you want to remove ${member?.member?.fullName} from ${group?.name}?`}

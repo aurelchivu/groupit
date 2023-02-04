@@ -4,6 +4,7 @@ import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
 import InfoModal from "@/components/InfoModal";
+import { motion } from "framer-motion";
 
 interface IGroup {
   groupName: string;
@@ -45,11 +46,16 @@ const CreateGroup: NextPage = () => {
 
   return (
     <div className="px-40">
-      <div className="py-4">
+      <motion.div
+        className="py-4"
+        initial={{ translateX: -500 }}
+        animate={{ translateX: 0 }}
+        transition={{ duration: 1 }}
+      >
         <Button size="lg" onClick={() => router.back()}>
           Go Back
         </Button>
-      </div>
+      </motion.div>
       {error && (
         <InfoModal
           message={error.message}
@@ -58,8 +64,19 @@ const CreateGroup: NextPage = () => {
         />
       )}
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
-        <h1 className="text-xl">Create New Group</h1>
-        <div>
+        <motion.h1
+          className="text-xl"
+          initial={{ translateX: 1500 }}
+          animate={{ translateX: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          Create New Group
+        </motion.h1>
+        <motion.div
+          initial={{ rotate: 180 }}
+          animate={{ rotate: 0 }}
+          transition={{ duration: 0.8 }}
+        >
           <div className="mb-2 block">
             <Label htmlFor="base" value="Name" />
           </div>
@@ -73,8 +90,12 @@ const CreateGroup: NextPage = () => {
               setFormData({ ...formData, groupName: e.target.value });
             }}
           />
-        </div>
-        <div>
+        </motion.div>
+        <motion.div
+          initial={{ rotate: -180 }}
+          animate={{ rotate: 0 }}
+          transition={{ duration: 0.8 }}
+        >
           <div className="mb-2 block">
             <Label htmlFor="base" value="Description" />
           </div>
@@ -91,8 +112,12 @@ const CreateGroup: NextPage = () => {
               });
             }}
           ></textarea>
-        </div>
-        <div>
+        </motion.div>
+        <motion.div
+          initial={{ translateX: -500 }}
+          animate={{ translateX: 0 }}
+          transition={{ duration: 0.8 }}
+        >
           <div className="mb-2 block">
             <Label htmlFor="base" value="Please Select a Leader" />
           </div>
@@ -117,10 +142,16 @@ const CreateGroup: NextPage = () => {
               <option key={member.id}>{member.fullName}</option>
             ))}
           </select>
-        </div>
-        <Button type="submit" size="lg" color="success">
-          Create Group
-        </Button>
+        </motion.div>
+        <motion.div
+          initial={{ translateY: 2000 }}
+          animate={{ translateY: 0 }}
+          transition={{ duration: 1 }}
+        >
+          <Button type="submit" size="lg" color="success">
+            Create Group
+          </Button>
+        </motion.div>
       </form>
     </div>
   );

@@ -6,6 +6,7 @@ import { trpc } from "@/utils/trpc";
 import InfoModal from "@/components/InfoModal";
 import DataTable from "@/components/DataTable";
 import type { Group } from "@/types/prismaTypes";
+import { motion } from "framer-motion";
 
 const GroupMembers: NextPage = () => {
   const [id, setId] = useState<string>("");
@@ -81,12 +82,22 @@ const GroupMembers: NextPage = () => {
   ) : (
     <>
       <div className="p-4">
-        <div className="py-4">
+        <motion.div
+          className="py-4"
+          initial={{ translateX: -500 }}
+          animate={{ translateX: 0 }}
+          transition={{ duration: 1 }}
+        >
           <Button size="lg" onClick={() => router.push(`/groups/${groupId}`)}>
             Go Back To {group?.name}
           </Button>
-        </div>
-        <h1 className="p-2 text-xl">{`${group?.name}'s Members`}</h1>
+        </motion.div>
+        <motion.h1
+          className="p-2 text-xl"
+          initial={{ translateX: 1500 }}
+          animate={{ translateX: 0 }}
+          transition={{ duration: 0.8 }}
+        >{`${group?.name}'s Members`}</motion.h1>
 
         <>
           <DataTable
@@ -95,7 +106,12 @@ const GroupMembers: NextPage = () => {
             checkboxStates={checkboxStates}
             onCheckboxChange={handleOnChange}
           />
-          <div className="flex items-center justify-between">
+          <motion.div
+            className="flex items-center justify-between"
+            initial={{ translateY: 2000 }}
+            animate={{ translateY: 0 }}
+            transition={{ duration: 1 }}
+          >
             <div className="py-4">
               <Button
                 size="lg"
@@ -122,7 +138,7 @@ const GroupMembers: NextPage = () => {
                 Remove Selected Members
               </Button>
             </div>
-          </div>
+          </motion.div>
         </>
       </div>
       <InfoModal

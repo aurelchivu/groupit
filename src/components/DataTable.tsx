@@ -34,13 +34,17 @@ const DataTable: FC<IProps> = ({
   );
   const handleOnChange = useCallback(
     (memberId: string) => {
-      setLocalCheckboxStates((prevState) => ({
-        ...prevState,
-        [memberId]: !prevState[memberId],
-      }));
+      setLeader || changeLeader
+        ? setLocalCheckboxStates((prevState) => ({
+            [memberId]: !prevState[memberId],
+          }))
+        : setLocalCheckboxStates((prevState) => ({
+            ...prevState,
+            [memberId]: !prevState[memberId],
+          }));
       onCheckboxChange ? onCheckboxChange(memberId) : null;
     },
-    [onCheckboxChange]
+    [changeLeader, onCheckboxChange, setLeader]
   );
 
   return (

@@ -1,10 +1,8 @@
 import { type NextPage } from "next";
 import { useEffect, useState } from "react";
-import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
 import InfoModal from "@/components/InfoModal";
-import { motion } from "framer-motion";
 import EditForm from "@/components/EditForm";
 
 interface IGroup {
@@ -63,16 +61,6 @@ const EditGroup: NextPage = () => {
           setOpenModal={setIsErrorModalOpen}
         />
       )}
-      {/* <motion.div
-        className="align-center flex justify-between"
-        initial={{ translateX: -500 }}
-        animate={{ translateX: 0 }}
-        transition={{ duration: 1 }}
-      >
-        <Button size="lg" onClick={() => router.back()}>
-          Go Back
-        </Button>
-      </motion.div> */}
       <EditForm
         name={groupName}
         groupFormData={formData}

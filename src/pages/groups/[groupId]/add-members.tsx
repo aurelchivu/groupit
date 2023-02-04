@@ -6,6 +6,7 @@ import { trpc } from "@/utils/trpc";
 import InfoModal from "@/components/InfoModal";
 import DataTable from "@/components/DataTable";
 import type { Group, Member } from "@/types/prismaTypes";
+import { motion } from "framer-motion";
 
 const AddMembers: NextPage = () => {
   const [id, setId] = useState<string>("");
@@ -68,8 +69,20 @@ const AddMembers: NextPage = () => {
 
   return (
     <div className="p-4">
-      <h1 className="p-2 text-xl">Add Members to {group?.name}</h1>
-      <div className="flex items-center justify-between">
+      <motion.h1
+        className="p-2 text-xl"
+        initial={{ translateX: 1500 }}
+        animate={{ translateX: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        Add Members to {group?.name}
+      </motion.h1>
+      <motion.div
+        className="flex items-center justify-between"
+        initial={{ translateY: -500 }}
+        animate={{ translateY: 0 }}
+        transition={{ duration: 0.8 }}
+      >
         <div className="py-4">
           <Button size="lg" onClick={() => router.back()}>
             Go Back
@@ -99,7 +112,7 @@ const AddMembers: NextPage = () => {
             Add Selected Members
           </Button>
         </div>
-      </div>
+      </motion.div>
       {errorAddMembers && (
         <InfoModal
           message={errorAddMembers.message}
