@@ -7,6 +7,7 @@ import InfoModal from "@/components/InfoModal";
 import Details from "@/components/DetailCard";
 import type { Member } from "@/types/prismaTypes";
 import { useSession } from "next-auth/react";
+import { motion } from "framer-motion";
 
 const MemberDetails: NextPage = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<
@@ -43,9 +44,15 @@ const MemberDetails: NextPage = () => {
 
   return (
     <div className="p-4">
-      <Button size="lg" onClick={() => router.back()}>
-        Go Back
-      </Button>
+      <motion.div
+        initial={{ translateX: -500 }}
+        animate={{ translateX: 0 }}
+        transition={{ duration: 1 }}
+      >
+        <Button size="lg" onClick={() => router.back()}>
+          Go Back
+        </Button>
+      </motion.div>
 
       {status === "loading" ? (
         <span className="flex h-screen items-center justify-center">
@@ -63,14 +70,28 @@ const MemberDetails: NextPage = () => {
         />
       ) : (
         <>
-          <div className="max-w-xxl my-5 w-full rounded-lg border bg-white p-4 shadow-md dark:border-gray-700 dark:bg-gray-800 sm:p-6">
+          <motion.div
+            className="max-w-xxl my-5 w-full rounded-lg border bg-white p-4 shadow-md dark:border-gray-700 dark:bg-gray-800 sm:p-6"
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            transition={{ duration: 1.5 }}
+          >
             <h5 className="mb-3 ml-3 text-base font-semibold text-gray-900 dark:text-white md:text-xl">
               {member?.fullName} Member Details
             </h5>
             <Details member={member} />
-          </div>
+          </motion.div>
 
-          <div className="align-center flex justify-between">
+          <motion.div
+            className="align-center flex justify-between"
+            initial={{ translateY: 2000 }}
+            animate={{ translateY: 0 }}
+            transition={{ duration: 1 }}
+          >
             <Button
               size="lg"
               color="success"
@@ -93,7 +114,7 @@ const MemberDetails: NextPage = () => {
             >
               Delete Member
             </Button>
-          </div>
+          </motion.div>
         </>
       )}
 

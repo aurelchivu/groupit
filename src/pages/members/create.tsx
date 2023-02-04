@@ -4,6 +4,7 @@ import { Button, Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
 import InfoModal from "@/components/InfoModal";
+import { motion } from "framer-motion";
 
 interface IState {
   fullName: string;
@@ -44,11 +45,16 @@ const CreateMember: NextPage = () => {
 
   return (
     <div className="px-40">
-      <div className="py-4">
+      <motion.div
+        className="py-4"
+        initial={{ translateX: -500 }}
+        animate={{ translateX: 0 }}
+        transition={{ duration: 1 }}
+      >
         <Button size="lg" onClick={() => router.back()}>
           Go Back
         </Button>
-      </div>
+      </motion.div>
       {error && (
         <InfoModal
           message={error.message}
@@ -57,8 +63,19 @@ const CreateMember: NextPage = () => {
         />
       )}
       <form className="flex flex-col gap-5 py-40" onSubmit={submitCreate}>
-        <h1 className="text-xl">Create New Member</h1>
-        <div>
+        <motion.h1
+          className="text-xl"
+          initial={{ translateX: 1500 }}
+          animate={{ translateX: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          Create New Member
+        </motion.h1>
+        <motion.div
+          initial={{ rotate: 180 }}
+          animate={{ rotate: 0 }}
+          transition={{ duration: 0.8 }}
+        >
           <div className="mb-2 block">
             <Label htmlFor="base" value="Member Full Name" />
           </div>
@@ -73,8 +90,12 @@ const CreateMember: NextPage = () => {
               setFormData({ ...formData, fullName: e.target.value });
             }}
           />
-        </div>
-        <div>
+        </motion.div>
+        <motion.div
+          initial={{ rotate: -180 }}
+          animate={{ rotate: 0 }}
+          transition={{ duration: 0.8 }}
+        >
           <div className="mb-2 block">
             <Label htmlFor="base" value="Details" />
           </div>
@@ -91,11 +112,16 @@ const CreateMember: NextPage = () => {
               });
             }}
           ></textarea>
-        </div>
-
-        <Button type="submit" size="lg" color="success">
-          Create Member
-        </Button>
+        </motion.div>
+        <motion.div
+          initial={{ translateY: 2000 }}
+          animate={{ translateY: 0 }}
+          transition={{ duration: 1 }}
+        >
+          <Button type="submit" size="lg" color="success">
+            Create Member
+          </Button>
+        </motion.div>
       </form>
     </div>
   );

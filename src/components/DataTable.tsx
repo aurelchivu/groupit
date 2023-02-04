@@ -81,7 +81,7 @@ const DataTable: FC<IProps> = ({
                 <Table.Cell>
                   {group.leader ? (
                     <Link
-                      href={`/groups/${group?.id}/group-members/${group.leaderId}`}
+                      href={`/groups/${group?.id}/group-leader`}
                       className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                     >
                       {group.leader?.fullName}

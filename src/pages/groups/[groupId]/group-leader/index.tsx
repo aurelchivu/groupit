@@ -6,6 +6,7 @@ import { trpc } from "@/utils/trpc";
 import InfoModal from "@/components/InfoModal";
 import type { Group } from "@/types/prismaTypes";
 import Details from "@/components/DetailCard";
+import { motion } from "framer-motion";
 
 const LeaderDetails: NextPage = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<
@@ -54,7 +55,12 @@ const LeaderDetails: NextPage = () => {
 
   return (
     <div className="p-4">
-      <div className="align-center flex justify-between">
+      <motion.div
+        className="align-center flex justify-between"
+        initial={{ translateY: -1000 }}
+        animate={{ translateY: 0 }}
+        transition={{ duration: 1 }}
+      >
         <Button size="lg" onClick={() => router.back()}>
           Go Back
         </Button>
@@ -64,7 +70,7 @@ const LeaderDetails: NextPage = () => {
         >
           Change Leader
         </Button>
-      </div>
+      </motion.div>
 
       {status === "loading" ? (
         <span className="flex h-screen items-center justify-center">
@@ -89,7 +95,12 @@ const LeaderDetails: NextPage = () => {
             <Details leader={leader} />
           </div>
 
-          <div className="align-center flex justify-between">
+          <motion.div
+            className="align-center flex justify-between"
+            initial={{ translateY: 2000 }}
+            animate={{ translateY: 0 }}
+            transition={{ duration: 1 }}
+          >
             <Button
               size="lg"
               color="success"
@@ -106,7 +117,7 @@ const LeaderDetails: NextPage = () => {
             >
               Remove From Group
             </Button>
-          </div>
+          </motion.div>
         </>
       )}
 

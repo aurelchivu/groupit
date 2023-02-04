@@ -49,7 +49,7 @@ const GroupDetails: NextPage = () => {
         animate={{ translateX: 0 }}
         transition={{ duration: 1 }}
       >
-        <Button size="lg" onClick={() => router.push(`/groups`)}>
+        <Button size="lg" onClick={() => router.back()}>
           Go Back
         </Button>
       </motion.div>

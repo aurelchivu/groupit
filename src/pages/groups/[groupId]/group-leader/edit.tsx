@@ -57,7 +57,7 @@ const EditGroupLeader: NextPage = () => {
       id: leader?.member?.id as string,
       ...formData,
     });
-    router.push(`/groups/${groupId}/`);
+    router.push(`/groups/${groupId}/group-leader`);
   };
 
   return (
