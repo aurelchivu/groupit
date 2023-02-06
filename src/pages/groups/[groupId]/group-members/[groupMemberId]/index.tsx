@@ -29,12 +29,12 @@ const GroupMemberDetails: NextPage = () => {
   const { data } = trpc.groups.getById.useQuery(ids.grouppId);
   const group = data as Group | undefined;
 
-  console.log("Group=", group);
+  // console.log("Group=", group);
 
   const member = group?.members.find(
     (member) => member.memberId === ids.memberId
   );
-  console.log("Member=", member);
+  // console.log("Member=", member);
 
   const removeMember = trpc.groups.removeMember.useMutation();
 

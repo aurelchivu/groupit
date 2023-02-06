@@ -1,5 +1,4 @@
-import { type NextPage } from "next";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import { Button, Spinner } from "flowbite-react";
 import { trpc } from "@/utils/trpc";
@@ -8,8 +7,71 @@ import Details from "@/components/DetailCard";
 import type { Member } from "@/types/prismaTypes";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import type {
+  GetStaticPaths,
+  GetStaticPropsContext,
+  InferGetStaticPropsType,
+} from "next";
+import { prisma } from "@/server/db/client";
+import { appRouter } from "@/server/trpc/router/_app";
+import superjson from "superjson";
+import { PrismaClient } from "@prisma/client";
 
-const MemberDetails: NextPage = () => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  const members = await prisma?.member.findMany({
+    include: {
+      createdBy: true,
+      leaderOf: {
+        include: {
+          leader: true,
+        },
+      },
+      groups: {
+        include: {
+          group: true,
+        },
+      },
+    },
+    orderBy: {
+      fullName: "asc",
+    },
+  });
+  return {
+    paths: members.map((member) => ({
+      params: {
+        memberId: member.id,
+      },
+    })),
+    // https://nextjs.org/docs/basic-features/data-fetching#fallback-blocking
+    fallback: "blocking",
+  };
+};
+
+export async function getStaticProps(
+  context: GetStaticPropsContext<{ memberId: string }>
+) {
+  const ssg = await createProxySSGHelpers({
+    router: appRouter,
+    ctx: { session: null, prisma: new PrismaClient() },
+    transformer: superjson, // optional - adds superjson serialization
+  });
+  console.log("context = ", context);
+  const id = context.params?.memberId as string;
+  // prefetch `member.byId`
+  await ssg.members.getById.prefetch(id);
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+      id,
+    },
+    revalidate: 1,
+  };
+}
+
+const MemberDetails = (
+  props: InferGetStaticPropsType<typeof getStaticProps>
+) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<
     string | undefined
   >(undefined);
@@ -19,23 +81,17 @@ const MemberDetails: NextPage = () => {
   const [isAllowModalOpen, setIsAllowModalOpen] = useState<string | undefined>(
     undefined
   );
-  const [id, setId] = useState<string>("");
 
   const router = useRouter();
-  const { memberId } = router.query;
+
   const { data: session } = useSession();
 
-  const { status, data, error } = trpc.members.getById.useQuery(id);
+  const id = props.id;
+  const { status, data, error } = trpc.members.getById.useQuery(id as string);
   const member = data as Member | undefined;
-  console.log("Member=", member);
+  // console.log("Member=", member);
 
   const deleteMember = trpc.members.delete.useMutation();
-
-  useEffect(() => {
-    if (typeof memberId === "string") {
-      setId(memberId);
-    }
-  }, [memberId]);
 
   const handleDelete = async () => {
     await deleteMember.mutateAsync(id as string);

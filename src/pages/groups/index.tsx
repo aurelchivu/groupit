@@ -23,7 +23,7 @@ const Groups: NextPage = () => {
 
   const { status, data, error } = trpc.groups.getAll.useQuery();
   const groups = data as Group[] | undefined;
-  console.log(groups);
+  // console.log(groups);
 
   useEffect(() => {
     const onSearch = (searchTerm: string) => {

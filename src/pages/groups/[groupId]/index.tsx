@@ -27,7 +27,7 @@ const GroupDetails: NextPage = () => {
 
   const { status, data, error } = trpc.groups.getById.useQuery(id);
   const group = data as Group | undefined;
-  console.log("Group=", group);
+  // console.log("Group=", group);
 
   const deleteGroup = trpc.groups.delete.useMutation();
 

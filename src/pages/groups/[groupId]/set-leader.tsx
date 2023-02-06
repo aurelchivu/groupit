@@ -19,14 +19,14 @@ const SetLeader: NextPage = () => {
   const [checkboxStates, setCheckboxStates] = useState<{
     [key: string]: boolean;
   }>({});
-  console.log("Checked", checkboxStates);
+  // console.log("Checked", checkboxStates);
 
   const router = useRouter();
   const groupId = router.query.groupId as string | undefined;
 
   const { data } = trpc.groups.getById.useQuery(id);
   const group = data as Group | undefined;
-  console.log("Group", group);
+  // console.log("Group", group);
 
   const setLeader = trpc.groups.setLeader.useMutation();
   const { error } = setLeader;
@@ -41,7 +41,7 @@ const SetLeader: NextPage = () => {
   }, [group?.members?.length, groupId]);
 
   const handleOnChange = useCallback((memberId: string) => {
-    console.log("MemberId", memberId);
+    // console.log("MemberId", memberId);
     setCheckboxStates((prevState) => ({
       [memberId]: !prevState[memberId],
     }));
@@ -53,7 +53,7 @@ const SetLeader: NextPage = () => {
       .map(([memberId, _]) =>
         group?.members?.find((member) => member.id === memberId)
       );
-    console.log("Selected Members", selectedMembers);
+    // console.log("Selected Members", selectedMembers);
 
     await setLeader.mutateAsync({
       groupId: groupId as string,

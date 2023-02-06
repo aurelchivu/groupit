@@ -94,16 +94,18 @@ const EditForm: FC<IProps> = ({
             ></textarea>
           </motion.div>
           <motion.div
+            className="flex justify-center"
             initial={{ translateY: 2000 }}
             animate={{ translateY: 0 }}
             transition={{ duration: 1 }}
           >
-            <Button type="submit" size="lg">
+            <Button type="submit" size="lg" color="success">
               Save
             </Button>
           </motion.div>
         </form>
       )}
+
       {memberFormData && setMemberFormData && (
         <form className="flex flex-col gap-5 py-20" onSubmit={submitUpdate}>
           <motion.h1
@@ -158,11 +160,12 @@ const EditForm: FC<IProps> = ({
             ></textarea>
           </motion.div>
           <motion.div
+            className="flex justify-center"
             initial={{ translateY: 2000 }}
             animate={{ translateY: 0 }}
             transition={{ duration: 1 }}
           >
-            <Button type="submit" size="lg">
+            <Button type="submit" size="lg" color="success">
               Save
             </Button>
           </motion.div>

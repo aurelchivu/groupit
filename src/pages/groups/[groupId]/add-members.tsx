@@ -16,7 +16,7 @@ const AddMembers: NextPage = () => {
   const [checkboxStates, setCheckboxStates] = useState<{
     [key: string]: boolean;
   }>({});
-  console.log("Checked", checkboxStates);
+  // console.log("Checked", checkboxStates);
 
   const router = useRouter();
   const groupId = router.query.groupId as string | undefined;
@@ -33,7 +33,7 @@ const AddMembers: NextPage = () => {
   const allMembers = trpc.members.getAll.useQuery().data as
     | Member[]
     | undefined;
-  console.log("All Members", allMembers);
+  // console.log("All Members", allMembers);
 
   const addMembers = trpc.groups.addMember.useMutation();
   const { error: errorAddMembers } = addMembers;
@@ -58,7 +58,7 @@ const AddMembers: NextPage = () => {
           )
           ?.find((member) => member.id === memberId)
       );
-    console.log("Selected Members", selectedMembers);
+    // console.log("Selected Members", selectedMembers);
 
     await addMembers.mutateAsync({
       groupId: groupId as string,

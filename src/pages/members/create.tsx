@@ -114,6 +114,7 @@ const CreateMember: NextPage = () => {
           ></textarea>
         </motion.div>
         <motion.div
+          className="flex justify-center"
           initial={{ translateY: 2000 }}
           animate={{ translateY: 0 }}
           transition={{ duration: 1 }}

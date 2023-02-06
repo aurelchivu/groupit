@@ -28,7 +28,7 @@ const GroupMembers: NextPage = () => {
 
   const { status, data, error } = trpc.groups.getById.useQuery(id);
   const group = data as Group | undefined;
-  console.log("Group", group);
+  // console.log("Group", group);
 
   const removeMembers = trpc.groups.removeMember.useMutation({
     onSuccess: () => {
@@ -42,7 +42,7 @@ const GroupMembers: NextPage = () => {
   const [checkboxStates, setCheckboxStates] = useState<{
     [key: string]: boolean;
   }>({});
-  console.log("Checked", checkboxStates);
+  // console.log("Checked", checkboxStates);
 
   const handleOnChange = useCallback((memberId: string) => {
     setCheckboxStates((prevState) => ({
@@ -57,7 +57,7 @@ const GroupMembers: NextPage = () => {
       .map(([memberId, _]) =>
         group?.members?.find((member) => member.id === memberId)
       );
-    console.log("Selected Members", selectedMembers);
+    // console.log("Selected Members", selectedMembers);
 
     await removeMembers.mutateAsync({
       groupId: groupId as string,

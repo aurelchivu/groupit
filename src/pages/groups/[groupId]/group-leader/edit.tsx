@@ -31,12 +31,12 @@ const EditGroupLeader: NextPage = () => {
   });
 
   const { data: group } = trpc.groups.getById.useQuery(ids.groupId);
-  console.log("Group=", group);
+  // console.log("Group=", group);
 
   const leader = group?.members?.find(
     (member) => member?.member?.id === group.leaderId
   );
-  console.log("Leader=", leader);
+  // console.log("Leader=", leader);
 
   const leaderFullName = leader?.member?.fullName as string;
   const leaderDetails = leader?.member?.details as string;

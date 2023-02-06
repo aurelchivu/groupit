@@ -1,4 +1,3 @@
-import { User, Role } from "./../../../prisma/interfaces/prismaTypes";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 

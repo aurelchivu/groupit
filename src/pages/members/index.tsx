@@ -23,7 +23,7 @@ const Members: NextPage = () => {
 
   const { status, data, error } = trpc.members.getAll.useQuery();
   const members = data as Member[] | undefined;
-  console.log("Members:", members);
+  // console.log("Members:", members);
 
   useEffect(() => {
     const onSearch = (searchTerm: string) => {
