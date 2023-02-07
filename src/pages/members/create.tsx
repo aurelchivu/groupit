@@ -52,7 +52,7 @@ const CreateMember: NextPage = () => {
         transition={{ duration: 1 }}
       >
         <Button size="lg" onClick={() => router.back()}>
-          Go Back
+          Go back
         </Button>
       </motion.div>
       {error && (
@@ -69,7 +69,7 @@ const CreateMember: NextPage = () => {
           animate={{ translateX: 0 }}
           transition={{ duration: 0.8 }}
         >
-          Create New Member
+          Create new member
         </motion.h1>
         <motion.div
           initial={{ rotate: 180 }}

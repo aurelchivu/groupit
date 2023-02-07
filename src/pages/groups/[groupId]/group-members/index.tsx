@@ -89,7 +89,7 @@ const GroupMembers: NextPage = () => {
           transition={{ duration: 1 }}
         >
           <Button size="lg" onClick={() => router.push(`/groups/${groupId}`)}>
-            Go Back To {group?.name}
+            Go back to {group?.name}
           </Button>
         </motion.div>
         <motion.h1
@@ -97,7 +97,7 @@ const GroupMembers: NextPage = () => {
           initial={{ translateX: 1500 }}
           animate={{ translateX: 0 }}
           transition={{ duration: 0.8 }}
-        >{`${group?.name}'s Members`}</motion.h1>
+        >{`${group?.name}'s members`}</motion.h1>
 
         <>
           <DataTable
@@ -118,7 +118,7 @@ const GroupMembers: NextPage = () => {
                 color="success"
                 onClick={() => router.push(`/groups/${groupId}/add-members`)}
               >
-                Add New Members
+                Add new members
               </Button>
             </div>
 
@@ -135,7 +135,7 @@ const GroupMembers: NextPage = () => {
                 }
                 onClick={() => setIsDeleteModalOpen("open")}
               >
-                Remove Selected Members
+                Remove selected members
               </Button>
             </div>
           </motion.div>

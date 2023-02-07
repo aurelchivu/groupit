@@ -84,7 +84,7 @@ const Details: FC<IProps> = ({ group, member, groupMember, leader }) => {
                       router.push(`/groups/${group?.id}/set-leader`)
                     }
                     size="xs"
-                    color="success"
+                    color="warning"
                   >
                     Set a leader
                   </Button>

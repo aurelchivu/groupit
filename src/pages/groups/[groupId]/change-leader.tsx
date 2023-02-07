@@ -77,7 +77,7 @@ const ChangeLeader: NextPage = () => {
         transition={{ duration: 0.8 }}
       >
         <Button size="lg" onClick={() => router.push(`/groups/${groupId}`)}>
-          Go Back To {groupName}
+          Go back to {groupName}
         </Button>
         <div className="py-4">
           <Button
@@ -94,7 +94,7 @@ const ChangeLeader: NextPage = () => {
             color="success"
             onClick={changeSelectedLeader}
           >
-            Set Selected Member as New Leader
+            Set selected member as new leader
           </Button>
         </div>
       </motion.div>
@@ -103,7 +103,7 @@ const ChangeLeader: NextPage = () => {
         initial={{ translateX: 1500 }}
         animate={{ translateX: 0 }}
         transition={{ duration: 0.8 }}
-      >{`Change ${group?.name}'s Leader`}</motion.h1>
+      >{`Change ${group?.name}'s leader`}</motion.h1>
 
       {group?.members.filter((member) => member.isLeader === false) ? (
         <>

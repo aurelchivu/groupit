@@ -40,7 +40,7 @@ const EditForm: FC<IProps> = ({
         transition={{ duration: 1 }}
       >
         <Button size="lg" onClick={() => router.back()}>
-          Go Back
+          Go back
         </Button>
       </motion.div>
       {groupFormData && setGroupFormData && (
@@ -51,7 +51,7 @@ const EditForm: FC<IProps> = ({
             animate={{ translateX: 0 }}
             transition={{ duration: 0.8 }}
           >
-            Edit Group {name}
+            Edit group {name}
           </motion.h1>
           <motion.div
             initial={{ rotate: 180 }}
@@ -59,7 +59,7 @@ const EditForm: FC<IProps> = ({
             transition={{ duration: 0.8 }}
           >
             <div className="mb-2 block">
-              <Label htmlFor="name" value="Name" />
+              <Label htmlFor="name" value="Group name" />
             </div>
             <TextInput
               id="name"
@@ -78,7 +78,7 @@ const EditForm: FC<IProps> = ({
             transition={{ duration: 0.8 }}
           >
             <div className="mb-2 block">
-              <Label htmlFor="base" value="Group Description" />
+              <Label htmlFor="base" value="Group description" />
             </div>
             <textarea
               id="description"
@@ -114,7 +114,7 @@ const EditForm: FC<IProps> = ({
             animate={{ translateX: 0 }}
             transition={{ duration: 0.8 }}
           >
-            Edit Member {name}
+            Edit member {name}
           </motion.h1>
           <motion.div
             initial={{ rotate: 180 }}
@@ -122,7 +122,7 @@ const EditForm: FC<IProps> = ({
             transition={{ duration: 0.8 }}
           >
             <div className="mb-2 block">
-              <Label htmlFor="firstName" value="Member First Name" />
+              <Label htmlFor="firstName" value="Member full name" />
             </div>
             <TextInput
               id="memberFirstName"
@@ -144,7 +144,7 @@ const EditForm: FC<IProps> = ({
             transition={{ duration: 0.8 }}
           >
             <div className="mb-2 block">
-              <Label htmlFor="base" value="Member Details" />
+              <Label htmlFor="base" value="Member details" />
             </div>
             <textarea
               id="details"

@@ -55,7 +55,7 @@ export const groupRouter = router({
         include: {
           leader: true,
           createdBy: true,
-          // members: true,
+          members: true,
         },
         orderBy: {
           name: "asc",

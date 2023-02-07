@@ -62,13 +62,13 @@ const LeaderDetails: NextPage = () => {
         transition={{ duration: 1 }}
       >
         <Button size="lg" onClick={() => router.back()}>
-          Go Back
+          Go back
         </Button>
         <Button
           color="success"
           onClick={() => router.push(`/groups/${group?.id}/change-leader`)}
         >
-          Change Leader
+          Change leader
         </Button>
       </motion.div>
 
@@ -99,7 +99,7 @@ const LeaderDetails: NextPage = () => {
             transition={{ duration: 1.5 }}
           >
             <h5 className="mb-3 ml-3 text-base font-semibold text-gray-900 dark:text-white md:text-xl">
-              {`${group?.name}'s Leader Details`}
+              {`${group?.name}'s Leader details`}
             </h5>
             <Details leader={leader} />
           </motion.div>
@@ -117,14 +117,14 @@ const LeaderDetails: NextPage = () => {
                 router.push(`/groups/${groupId}/group-leader/edit`)
               }
             >
-              Edit Leader
+              Edit leader
             </Button>
             <Button
               color="failure"
               size="lg"
               onClick={() => setIsDeleteModalOpen("open")}
             >
-              Remove From Group
+              Remove from group
             </Button>
           </motion.div>
         </>

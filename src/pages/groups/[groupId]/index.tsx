@@ -1,5 +1,4 @@
-import { type NextPage } from "next";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import { Button, Spinner } from "flowbite-react";
 import { trpc } from "@/utils/trpc";
@@ -8,8 +7,63 @@ import Details from "@/components/DetailCard";
 import type { Group } from "@/types/prismaTypes";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import type {
+  GetStaticPaths,
+  GetStaticPropsContext,
+  InferGetStaticPropsType,
+} from "next";
+import { prisma } from "@/server/db/client";
+import { appRouter } from "@/server/trpc/router/_app";
+import superjson from "superjson";
+import { PrismaClient } from "@prisma/client";
 
-const GroupDetails: NextPage = () => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  const groups = await prisma?.groupp.findMany({
+    include: {
+      leader: true,
+      createdBy: true,
+      members: true,
+    },
+    orderBy: {
+      name: "asc",
+    },
+  });
+  return {
+    paths: groups.map((group) => ({
+      params: {
+        groupId: group.id,
+      },
+    })),
+    // https://nextjs.org/docs/basic-features/data-fetching#fallback-blocking
+    fallback: "blocking",
+  };
+};
+
+export async function getStaticProps(
+  context: GetStaticPropsContext<{ groupId: string }>
+) {
+  const ssg = await createProxySSGHelpers({
+    router: appRouter,
+    ctx: { session: null, prisma: new PrismaClient() },
+    transformer: superjson, // optional - adds superjson serialization
+  });
+  console.log("context = ", context);
+  const id = context.params?.groupId as string;
+  // prefetch `group.byId`
+  await ssg.groups.getById.prefetch(id);
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+      id,
+    },
+    revalidate: 1,
+  };
+}
+
+const GroupDetails = (
+  props: InferGetStaticPropsType<typeof getStaticProps>
+) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<
     string | undefined
   >(undefined);
@@ -19,23 +73,17 @@ const GroupDetails: NextPage = () => {
   const [isAllowModalOpen, setIsAllowModalOpen] = useState<string | undefined>(
     undefined
   );
-  const [id, setId] = useState<string>("");
 
   const router = useRouter();
-  const { groupId } = router.query;
+
   const { data: session } = useSession();
 
+  const { id } = props;
   const { status, data, error } = trpc.groups.getById.useQuery(id);
   const group = data as Group | undefined;
   // console.log("Group=", group);
 
   const deleteGroup = trpc.groups.delete.useMutation();
-
-  useEffect(() => {
-    if (typeof groupId === "string") {
-      setId(groupId);
-    }
-  }, [groupId]);
 
   const handleDelete = async () => {
     await deleteGroup.mutateAsync(id);
@@ -50,7 +98,7 @@ const GroupDetails: NextPage = () => {
         transition={{ duration: 1 }}
       >
         <Button size="lg" onClick={() => router.back()}>
-          Go Back
+          Go back
         </Button>
       </motion.div>
 
@@ -81,7 +129,7 @@ const GroupDetails: NextPage = () => {
             transition={{ duration: 1.5 }}
           >
             <h5 className="mb-3 ml-3 text-base font-semibold text-gray-900 dark:text-white md:text-xl">
-              {group?.name} Group Details
+              {group?.name} group details
             </h5>
             <Details group={group} />
           </motion.div>
@@ -102,7 +150,7 @@ const GroupDetails: NextPage = () => {
                     : setIsAllowModalOpen("open");
                 }}
               >
-                Edit Group
+                Edit group
               </Button>
             </div>
 
@@ -115,7 +163,7 @@ const GroupDetails: NextPage = () => {
                   : setIsAllowModalOpen("open");
               }}
             >
-              Delete Group
+              Delete group
             </Button>
           </motion.div>
         </>

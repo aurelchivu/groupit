@@ -53,7 +53,7 @@ const CreateGroup: NextPage = () => {
         transition={{ duration: 1 }}
       >
         <Button size="lg" onClick={() => router.back()}>
-          Go Back
+          Go back
         </Button>
       </motion.div>
       {error && (
@@ -70,7 +70,7 @@ const CreateGroup: NextPage = () => {
           animate={{ translateX: 0 }}
           transition={{ duration: 0.8 }}
         >
-          Create New Group
+          Create new group
         </motion.h1>
         <motion.div
           initial={{ rotate: 180 }}
@@ -119,7 +119,7 @@ const CreateGroup: NextPage = () => {
           transition={{ duration: 0.8 }}
         >
           <div className="mb-2 block">
-            <Label htmlFor="base" value="Please Select a Leader" />
+            <Label htmlFor="base" value="Please select a leader" />
           </div>
           <select
             className="rounded-md"
@@ -150,7 +150,7 @@ const CreateGroup: NextPage = () => {
           transition={{ duration: 1 }}
         >
           <Button type="submit" size="lg" color="success">
-            Create Group
+            Create group
           </Button>
         </motion.div>
       </form>

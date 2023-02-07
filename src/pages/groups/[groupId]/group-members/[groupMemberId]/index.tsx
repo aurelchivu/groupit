@@ -61,7 +61,7 @@ const GroupMemberDetails: NextPage = () => {
         transition={{ duration: 1 }}
       >
         <Button size="lg" onClick={() => router.back()}>
-          Go Back
+          Go back
         </Button>
       </motion.div>
 
@@ -76,7 +76,7 @@ const GroupMemberDetails: NextPage = () => {
         transition={{ duration: 1.5 }}
       >
         <h5 className="mb-3 ml-3 text-base font-semibold text-gray-900 dark:text-white md:text-xl">
-          Member Details
+          member details
         </h5>
         <Details groupMember={member} />
       </motion.div>
@@ -96,14 +96,14 @@ const GroupMemberDetails: NextPage = () => {
             )
           }
         >
-          Edit Member
+          Edit member
         </Button>
         <Button
           color="failure"
           size="lg"
           onClick={() => setIsDeleteModalOpen("open")}
         >
-          Remove From Group
+          Remove from group
         </Button>
       </motion.div>
 

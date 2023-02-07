@@ -85,7 +85,7 @@ const AddMembers: NextPage = () => {
       >
         <div className="py-4">
           <Button size="lg" onClick={() => router.back()}>
-            Go Back
+            Go back
           </Button>
         </div>
 
@@ -109,7 +109,7 @@ const AddMembers: NextPage = () => {
             }
             onClick={addSelectedMembers}
           >
-            Add Selected Members
+            Add selected members
           </Button>
         </div>
       </motion.div>

@@ -122,7 +122,7 @@ const Members: NextPage = () => {
               onChange={handleCheckboxChange}
             />
             <Label htmlFor="checked">
-              <span className="text-lg">Show Only My Members</span>
+              <span className="text-lg">Show only my members</span>
             </Label>
           </motion.div>
           <motion.div
@@ -132,7 +132,7 @@ const Members: NextPage = () => {
             transition={{ duration: 1 }}
           >
             <Button size="lg" onClick={() => router.push("/members/create")}>
-              Create New Member
+              Create new member
             </Button>
           </motion.div>
         </div>

@@ -79,7 +79,7 @@ const SetLeader: NextPage = () => {
         transition={{ duration: 0.8 }}
       >
         <Button size="lg" onClick={() => router.push(`/groups/${groupId}`)}>
-          Go Back To {group?.name}
+          Go back to {group?.name}
         </Button>
         <div className="py-4">
           <Button
@@ -94,7 +94,7 @@ const SetLeader: NextPage = () => {
             }
             onClick={setSelectedLeader}
           >
-            Set Selected Member as Leader
+            Set selected member as leader
           </Button>
         </div>
       </motion.div>
@@ -104,7 +104,7 @@ const SetLeader: NextPage = () => {
         animate={{ translateX: 0 }}
         transition={{ duration: 0.8 }}
       >
-        {`Set ${group?.name}'s Leader`}{" "}
+        {`Set ${group?.name}'s leader`}
       </motion.h1>
       {group?.members && (
         <DataTable

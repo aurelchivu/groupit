@@ -123,7 +123,7 @@ const Groups: NextPage = () => {
               onChange={handleCheckboxChange}
             />
             <Label htmlFor="checked">
-              <span className="text-lg">Show Only My Groups</span>
+              <span className="text-lg">Show only my groups</span>
             </Label>
           </motion.div>
           <motion.div
@@ -133,7 +133,7 @@ const Groups: NextPage = () => {
             transition={{ duration: 1 }}
           >
             <Button size="lg" onClick={() => router.push("/groups/create")}>
-              Create New Group
+              Create new group
             </Button>
           </motion.div>
         </div>

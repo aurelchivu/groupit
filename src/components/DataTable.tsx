@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Group, Member } from "@/types/prismaTypes";
 import { Checkbox, Table } from "flowbite-react";
 import { motion } from "framer-motion";
+import { spawn } from "child_process";
 
 interface IProps {
   groups?: Group[];
@@ -91,7 +92,7 @@ const DataTable: FC<IProps> = ({
                       {group.leader?.fullName}
                     </Link>
                   ) : (
-                    "NOT SET YET"
+                    <span className="text-red-700">NOT SET YET</span>
                   )}
                 </Table.Cell>
                 <Table.Cell>
@@ -138,7 +139,11 @@ const DataTable: FC<IProps> = ({
                 <Table.Cell>{member.createdAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>{member.updatedAt.toLocaleString()}</Table.Cell>
                 <Table.Cell>
-                  {member?.leaderOf?.length > 0 ? "Yes" : "No"}
+                  {member?.leaderOf?.length > 0 ? (
+                    <span className="text-green-500">Yes</span>
+                  ) : (
+                    <span className="text-red-500">No</span>
+                  )}
                 </Table.Cell>
               </Table.Row>
             ))}

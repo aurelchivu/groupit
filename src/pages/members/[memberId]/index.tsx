@@ -86,7 +86,7 @@ const MemberDetails = (
 
   const { data: session } = useSession();
 
-  const id = props.id;
+  const { id } = props;
   const { status, data, error } = trpc.members.getById.useQuery(id as string);
   const member = data as Member | undefined;
   // console.log("Member=", member);
@@ -106,7 +106,7 @@ const MemberDetails = (
         transition={{ duration: 1 }}
       >
         <Button size="lg" onClick={() => router.back()}>
-          Go Back
+          Go back
         </Button>
       </motion.div>
 
@@ -137,7 +137,7 @@ const MemberDetails = (
             transition={{ duration: 1.5 }}
           >
             <h5 className="mb-3 ml-3 text-base font-semibold text-gray-900 dark:text-white md:text-xl">
-              {member?.fullName} Member Details
+              {member?.fullName} member details
             </h5>
             <Details member={member} />
           </motion.div>
@@ -157,7 +157,7 @@ const MemberDetails = (
                   : setIsAllowModalOpen("open");
               }}
             >
-              Edit Member
+              Edit member
             </Button>
             <Button
               color="failure"
@@ -168,7 +168,7 @@ const MemberDetails = (
                   : setIsAllowModalOpen("open");
               }}
             >
-              Delete Member
+              Delete member
             </Button>
           </motion.div>
         </>
