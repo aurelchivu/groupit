@@ -77,13 +77,13 @@ const CreateMember: NextPage = () => {
           transition={{ duration: 0.8 }}
         >
           <div className="mb-2 block">
-            <Label htmlFor="base" value="Member Full Name" />
+            <Label htmlFor="base" value="Full name" />
           </div>
           <TextInput
             ref={inputRef}
             id="base"
             type="text"
-            placeholder="Members Full Name"
+            placeholder="Full name"
             required={true}
             value={formData.fullName}
             onChange={(e) => {
