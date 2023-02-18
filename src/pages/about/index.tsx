@@ -21,10 +21,10 @@ const About: NextPage = () => {
         &emsp;This group organization app is a modern and scalable solution,
         built using the latest web technologies. The application is built using
         Next.js for server-side rendering and optimized performance, TypeScript
-        for type-safe and maintainable code, tRPC for fast and efficient
-        communication between the backend and frontend, Prisma for powerful data
-        management and access, and Tailwind CSS for fast and customizable
-        styling.
+        for type-safe and maintainable code, tRPC for type-safety and fast and
+        efficient communication between the backend and frontend, Prisma for
+        powerful data management and access, and Tailwind CSS for fast and
+        customizable styling.
       </motion.p>
 
       <motion.p
