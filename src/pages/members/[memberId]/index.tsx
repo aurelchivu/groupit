@@ -16,7 +16,7 @@ import type {
 import { prisma } from "@/server/db/client";
 import { appRouter } from "@/server/trpc/router/_app";
 import superjson from "superjson";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client/edge";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const members = await prisma?.member.findMany({
