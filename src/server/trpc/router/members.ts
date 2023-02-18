@@ -24,25 +24,33 @@ export const memberRouter = router({
     }),
 
   getAll: protectedProcedure.query(async () => {
-    const members = await prisma?.member.findMany({
-      include: {
-        createdBy: true,
-        leaderOf: {
-          include: {
-            leader: true,
+    try {
+      const members = await prisma?.member.findMany({
+        include: {
+          createdBy: true,
+          leaderOf: {
+            include: {
+              leader: true,
+            },
+          },
+          groups: {
+            include: {
+              group: true,
+            },
           },
         },
-        groups: {
-          include: {
-            group: true,
-          },
+        orderBy: {
+          fullName: "asc",
         },
-      },
-      orderBy: {
-        fullName: "asc",
-      },
-    });
-    return members;
+      });
+      return members;
+    } catch (error: any) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message:
+          "An unexpected error occurred while getting the members, please try again later.",
+      });
+    }
   }),
 
   getById: protectedProcedure.input(z.string()).query(async ({ input }) => {
